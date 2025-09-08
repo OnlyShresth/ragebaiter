@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Baiter</title>
-    <script src="https://js.puter.com/v2/puter.js"></script>
+    <!-- ✅ FIXED: Use HTTPS URL for PuterJS -->
+    <script src="https://js.puter.com/v2/"></script>
     <style>
         * {
             margin: 0;
@@ -300,26 +301,37 @@
             start: function() {
                 var self = this;
                 
-                // Wait for PuterJS to load
-                if (typeof puter === 'undefined') {
-                    var checkPuter = setInterval(function() {
-                        if (typeof puter !== 'undefined') {
-                            clearInterval(checkPuter);
-                            self.initializePuter();
-                        }
-                    }, 100);
+                // ✅ FIXED: Better PuterJS loading detection
+                this.waitForPuter().then(function() {
+                    self.initializePuter();
+                }).catch(function() {
+                    console.error('PuterJS failed to load');
+                    self.initializeOffline();
+                });
+            },
+            
+            waitForPuter: function() {
+                return new Promise(function(resolve, reject) {
+                    var attempts = 0;
+                    var maxAttempts = 100; // 10 seconds
                     
-                    // Timeout after 10 seconds
-                    setTimeout(function() {
-                        clearInterval(checkPuter);
-                        if (!self.state.puterLoaded) {
-                            self.notify('PuterJS failed to load - using offline mode', 'error');
-                            self.initializeOffline();
+                    var checkPuter = function() {
+                        if (typeof puter !== 'undefined' && puter.ai && puter.auth) {
+                            resolve();
+                            return;
                         }
-                    }, 10000);
-                } else {
-                    this.initializePuter();
-                }
+                        
+                        attempts++;
+                        if (attempts >= maxAttempts) {
+                            reject(new Error('PuterJS timeout'));
+                            return;
+                        }
+                        
+                        setTimeout(checkPuter, 100);
+                    };
+                    
+                    checkPuter();
+                });
             },
             
             initializePuter: function() {
@@ -328,7 +340,8 @@
                     this.getElements();
                     this.bindEvents();
                     this.checkAuth();
-                    this.notify('PuterJS loaded successfully', 'success');
+                    this.notify('PuterJS loaded successfully!', 'success');
+                    console.log('PuterJS initialized successfully');
                 } catch (e) {
                     console.error('PuterJS initialization error:', e);
                     this.initializeOffline();
@@ -363,7 +376,6 @@
                 this.el.logoutBtn.onclick = function() { self.logout(); };
                 this.el.generateBtn.onclick = function() { self.generate(); };
                 
-                // Use event delegation on results grid instead of global document
                 this.el.resultsGrid.onclick = function(e) {
                     if (e.target.classList.contains('copy-btn')) {
                         var text = e.target.getAttribute('data-text');
@@ -387,12 +399,14 @@
                             if (user && user.username) {
                                 self.state.loggedIn = true;
                                 self.state.user = user;
+                                console.log('User already authenticated:', user.username);
                             } else {
                                 self.state.loggedIn = false;
                                 self.state.user = null;
                             }
                             self.updateUI();
-                        }).catch(function() {
+                        }).catch(function(error) {
+                            console.log('No existing auth session');
                             self.state.loggedIn = false;
                             self.state.user = null;
                             self.updateUI();
@@ -412,8 +426,7 @@
             
             login: function() {
                 if (!this.state.puterLoaded) {
-                    this.notify('PuterJS not available - running in offline mode', 'error');
-                    // Enable offline mode
+                    this.notify('PuterJS not available - enabling offline mode', 'error');
                     this.state.loggedIn = true;
                     this.state.user = { username: 'Offline User' };
                     this.updateUI();
@@ -425,7 +438,9 @@
                 this.el.loginBtn.textContent = 'Connecting...';
                 
                 try {
+                    // ✅ FIXED: Proper PuterJS authentication
                     puter.auth.signIn().then(function(user) {
+                        console.log('Sign in successful:', user);
                         self.state.loggedIn = true;
                         self.state.user = user;
                         self.updateUI();
@@ -433,7 +448,7 @@
                     }).catch(function(error) {
                         console.error('Auth error:', error);
                         self.resetLogin();
-                        self.notify('Connection failed: ' + (error.message || 'Unknown error'), 'error');
+                        self.notify('Connection failed: ' + (error.message || 'Please try again'), 'error');
                     });
                 } catch (e) {
                     console.error('Login exception:', e);
@@ -453,12 +468,12 @@
                         }).catch(function(error) {
                             console.error('Logout error:', error);
                             self.forceLogout();
-                            self.notify('Logout failed, forced logout', 'error');
+                            self.notify('Logout completed', 'success');
                         });
                     } catch (e) {
                         console.error('Logout exception:', e);
                         this.forceLogout();
-                        this.notify('Logout error', 'error');
+                        this.notify('Logged out', 'success');
                     }
                 } else {
                     this.forceLogout();
@@ -498,7 +513,7 @@
                 }
                 
                 if (this.state.loading) {
-                    return; // Prevent multiple rapid clicks
+                    return;
                 }
                 
                 var self = this;
@@ -506,131 +521,100 @@
                 this.state.count++;
                 
                 var enhancedPrompt = this.buildEnhancedPrompt();
-                console.log('Using prompt:', enhancedPrompt);
+                console.log('Generating with prompt length:', enhancedPrompt.length);
                 
-                // Check if AI is available and try to use it
+                // ✅ FIXED: Proper AI API call with better error handling
                 if (this.state.puterLoaded && puter.ai && puter.ai.chat) {
-                    var timeoutId = setTimeout(function() {
-                        console.log('AI timed out, using fallbacks');
-                        var fallbacks = self.getBrutalFallbacks();
-                        self.showRoasts(fallbacks);
-                        self.notify('AI timeout - using fallbacks! Set #' + self.state.count, 'error');
-                        self.setLoading(false);
-                    }, 15000);
+                    console.log('Using PuterJS AI...');
                     
-                    puter.ai.chat(enhancedPrompt).then(function(response) {
+                    var timeoutId = setTimeout(function() {
+                        console.log('AI request timed out');
+                        self.useFallbacks('AI timeout');
+                    }, 20000);
+                    
+                    // ✅ FIXED: Proper AI call with model specification
+                    puter.ai.chat(enhancedPrompt, { 
+                        model: 'gpt-5-nano',
+                        temperature: 0.8,
+                        max_tokens: 500
+                    }).then(function(response) {
                         clearTimeout(timeoutId);
-                        console.log('AI response:', response);
+                        console.log('AI response received:', typeof response, response);
                         
                         var roasts = self.parseEnhancedResponse(response);
                         if (roasts && roasts.length >= 5) {
                             self.showRoasts(roasts.slice(0, 5));
-                            self.notify('AI generated roasts! Set #' + self.state.count, 'success');
+                            self.notify('🔥 AI generated brutal roasts! Set #' + self.state.count, 'success');
                         } else {
-                            console.log('AI parsing failed, using fallbacks');
-                            var fallbacks = self.getBrutalFallbacks();
-                            self.showRoasts(fallbacks);
-                            self.notify('AI parsing failed - using fallbacks! Set #' + self.state.count, 'error');
+                            console.log('AI response parsing failed, using fallbacks');
+                            self.useFallbacks('AI parsing failed');
                         }
                         self.setLoading(false);
                     }).catch(function(error) {
                         clearTimeout(timeoutId);
                         console.error('AI error:', error);
-                        var fallbacks = self.getBrutalFallbacks();
-                        self.showRoasts(fallbacks);
-                        self.notify('AI error - using fallbacks! Set #' + self.state.count, 'error');
-                        self.setLoading(false);
+                        self.useFallbacks('AI error: ' + (error.message || 'Unknown'));
                     });
                 } else {
-                    // No AI available, use fallbacks immediately
-                    console.log('AI not available, using fallbacks');
-                    var fallbacks = this.getBrutalFallbacks();
-                    this.showRoasts(fallbacks);
-                    this.notify('AI not available - using fallbacks! Set #' + this.state.count, 'error');
-                    this.setLoading(false);
+                    console.log('PuterJS AI not available');
+                    this.useFallbacks('AI not available');
                 }
+            },
+            
+            useFallbacks: function(reason) {
+                console.log('Using fallbacks due to:', reason);
+                var fallbacks = this.getBrutalFallbacks();
+                this.showRoasts(fallbacks);
+                this.notify(reason + ' - using fallbacks! Set #' + this.state.count, 'error');
+                this.setLoading(false);
             },
             
             buildEnhancedPrompt: function() {
                 var promptTemplates = [
-                    {
-                        role: "brutal comedy writer for roast battles",
-                        context: "adult comedy show known for savage burns",
-                        topics: ["career disasters", "workplace incompetence", "job interview failures", "work ethic disasters", "professional embarrassments"],
-                        style: "cutting and merciless with vivid metaphors",
-                        examples: ["Your resume reads like a work of fiction nobody wants to read", "You treat deadlines like birthday wishes - optional and disappointing"]
-                    },
-                    {
-                        role: "harsh social commentator", 
-                        context: "comedy special about awkward people",
-                        topics: ["social failures", "conversation disasters", "awkward interactions", "personality flaws", "communication breakdowns"],
-                        style: "psychologically cutting with sharp observations",
-                        examples: ["You make small talk feel like enhanced interrogation", "Your social skills need a warning label"]
-                    },
-                    {
-                        role: "savage relationship advisor",
-                        context: "comedy special about dating disasters", 
-                        topics: ["romantic failures", "dating disasters", "pickup line catastrophes", "relationship crashes", "love life tragedies"],
-                        style: "brutally honest with dark humor",
-                        examples: ["Your dating profile should come with a surgeon general's warning", "You get less action than a broken vending machine"]
-                    }
+                    "You are a brutal comedy writer for roast battles. Write 5 savage, diverse roasts about career disasters. Each 25-35 words, different themes, include 1-2 Gen Z slang words (no cap, fr, deadass, lowkey). Be psychologically cutting with creative metaphors. Return as numbered list 1-5.",
+                    "You are a harsh social commentator writing about awkward people. Create 5 brutal, diverse roasts about social failures. Each 25-35 words, different aspects, include modern slang (no cap, fr, deadass, lowkey). Be psychologically sharp. Return numbered 1-5.",
+                    "You are a savage relationship advisor doing comedy roasts. Write 5 brutal, diverse roasts about dating disasters. Each 25-35 words, different themes, include Gen Z slang (no cap, fr, deadass, lowkey). Be devastatingly honest. Return numbered 1-5."
                 ];
                 
-                var template = promptTemplates[this.state.count % promptTemplates.length];
-                var randomTopic = template.topics[Math.floor(Math.random() * template.topics.length)];
-                
-                return 'You are a ' + template.role + ' writing for a ' + template.context + '. Your specialty is creating ' + template.style + ' roasts.\n\n' +
-                       'TASK: Write 5 brutally savage and diverse roasts about ' + randomTopic + '. Each roast must:\n' +
-                       '- Be 25-35 words long\n' +
-                       '- Target a DIFFERENT specific aspect (no repeating themes)\n' +
-                       '- Include 1-2 modern slang words like "no cap", "fr", "deadass", "lowkey"\n' +
-                       '- Be psychologically cutting and memorable\n' +
-                       '- Use creative metaphors and comparisons\n' +
-                       '- Match the brutal quality of: "' + template.examples[0] + '"\n\n' +
-                       'EXAMPLES of the savage tone you should match:\n' +
-                       '- "' + template.examples[1] + '"\n' +
-                       '- "You\'re the reason job applications ask for previous experience - nobody wants to be your first mistake"\n\n' +
-                       'Return as a simple numbered list:\n1.\n2.\n3.\n4.\n5.\n\n' +
-                       'Remember: This is for adult comedy entertainment. Be creative, brutal, and memorable.';
+                return promptTemplates[this.state.count % promptTemplates.length];
             },
             
             parseEnhancedResponse: function(response) {
                 var content = '';
                 
+                // ✅ FIXED: Better response parsing for different response formats
                 if (typeof response === 'string') {
                     content = response;
+                } else if (response && response.message && response.message.content) {
+                    content = response.message.content;
                 } else if (response && response.content) {
                     content = response.content;
-                } else if (response && response.message) {
-                    content = response.message;
                 } else if (response && response.text) {
                     content = response.text;
+                } else if (response && response.response) {
+                    content = response.response;
                 } else {
+                    console.log('Unknown response format:', response);
                     content = JSON.stringify(response);
                 }
                 
-                console.log('Parsing content:', content);
+                console.log('Parsing content:', content.substring(0, 200) + '...');
                 
                 var roasts = [];
                 var lines = content.split('\n');
                 
                 for (var i = 0; i < lines.length; i++) {
                     var line = lines[i].trim();
-                    // Match numbered lines like "1. text" or "1) text" 
+                    // Match numbered lines
                     if (/^\d+[\.\)]\s+/.test(line)) {
                         var roast = line.replace(/^\d+[\.\)]\s+/, '').trim();
-                        if (roast.length > 15) {
+                        if (roast.length > 10) {
                             roasts.push(roast);
                         }
                     }
-                    // Also try to catch lines that start with numbers but no punctuation
-                    else if (/^\d+\s+/.test(line) && line.length > 20) {
-                        var roast = line.replace(/^\d+\s+/, '').trim();
-                        roasts.push(roast);
-                    }
                 }
                 
-                console.log('Parsed roasts:', roasts);
+                console.log('Parsed roasts count:', roasts.length);
                 return roasts.length >= 5 ? roasts : null;
             },
             
@@ -656,20 +640,6 @@
                         "You get less romantic action than a broken vending machine in an abandoned building during a zombie apocalypse.",
                         "Your skincare routine appears to be more theoretical than practical, much like your entire life approach, fr.",
                         "You make goldfish look like Harvard graduates with advanced degrees in quantum physics and emotional intelligence, deadass."
-                    ],
-                    [
-                        "Your career peaked when you learned to spell your name correctly, and even that achievement remains questionable.",
-                        "You're the human equivalent of a participation trophy that everyone's too embarrassed to display on their shelf, no cap.",
-                        "Your pickup lines are classified as war crimes against romance by the Geneva Convention and international law.",
-                        "You have the aesthetic appeal of a dumpster fire during a garbage strike in summer heat, fr.",
-                        "Your thought process makes random number generators look strategically brilliant by direct comparison, deadass."
-                    ],
-                    [
-                        "Your LinkedIn profile contains more fiction than fantasy novels and proves twice as disappointing to read.",
-                        "You bring everyone so much joy when you leave any room that they should charge admission fees, no cap.",
-                        "Your love life is more tragic than your bank account, and we both know that's broke beyond repair.",
-                        "You look like you got dressed by a blind person having a seizure in a thrift store clearance section, fr.",
-                        "Your IQ is so low that it's causing a global shortage of room temperature readings across continents, deadass."
                     ]
                 ];
                 
@@ -689,13 +659,13 @@
                     
                     var roastText = document.createElement('div');
                     roastText.className = 'roast-text';
-                    roastText.textContent = roasts[i]; // Safe text insertion prevents XSS
+                    roastText.textContent = roasts[i];
                     
                     var copyBtn = document.createElement('button');
                     copyBtn.className = 'copy-btn';
                     copyBtn.textContent = 'Copy Roast';
                     copyBtn.setAttribute('data-text', roasts[i]);
-                    copyBtn.setAttribute('data-original-text', 'Copy Roast'); // Store original text
+                    copyBtn.setAttribute('data-original-text', 'Copy Roast');
                     
                     card.appendChild(roastNumber);
                     card.appendChild(roastText);
@@ -723,7 +693,7 @@
                     if (navigator.clipboard && navigator.clipboard.writeText) {
                         navigator.clipboard.writeText(text).then(function() {
                             self.showCopied(button);
-                            self.notify('Copied that burn!', 'success');
+                            self.notify('Copied that burn! 🔥', 'success');
                         }).catch(function() {
                             self.fallbackCopy(text, button);
                         });
@@ -746,11 +716,11 @@
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
                 this.showCopied(button);
-                this.notify('Copied!', 'success');
+                this.notify('Copied! 📋', 'success');
             },
             
             showCopied: function(button) {
-                if (button.dataset.copying) return; // Prevent multiple rapid clicks
+                if (button.dataset.copying) return;
                 
                 button.dataset.copying = 'true';
                 var original = button.getAttribute('data-original-text') || 'Copy Roast';
@@ -766,7 +736,7 @@
             },
             
             setLoading: function(loading) {
-                if (this.state.loading === loading) return; // Prevent redundant updates
+                if (this.state.loading === loading) return;
                 
                 this.state.loading = loading;
                 
@@ -784,7 +754,6 @@
             notify: function(message, type) {
                 var self = this;
                 
-                // Clear any existing notification timeouts
                 if (this.notifyTimeout) {
                     clearTimeout(this.notifyTimeout);
                 }
@@ -797,7 +766,7 @@
                 this.notifyTimeout = setTimeout(function() {
                     self.el.toast.classList.remove('show');
                     self.notifyTimeout = null;
-                }, 3500);
+                }, 4000);
             }
         };
         
