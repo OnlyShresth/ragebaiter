@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAGEBAITER - Generate Perfect Responses</title>
+    <title>Master Baiter - Ultimate Roast Generator</title>
+    <script src="https://js.puter.com/v2/"></script>
     <style>
         * {
             margin: 0;
@@ -12,8 +13,8 @@
         }
 
         :root {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
+            --primary: #dc2626;
+            --primary-dark: #b91c1c;
             --secondary: #64748b;
             --accent: #f59e0b;
             --bg: #0f172a;
@@ -33,171 +34,143 @@
             line-height: 1.6;
             min-height: 100vh;
             font-size: 14px;
+            position: relative;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header */
-        .header {
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 40px;
-        }
-
-        .nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
+        .auth-section {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text);
         }
 
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 800;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-        }
-
-        .nav-link {
-            color: var(--text-secondary);
-            text-decoration: none;
+        .login-btn, .logout-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--primary);
+            border-radius: 6px;
             font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .nav-link:hover {
-            color: var(--text);
-        }
-
-        .cta-button {
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
             background: var(--primary);
             color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background 0.2s;
         }
 
-        .cta-button:hover {
-            background: var(--primary-dark);
+        .login-btn:hover, .logout-btn:hover {
+            opacity: 0.9;
         }
 
-        /* Main Content */
-        .main-content {
-            display: grid;
-            gap: 40px;
-            margin-bottom: 60px;
+        .logout-btn {
+            background: var(--danger);
+            border-color: var(--danger);
         }
 
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--card-bg);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 20px 40px;
+        }
+
+        /* Hero Section */
         .hero-section {
             text-align: center;
-            padding: 60px 0;
+            padding: 80px 0 60px;
         }
 
         .hero-title {
-            font-size: 3.5rem;
-            font-weight: 800;
+            font-size: 4rem;
+            font-weight: 900;
             margin-bottom: 20px;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: -2px;
         }
 
         .hero-subtitle {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             color: var(--text-secondary);
-            margin-bottom: 40px;
-            max-width: 600px;
+            margin-bottom: 50px;
+            max-width: 700px;
             margin-left: auto;
             margin-right: auto;
         }
 
-        /* Input Section */
-        .input-section {
+        .warning-text {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 40px;
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        /* Generate Section */
+        .generate-section {
             background: var(--card-bg);
             border-radius: 16px;
-            padding: 32px;
+            padding: 40px;
             border: 1px solid var(--border);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
-            margin: 0 auto;
+            margin-bottom: 50px;
+            text-align: center;
         }
 
-        .input-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 16px;
-            color: var(--text);
-            font-size: 16px;
-        }
-
-        .context-input {
-            width: 100%;
-            padding: 16px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-size: 16px;
-            resize: vertical;
-            min-height: 120px;
-            transition: border-color 0.2s;
-            font-family: inherit;
-            background: var(--bg);
+        .generate-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
             color: var(--text);
         }
 
-        .context-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .context-input::placeholder {
+        .generate-subtitle {
             color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
         }
 
         .generate-btn {
-            margin-top: 20px;
-            width: 100%;
-            padding: 16px 24px;
+            padding: 20px 40px;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
             border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 18px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             position: relative;
             overflow: hidden;
         }
 
         .generate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(220, 38, 38, 0.4);
         }
 
         .generate-btn:disabled {
@@ -207,10 +180,10 @@
         }
 
         .btn-loader {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top: 2px solid white;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto;
@@ -223,27 +196,27 @@
 
         /* Results Section */
         .results-section {
-            max-width: 1000px;
-            margin: 0 auto;
+            margin-top: 50px;
         }
 
         .results-title {
             text-align: center;
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 32px;
-            color: var(--text);
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 40px;
+            color: var(--primary);
+            text-transform: uppercase;
         }
 
         .results-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
+            gap: 20px;
+            grid-template-columns: 1fr;
         }
 
         .result-card {
             background: var(--card-bg);
-            border-radius: 16px;
+            border-radius: 12px;
             padding: 24px;
             border: 1px solid var(--border);
             transition: all 0.3s ease;
@@ -253,16 +226,16 @@
 
         .result-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
             border-color: var(--primary);
         }
 
-        .method-tag {
-            background: linear-gradient(135deg, var(--accent), #fbbf24);
-            color: var(--bg);
+        .roast-number {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
             padding: 6px 12px;
             border-radius: 20px;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 12px;
             display: inline-block;
             margin-bottom: 16px;
@@ -270,21 +243,21 @@
             letter-spacing: 0.5px;
         }
 
-        .response-text {
-            font-size: 16px;
+        .roast-text {
+            font-size: 18px;
             line-height: 1.6;
             margin-bottom: 20px;
             color: var(--text);
             background: var(--bg);
-            padding: 20px;
+            padding: 24px;
             border-radius: 12px;
             border-left: 4px solid var(--primary);
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .copy-btn {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background: var(--secondary);
             color: white;
             border: none;
@@ -293,6 +266,7 @@
             font-weight: 600;
             transition: all 0.2s;
             font-size: 14px;
+            text-transform: uppercase;
         }
 
         .copy-btn:hover {
@@ -307,7 +281,7 @@
         /* Toast */
         .toast {
             position: fixed;
-            top: 20px;
+            top: 80px;
             right: 20px;
             background: var(--card-bg);
             color: var(--text);
@@ -335,6 +309,15 @@
             background: rgba(239, 68, 68, 0.1);
         }
 
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+        }
+
         /* Utility Classes */
         .hidden {
             display: none !important;
@@ -343,32 +326,33 @@
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .container {
-                padding: 0 16px;
+                padding: 40px 16px 20px;
             }
             
-            .nav {
-                flex-direction: column;
-                gap: 20px;
-            }
-            
-            .nav-links {
-                gap: 20px;
+            .auth-section {
+                top: 16px;
+                right: 16px;
             }
             
             .hero-title {
-                font-size: 2.5rem;
+                font-size: 2.8rem;
             }
             
-            .input-section {
-                padding: 24px;
+            .hero-subtitle {
+                font-size: 1.2rem;
             }
             
-            .results-grid {
-                grid-template-columns: 1fr;
+            .generate-section {
+                padding: 30px 20px;
+            }
+            
+            .generate-btn {
+                padding: 16px 30px;
+                font-size: 16px;
             }
             
             .toast {
-                top: 16px;
+                top: 60px;
                 right: 16px;
                 left: 16px;
                 transform: translateY(-100%);
@@ -381,75 +365,138 @@
 
         @media (max-width: 480px) {
             .hero-title {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             
             .hero-subtitle {
                 font-size: 1.1rem;
             }
+            
+            .generate-section {
+                padding: 24px 16px;
+            }
         }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <nav class="nav">
-                <div class="logo">
-                    <div class="logo-icon">R</div>
-                    <span>RAGEBAITER</span>
-                </div>
-                <div class="nav-links">
-                    <a href="#" class="nav-link">About</a>
-                    <a href="#" class="nav-link">How it Works</a>
-                    <a href="#" class="cta-button">Get Started</a>
-                </div>
-            </nav>
+    <div class="auth-section">
+        <button id="loginBtn" class="login-btn">Connect</button>
+        <div id="userInfo" class="user-info hidden">
+            <div class="status-dot"></div>
+            <span id="userName"></span>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
         </div>
-    </header>
+    </div>
 
-    <main class="main-content">
-        <div class="container">
-            <section class="hero-section">
-                <h1 class="hero-title">Perfect Responses</h1>
-                <p class="hero-subtitle">Generate contextually perfect ragebait responses that actually work. Powered by advanced AI analysis.</p>
-            </section>
+    <div class="container">
+        <section class="hero-section">
+            <h1 class="hero-title">Master Baiter</h1>
+            <p class="hero-subtitle">Generate the most brutal, toxic roasts that will absolutely destroy anyone. No mercy, no filter, just pure verbal violence.</p>
+            
+            <div class="warning-text">
+                ⚠️ WARNING: Content is extremely offensive and not suitable for sensitive users. Use at your own risk.
+            </div>
+        </section>
 
-            <section class="input-section">
-                <label for="contextInput" class="input-label">Enter the message you want to respond to:</label>
-                <textarea 
-                    id="contextInput" 
-                    class="context-input" 
-                    placeholder="Paste the comment, message, or statement you want to create a response for..."
-                    rows="5"
-                ></textarea>
-                <button id="generateBtn" class="generate-btn">
-                    <span class="btn-text">Generate Response</span>
-                    <div class="btn-loader hidden"></div>
-                </button>
-            </section>
+        <section class="generate-section">
+            <h2 class="generate-title">Ready to Unleash Hell?</h2>
+            <p class="generate-subtitle">Click the button below to generate 5 random, devastatingly toxic roasts that will leave your targets speechless.</p>
+            
+            <button id="generateBtn" class="generate-btn">
+                <span class="btn-text">Generate Toxic Roasts</span>
+                <div class="btn-loader hidden"></div>
+            </button>
+        </section>
 
-            <section class="results-section">
-                <div id="resultsContainer" class="results-container hidden">
-                    <h2 class="results-title">Your Response Options</h2>
-                    <div class="results-grid" id="resultsGrid">
-                        <!-- Results will be populated here -->
-                    </div>
+        <section class="results-section">
+            <div id="resultsContainer" class="results-container hidden">
+                <h2 class="results-title">Your Weapon Cache</h2>
+                <div class="results-grid" id="resultsGrid">
+                    <!-- Results will be populated here -->
                 </div>
-            </section>
-        </div>
-    </main>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Master Baiter - For Educational Purposes Only | Use Responsibly</p>
+        </footer>
+    </div>
 
     <div id="toast" class="toast hidden"></div>
 
     <script>
-        class RageBaiter {
+        class MasterBaiter {
             constructor() {
+                this.puterClient = null;
+                this.isAuthenticated = false;
+                this.userName = '';
+                
                 this.initializeElements();
                 this.attachEventListeners();
+                this.checkAutoLogin();
+                
+                // Toxic roast database
+                this.toxicRoasts = [
+                    "You're a complete faggot with zero life skills and everyone knows it.",
+                    "Unemployment suits you perfectly, no one would ever hire your dumb ass anyway.",
+                    "Go back to your mom's basement, you pathetic waste of space loser.",
+                    "Your existence is a burden on everyone around you and society in general.",
+                    "You have the IQ of a brain-dead rock, and that's being generous to rocks.",
+                    "No one takes an unemployed idiot like you seriously, ever.",
+                    "You're the reason Darwin was right about natural selection.",
+                    "Your entire life is a cringe compilation that makes people physically ill.",
+                    "You act tough online but you're just a keyboard warrior faggot.",
+                    "Your opinions are as useless as your non-existent social skills.",
+                    "You're a walking disaster and everyone sees it but pretends not to.",
+                    "Even a potato has more brain cells and personality than you.",
+                    "The only thing you're good at is wasting oxygen and bandwidth.",
+                    "Just accept that you're a certified failure at life, loser.",
+                    "You're an embarrassment to humanity and your bloodline.",
+                    "Stop pretending you matter, literally nobody gives a shit about you.",
+                    "Your social life is non-existent because you repel everyone like a disease.",
+                    "You're mentally and emotionally bankrupt, completely worthless.",
+                    "No amount of therapy will ever fix your broken, pathetic existence.",
+                    "Your comebacks are so bad, they're actually painful to read.",
+                    "You're toxic waste that should be ignored and avoided at all costs.",
+                    "Your stupidity is a natural disaster that affects everyone around you.",
+                    "You bring nothing but misery and disappointment wherever you go.",
+                    "You're a fraud, a joke, and a complete waste of human flesh.",
+                    "Your entire existence is just elaborate troll bait for normal people.",
+                    "The only thing you're genuinely good at is spectacular failure.",
+                    "You're a parasite on society that contributes absolutely nothing.",
+                    "Your brain is as empty as your bank account, you broke loser.",
+                    "You always contribute to problems instead of solutions, useless faggot.",
+                    "Just vanish already, literally no one would miss your pathetic ass.",
+                    "You're mentally defective and somehow proud of your own stupidity.",
+                    "You're the punchline of every joke and don't even realize it.",
+                    "You desperately need to delete all your social media and disappear.",
+                    "No one would touch you with a ten-foot pole, you disgusting creature.",
+                    "Your presence causes actual physical pain to anyone with brain cells.",
+                    "You're a disgrace to your entire family tree and gene pool.",
+                    "You're an insult to human intelligence and basic decency.",
+                    "Your very existence triggers normal people into pure rage.",
+                    "You're a walking cesspool of ignorance and unemployment benefits.",
+                    "Your face should be permanently banned from the entire internet.",
+                    "You're the living embodiment of complete and total failure.",
+                    "You're nothing but a sad, unemployed failure who lives with mommy.",
+                    "Your opinions are irrelevant because your life is a complete joke.",
+                    "Nobody's gonna hire your worthless ass, ever, period.",
+                    "You're a toxic influence disguised as a barely functioning person.",
+                    "You have the personality of a dementor mixed with expired milk.",
+                    "You're a blight on society that needs to be quarantined.",
+                    "Your intelligence is inversely proportional to your massive arrogance.",
+                    "You're a sad parody of what a human being should be.",
+                    "Even advanced technology would refuse to defend your pathetic existence.",
+                    "Your brain is completely full of static and white noise.",
+                    "You peak at mediocrity and somehow still manage to fail spectacularly."
+                ];
             }
 
             initializeElements() {
-                this.contextInput = document.getElementById('contextInput');
+                this.loginBtn = document.getElementById('loginBtn');
+                this.logoutBtn = document.getElementById('logoutBtn');
+                this.userInfo = document.getElementById('userInfo');
+                this.userName = document.getElementById('userName');
                 this.generateBtn = document.getElementById('generateBtn');
                 this.resultsContainer = document.getElementById('resultsContainer');
                 this.resultsGrid = document.getElementById('resultsGrid');
@@ -459,337 +506,159 @@
             }
 
             attachEventListeners() {
-                this.generateBtn.addEventListener('click', () => this.generateResponses());
-                this.contextInput.addEventListener('input', () => this.toggleGenerateButton());
+                this.loginBtn.addEventListener('click', () => this.handleLogin());
+                this.logoutBtn.addEventListener('click', () => this.handleLogout());
+                this.generateBtn.addEventListener('click', () => this.generateRoasts());
                 
                 document.addEventListener('click', (e) => {
                     if (e.target.closest('.copy-btn')) {
-                        const responseText = e.target.closest('.result-card').querySelector('.response-text').textContent;
-                        this.copyResponse(responseText, e.target);
+                        const roastText = e.target.closest('.result-card').querySelector('.roast-text').textContent;
+                        this.copyRoast(roastText, e.target);
                     }
                 });
             }
 
-            toggleGenerateButton() {
-                const hasInput = this.contextInput.value.trim().length > 0;
-                this.generateBtn.disabled = !hasInput;
+            async checkAutoLogin() {
+                try {
+                    const savedAuth = localStorage.getItem('masterbaiter_auth');
+                    if (savedAuth) {
+                        const authData = JSON.parse(savedAuth);
+                        
+                        if (typeof puter !== 'undefined') {
+                            this.puterClient = puter;
+                            
+                            try {
+                                const user = await puter.auth.getUser();
+                                if (user) {
+                                    this.isAuthenticated = true;
+                                    this.updateUIForAuthentication(user.username);
+                                    return;
+                                }
+                            } catch (getUserError) {
+                                console.log('No existing session');
+                            }
+                        }
+                    }
+                    this.showLoginButton();
+                } catch (error) {
+                    console.error('Auto-login failed:', error);
+                    this.showLoginButton();
+                }
             }
 
-            analyzeContext(context) {
-                const lower = context.toLowerCase();
-                
-                // Advanced context analysis with sentiment and topic detection
-                const analysisPatterns = {
-                    personal_story: {
-                        patterns: [/\bi\s+(was|am|have|had|did|went|got|made)\b/g, /\bmy\s+\w+/g, /\bmyself\b/g],
-                        weight: 2
-                    },
-                    achievement_brag: {
-                        patterns: [/\b(proud|achieved|accomplished|won|earned|got|finished|completed|success)\b/g, /\bjust\s+(got|finished|completed|achieved)\b/g],
-                        weight: 3
-                    },
-                    complaint_rant: {
-                        patterns: [/\b(hate|stupid|dumb|annoying|worst|terrible|awful|sucks|ridiculous)\b/g, /\bcan't\s+believe\b/g, /\bso\s+(annoying|stupid|dumb)\b/g],
-                        weight: 3
-                    },
-                    opinion_statement: {
-                        patterns: [/\bi\s+(think|believe|feel|know)\b/g, /\bin\s+my\s+opinion\b/g, /\bimo\b/g, /\btbh\b/g],
-                        weight: 2
-                    },
-                    question_seeking: {
-                        patterns: [/\?/g, /\b(what|why|how|when|where|who)\s+/g, /\bcan\s+someone\b/g],
-                        weight: 2
-                    },
-                    advice_giving: {
-                        patterns: [/\byou\s+(should|need|have\s+to|must|ought)\b/g, /\btry\s+\w+/g, /\brecommend\b/g],
-                        weight: 2
-                    },
-                    social_commentary: {
-                        patterns: [/\bpeople\s+(these\s+days|today|nowadays)\b/g, /\bsociety\b/g, /\bgeneration\b/g, /\beveryone\s+(is|does)\b/g],
-                        weight: 2
+            async handleLogin() {
+                try {
+                    this.loginBtn.disabled = true;
+                    this.loginBtn.textContent = 'Connecting...';
+
+                    if (typeof puter === 'undefined') {
+                        throw new Error('Connection service unavailable');
                     }
-                };
 
-                let bestMatch = { type: 'general', score: 0 };
+                    const user = await puter.auth.signIn();
+                    
+                    if (user) {
+                        this.isAuthenticated = true;
+                        this.puterClient = puter;
+                        
+                        localStorage.setItem('masterbaiter_auth', JSON.stringify({ 
+                            authenticated: true,
+                            username: user.username 
+                        }));
+                        
+                        this.updateUIForAuthentication(user.username);
+                        this.showToast('Connected successfully!', 'success');
+                    } else {
+                        throw new Error('No user returned');
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    this.showToast('Connection failed. Using offline mode.', 'error');
+                    
+                    setTimeout(() => {
+                        this.isAuthenticated = true;
+                        this.updateUIForAuthentication('Anonymous');
+                        this.showToast('Offline mode active!', 'success');
+                    }, 3000);
+                    
+                    this.resetLoginButton();
+                }
+            }
 
-                for (const [type, config] of Object.entries(analysisPatterns)) {
-                    let score = 0;
-                    for (const pattern of config.patterns) {
-                        const matches = (lower.match(pattern) || []).length;
-                        score += matches * config.weight;
+            async handleLogout() {
+                try {
+                    if (this.puterClient && typeof this.puterClient.auth?.signOut === 'function') {
+                        await this.puterClient.auth.signOut();
                     }
                     
-                    if (score > bestMatch.score) {
-                        bestMatch = { type, score };
-                    }
+                    localStorage.removeItem('masterbaiter_auth');
+                    this.isAuthenticated = false;
+                    this.puterClient = null;
+                    this.showLoginButton();
+                    this.showToast('Logged out!', 'success');
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    localStorage.removeItem('masterbaiter_auth');
+                    this.isAuthenticated = false;
+                    this.puterClient = null;
+                    this.showLoginButton();
+                    this.showToast('Logged out!', 'success');
                 }
-
-                return bestMatch.type;
             }
 
-            generateContextualResponses(context, contextType) {
-                const responseStrategies = {
-                    personal_story: [
-                        {
-                            method: "Story Invalidation",
-                            templates: [
-                                "That definitely happened exactly like you described it.",
-                                "Sure, and everyone clapped afterwards too.",
-                                "Your version of events seems... creative."
-                            ]
-                        },
-                        {
-                            method: "Reality Check",
-                            templates: [
-                                "Main character syndrome is showing.",
-                                "Nobody asked for your autobiography.",
-                                "This reads like bad fanfiction of your own life."
-                            ]
-                        },
-                        {
-                            method: "Dismissive Minimization",
-                            templates: [
-                                "Cool story, needs more dragons.",
-                                "And then you woke up?",
-                                "The audacity to share this publicly..."
-                            ]
-                        }
-                    ],
-                    achievement_brag: [
-                        {
-                            method: "Achievement Deflation",
-                            templates: [
-                                "Congrats on doing basic human tasks.",
-                                "The bar was in hell and you tripped over it.",
-                                "Participation trophies hit different these days."
-                            ]
-                        },
-                        {
-                            method: "False Praise Toxicity",
-                            templates: [
-                                "So proud of you for being functional today!",
-                                "Look who managed to adult! Gold star!",
-                                "Your parents must be... surprised."
-                            ]
-                        },
-                        {
-                            method: "Comparative Dismissal",
-                            templates: [
-                                "That's cute. I did that in kindergarten.",
-                                "Imagine celebrating this unironically.",
-                                "The secondhand embarrassment is real."
-                            ]
-                        }
-                    ],
-                    complaint_rant: [
-                        {
-                            method: "Problem Amplification",
-                            templates: [
-                                "Skill issue + ratio + cope harder.",
-                                "Have you tried not being the problem?",
-                                "This energy screams 'I'm the drama.'"
-                            ]
-                        },
-                        {
-                            method: "Victim Blaming Subtle",
-                            templates: [
-                                "What's the common factor in all your problems?",
-                                "There's always two sides... but go off.",
-                                "Wonder what you're not telling us."
-                            ]
-                        },
-                        {
-                            method: "Dismissive Gaslighting",
-                            templates: [
-                                "Are you sure that's what actually happened?",
-                                "Your perception of reality is... unique.",
-                                "Maybe the problem is your attitude?"
-                            ]
-                        }
-                    ],
-                    opinion_statement: [
-                        {
-                            method: "Opinion Annihilation",
-                            templates: [
-                                "This opinion is not the flex you think it is.",
-                                "Imagine having this take in 2025.",
-                                "Your brain really said 'no thoughts, head empty.'"
-                            ]
-                        },
-                        {
-                            method: "Intelligence Questioning",
-                            templates: [
-                                "Did you think before typing this or...?",
-                                "The critical thinking really left the chat.",
-                                "This is why people don't take you seriously."
-                            ]
-                        },
-                        {
-                            method: "Social Rejection",
-                            templates: [
-                                "Tell me you're chronically online without telling me.",
-                                "This is exactly why you eat lunch alone.",
-                                "Your personality is a walking red flag."
-                            ]
-                        }
-                    ],
-                    question_seeking: [
-                        {
-                            method: "Question Shaming",
-                            templates: [
-                                "Google is free but curiosity apparently isn't.",
-                                "This question is giving 'I peaked in middle school' energy.",
-                                "The intellectual curiosity is... concerning."
-                            ]
-                        },
-                        {
-                            method: "Loaded Question Callout",
-                            templates: [
-                                "What's your real agenda here?",
-                                "This question is more loaded than my student debt.",
-                                "The manipulation is showing, babes."
-                            ]
-                        },
-                        {
-                            method: "Competency Questioning",
-                            templates: [
-                                "Are you actually this clueless or just pretending?",
-                                "The way you thought this was worth asking...",
-                                "Basic research skills have left the chat."
-                            ]
-                        }
-                    ],
-                    advice_giving: [
-                        {
-                            method: "Authority Undermining",
-                            templates: [
-                                "Who made you the expert on literally anything?",
-                                "Your life advice hits like decaf coffee.",
-                                "Maybe fix your own mess first?"
-                            ]
-                        },
-                        {
-                            method: "Credibility Destruction",
-                            templates: [
-                                "Taking advice from you is like asking a fish about flying.",
-                                "Your track record speaks for itself... poorly.",
-                                "The audacity to give advice while being you."
-                            ]
-                        },
-                        {
-                            method: "Unsolicited Advice Roast",
-                            templates: [
-                                "Nobody asked for your TED talk on failure.",
-                                "Keep your life tips, we've seen your results.",
-                                "Your advice is worth exactly what we paid for it."
-                            ]
-                        }
-                    ],
-                    social_commentary: [
-                        {
-                            method: "Generational Dismissal",
-                            templates: [
-                                "OK boomer energy but make it worse somehow.",
-                                "This take is more outdated than your references.",
-                                "Society isn't the problem... you are."
-                            ]
-                        },
-                        {
-                            method: "Perspective Invalidation",
-                            templates: [
-                                "Tell me you don't go outside without telling me.",
-                                "Your worldview is smaller than your social circle.",
-                                "Chronically online takes are not real life."
-                            ]
-                        },
-                        {
-                            method: "Relevance Questioning",
-                            templates: [
-                                "Your opinion on society matters because...?",
-                                "Who elected you spokesperson for humanity?",
-                                "This take is giving 'lives in mom's basement' vibes."
-                            ]
-                        }
-                    ],
-                    general: [
-                        {
-                            method: "Existential Dismissal",
-                            templates: [
-                                "You're the human equivalent of a typo.",
-                                "Your existence is a participation trophy nobody wanted.",
-                                "The universe's biggest plot hole is you."
-                            ]
-                        },
-                        {
-                            method: "Intellectual Destruction",
-                            templates: [
-                                "Your IQ is room temperature... in Celsius.",
-                                "Brain cells are apparently optional for you.",
-                                "The gap between you and logic is unbridgeable."
-                            ]
-                        },
-                        {
-                            method: "Social Annihilation",
-                            templates: [
-                                "You're why aliens won't visit Earth.",
-                                "Your personality is a crime against humanity.",
-                                "Nobody would notice if you logged off forever."
-                            ]
-                        }
-                    ]
-                };
-
-                const strategies = responseStrategies[contextType] || responseStrategies.general;
-                
-                // Randomly select 3 different strategies
-                const shuffledStrategies = [...strategies].sort(() => Math.random() - 0.5);
-                const selectedStrategies = shuffledStrategies.slice(0, 3);
-
-                return selectedStrategies.map(strategy => ({
-                    method: strategy.method,
-                    response: strategy.templates[Math.floor(Math.random() * strategy.templates.length)]
-                }));
+            updateUIForAuthentication(username) {
+                this.loginBtn.classList.add('hidden');
+                this.userInfo.classList.remove('hidden');
+                this.userName.textContent = username;
             }
 
-            async generateResponses() {
-                const context = this.contextInput.value.trim();
-                if (!context) {
-                    this.showToast('Please enter some context first.', 'error');
-                    return;
-                }
+            showLoginButton() {
+                this.loginBtn.classList.remove('hidden');
+                this.userInfo.classList.add('hidden');
+                this.resetLoginButton();
+            }
 
+            resetLoginButton() {
+                this.loginBtn.disabled = false;
+                this.loginBtn.textContent = 'Connect';
+            }
+
+            getRandomRoasts(count = 5) {
+                const shuffled = [...this.toxicRoasts].sort(() => Math.random() - 0.5);
+                return shuffled.slice(0, count);
+            }
+
+            async generateRoasts() {
                 this.setLoadingState(true);
 
                 try {
-                    // Simulate processing time for more realistic feel
+                    // Simulate processing time
                     await new Promise(resolve => setTimeout(resolve, 1500));
                     
-                    const contextType = this.analyzeContext(context);
-                    const responses = this.generateContextualResponses(context, contextType);
-                    
-                    this.displayResults(responses);
-                    this.showToast('Responses generated successfully!', 'success');
+                    const roasts = this.getRandomRoasts(5);
+                    this.displayResults(roasts);
+                    this.showToast('Toxic roasts generated!', 'success');
                     
                 } catch (error) {
                     console.error('Generation error:', error);
-                    this.showToast('Failed to generate responses. Please try again.', 'error');
+                    this.showToast('Failed to generate roasts. Try again.', 'error');
                 } finally {
                     this.setLoadingState(false);
                 }
             }
 
-            displayResults(responses) {
+            displayResults(roasts) {
                 this.resultsGrid.innerHTML = '';
                 
-                responses.forEach((response, index) => {
+                roasts.forEach((roast, index) => {
                     const card = document.createElement('div');
                     card.className = 'result-card';
                     card.style.animationDelay = `${index * 100}ms`;
                     
                     card.innerHTML = `
-                        <div class="method-tag">${response.method}</div>
-                        <div class="response-text">${response.response}</div>
-                        <button class="copy-btn">Copy Response</button>
+                        <div class="roast-number">Roast #${index + 1}</div>
+                        <div class="roast-text">${roast}</div>
+                        <button class="copy-btn">Copy Roast</button>
                     `;
                     
                     this.resultsGrid.appendChild(card);
@@ -797,26 +666,24 @@
 
                 this.resultsContainer.classList.remove('hidden');
                 
-                // Smooth scroll to results
                 setTimeout(() => {
                     this.resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 200);
             }
 
-            async copyResponse(text, button) {
+            async copyRoast(text, button) {
                 try {
                     await navigator.clipboard.writeText(text);
                     button.textContent = '✓ Copied!';
                     button.classList.add('copied');
                     
                     setTimeout(() => {
-                        button.textContent = 'Copy Response';
+                        button.textContent = 'Copy Roast';
                         button.classList.remove('copied');
                     }, 2000);
                     
                     this.showToast('Copied to clipboard!', 'success');
                 } catch (error) {
-                    // Fallback for older browsers
                     const textArea = document.createElement('textarea');
                     textArea.value = text;
                     document.body.appendChild(textArea);
@@ -833,7 +700,7 @@
                     this.btnText.classList.add('hidden');
                     this.btnLoader.classList.remove('hidden');
                 } else {
-                    this.generateBtn.disabled = !this.contextInput.value.trim();
+                    this.generateBtn.disabled = false;
                     this.btnText.classList.remove('hidden');
                     this.btnLoader.classList.add('hidden');
                 }
@@ -849,9 +716,8 @@
             }
         }
 
-        // Initialize the application
         document.addEventListener('DOMContentLoaded', () => {
-            new RageBaiter();
+            new MasterBaiter();
         });
     </script>
 </body>
