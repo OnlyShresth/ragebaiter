@@ -393,7 +393,6 @@
     <script>
         class MasterBaiter {
             constructor() {
-                this.puterClient = null;
                 this.isAuthenticated = false;
                 this.userName = '';
                 this.sessionId = Date.now();
@@ -407,7 +406,7 @@
                 this.loginBtn = document.getElementById('loginBtn');
                 this.logoutBtn = document.getElementById('logoutBtn');
                 this.userInfo = document.getElementById('userInfo');
-                this.userName = document.getElementById('userName');
+                this.userNameElement = document.getElementById('userName');
                 this.generateBtn = document.getElementById('generateBtn');
                 this.resultsContainer = document.getElementById('resultsContainer');
                 this.resultsGrid = document.getElementById('resultsGrid');
@@ -434,20 +433,12 @@
                     this.loginBtn.disabled = true;
                     this.loginBtn.textContent = 'Connecting...';
 
-                    if (typeof puter === 'undefined') {
-                        throw new Error('Connection service unavailable');
-                    }
-
                     const user = await puter.auth.signIn();
                     
                     if (user) {
                         this.isAuthenticated = true;
-                        this.puterClient = puter;
-                        
                         this.updateUIForAuthentication(user.username);
                         this.showToast('Connected successfully!', 'success');
-                    } else {
-                        throw new Error('No user returned');
                     }
                 } catch (error) {
                     console.error('Login error:', error);
@@ -458,18 +449,13 @@
 
             async handleLogout() {
                 try {
-                    if (this.puterClient && typeof this.puterClient.auth?.signOut === 'function') {
-                        await this.puterClient.auth.signOut();
-                    }
-                    
+                    await puter.auth.signOut();
                     this.isAuthenticated = false;
-                    this.puterClient = null;
                     this.showLoginButton();
                     this.showToast('Logged out!', 'success');
                 } catch (error) {
                     console.error('Logout error:', error);
                     this.isAuthenticated = false;
-                    this.puterClient = null;
                     this.showLoginButton();
                     this.showToast('Logged out!', 'success');
                 }
@@ -478,7 +464,7 @@
             updateUIForAuthentication(username) {
                 this.loginBtn.classList.add('hidden');
                 this.userInfo.classList.remove('hidden');
-                this.userName.textContent = username;
+                this.userNameElement.textContent = username;
                 this.generateBtn.disabled = false;
             }
 
@@ -494,25 +480,22 @@
                 this.loginBtn.textContent = 'Connect';
             }
 
-            // COMPLETELY FIXED: Proper AI response parsing for all response formats
             parseAIResponse(aiResponse) {
                 console.log('AI raw response:', aiResponse);
                 
                 let content = '';
                 
                 // Handle different response formats from Puter AI
-                if (aiResponse && aiResponse.message) {
-                    if (aiResponse.message.content) {
-                        if (Array.isArray(aiResponse.message.content)) {
-                            // Claude format: [{type: 'text', text: '...'}]
-                            content = aiResponse.message.content[0].text;
-                        } else {
-                            // OpenAI format: "string content"
-                            content = aiResponse.message.content;
-                        }
-                    }
-                } else if (typeof aiResponse === 'string') {
+                if (typeof aiResponse === 'string') {
                     content = aiResponse;
+                } else if (aiResponse && aiResponse.message) {
+                    if (Array.isArray(aiResponse.message.content)) {
+                        // Claude format: [{type: 'text', text: '...'}]
+                        content = aiResponse.message.content[0].text;
+                    } else {
+                        // OpenAI format: "string content"
+                        content = aiResponse.message.content;
+                    }
                 } else if (aiResponse && aiResponse.content) {
                     content = aiResponse.content;
                 } else {
@@ -616,52 +599,29 @@
                 try {
                     let roasts = [];
                     
-                    if (this.puterClient && typeof this.puterClient.ai?.chat === 'function') {
-                        try {
-                            const prompt = this.generateVarietyPrompt();
-                            
-                            console.log('Sending variety prompt to AI...');
-                            
-                            // FIXED: Use the best model with proper timeout
-                            const timeoutPromise = new Promise((_, reject) => 
-                                setTimeout(() => reject(new Error('Request timeout after 25 seconds')), 25000)
-                            );
-                            
-                            const aiResponse = await Promise.race([
-                                this.puterClient.ai.chat(prompt, { 
-                                    model: 'gpt-4o' // ⭐ Best speed vs quality ratio
-                                }),
-                                timeoutPromise
-                            ]);
-                            
-                            console.log('AI Response received:', aiResponse);
-                            
-                            roasts = this.parseAIResponse(aiResponse);
-                            
-                            if (!roasts || roasts.length === 0) {
-                                throw new Error('Failed to extract roasts from AI response');
-                            }
-                            
-                            roasts = roasts.slice(0, 5);
-                            
-                        } catch (aiError) {
-                            console.error('AI generation failed:', aiError);
-                            
-                            // Handle different error types
-                            if (aiError.message.includes('timeout')) {
-                                this.showToast('Request timed out. Using offline mode.', 'error');
-                            } else if (aiError.message.includes('auth') || aiError.message.includes('token')) {
-                                localStorage.removeItem('masterbaiter_auth');
-                                this.showToast('Authentication expired. Please reconnect.', 'error');
-                                this.showLoginButton();
-                            } else {
-                                this.showToast('AI service error. Using offline mode.', 'error');
-                            }
-                            
-                            throw aiError;
+                    try {
+                        const prompt = this.generateVarietyPrompt();
+                        
+                        console.log('Sending request to GPT-4o-mini...');
+                        
+                        // Use GPT-4o-mini only as requested
+                        const aiResponse = await puter.ai.chat(prompt, { 
+                            model: 'gpt-4o-mini'
+                        });
+                        
+                        console.log('AI Response received:', aiResponse);
+                        
+                        roasts = this.parseAIResponse(aiResponse);
+                        
+                        if (!roasts || roasts.length === 0) {
+                            throw new Error('Failed to extract roasts from AI response');
                         }
-                    } else {
-                        throw new Error('AI service unavailable');
+                        
+                        roasts = roasts.slice(0, 5);
+                        
+                    } catch (aiError) {
+                        console.error('AI generation failed:', aiError);
+                        throw aiError;
                     }
                     
                     this.displayResults(roasts);
@@ -671,7 +631,7 @@
                     console.error('Generation error:', error);
                     const fallbackRoasts = this.getFallbackRoastsWithVariety();
                     this.displayResults(fallbackRoasts);
-                    this.showToast('Using offline roasts', 'error');
+                    this.showToast('AI unavailable. Using offline roasts.', 'error');
                 } finally {
                     this.setLoadingState(false);
                 }
@@ -771,19 +731,25 @@
             }
 
             showToast(message, type) {
-                this.toast.textContent = message;
-                this.toast.className = 'toast ' + type + ' show';
-                this.toast.style.display = 'block';
-                this.toast.style.opacity = '1';
-
+                // Clear any existing toasts
+                this.toast.classList.remove('show');
+                this.toast.style.opacity = '0';
+                
                 setTimeout(() => {
-                    this.toast.classList.remove('show');
-                    this.toast.style.opacity = '0';
-                    
+                    this.toast.textContent = message;
+                    this.toast.className = 'toast ' + type + ' show';
+                    this.toast.style.display = 'block';
+                    this.toast.style.opacity = '1';
+
                     setTimeout(() => {
-                        this.toast.style.display = 'none';
-                    }, 300);
-                }, 3000);
+                        this.toast.classList.remove('show');
+                        this.toast.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            this.toast.style.display = 'none';
+                        }, 300);
+                    }, 3000);
+                }, 100);
             }
         }
 
