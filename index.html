@@ -6,7 +6,7 @@
     <title>Master Baiter</title>
     <script src="https://js.puter.com/v2/"></script>
     <style>
-        /* [Keep all your existing CSS styles] */
+        /* [Keep all your existing CSS - same as before] */
         * {
             margin: 0;
             padding: 0;
@@ -519,7 +519,7 @@
                 this.setLoading(true);
                 this.state.count++;
                 
-                // 🔥 ENHANCED: Multiple AI strategies with retries
+                // 🔥 FIXED: Try multiple working models with proper response parsing
                 this.tryAIGeneration();
             },
             
@@ -532,44 +532,54 @@
                     return;
                 }
                 
-                // Try multiple AI strategies with different timeouts
+                // ✅ FIXED: Use WORKING models instead of buggy gpt-5-nano
                 var strategies = [
-                    { prompt: this.buildSimplePrompt(), timeout: 60000, model: 'gpt-5-nano' }, // 60 seconds, simple prompt
-                    { prompt: this.buildShortPrompt(), timeout: 45000, model: 'gpt-5-nano' },  // 45 seconds, shorter prompt
-                    { prompt: this.buildMinimalPrompt(), timeout: 30000, model: 'gpt-5-nano' } // 30 seconds, minimal prompt
+                    { model: 'claude-sonnet-4', timeout: 30000 },       // Most reliable
+                    { model: 'gpt-4o-mini', timeout: 25000 },           // Fast OpenAI
+                    { model: 'claude-haiku-3', timeout: 20000 },        // Fastest Claude
+                    { model: 'gpt-4', timeout: 35000 }                  // Fallback OpenAI
                 ];
                 
                 var currentStrategy = strategies[this.state.retryCount % strategies.length];
+                var prompt = this.buildOptimizedPrompt();
                 
-                console.log('AI Strategy', this.state.retryCount + 1, '- Timeout:', currentStrategy.timeout/1000 + 's, Prompt length:', currentStrategy.prompt.length);
+                console.log('AI Strategy', this.state.retryCount + 1, '- Model:', currentStrategy.model, ', Timeout:', currentStrategy.timeout/1000 + 's');
                 
                 var timeoutId = setTimeout(function() {
-                    console.log('AI request timed out after', currentStrategy.timeout/1000, 'seconds');
+                    console.log('AI request timed out for model:', currentStrategy.model);
                     self.retryOrFallback();
                 }, currentStrategy.timeout);
                 
-                // Try the AI request with current strategy
-                puter.ai.chat(currentStrategy.prompt, { 
+                // ✅ FIXED: Use minimal compatible options (no temperature for problematic models)
+                var options = { 
                     model: currentStrategy.model,
-                    temperature: 0.7,
-                    max_tokens: 300
-                }).then(function(response) {
+                    max_tokens: 500
+                };
+                
+                // Only add temperature for models that support it
+                if (currentStrategy.model.indexOf('claude') !== -1 || currentStrategy.model.indexOf('gpt-4') !== -1) {
+                    options.temperature = 0.8;
+                }
+                
+                puter.ai.chat(prompt, options).then(function(response) {
                     clearTimeout(timeoutId);
-                    console.log('AI response received:', response);
+                    console.log('✅ AI Success! Model:', currentStrategy.model, ', Response type:', typeof response);
+                    console.log('Raw AI response:', response);
                     
-                    var roasts = self.parseEnhancedResponse(response);
+                    // ✅ FIXED: Proper response parsing for PuterJS format
+                    var roasts = self.parseCorrectResponse(response);
                     if (roasts && roasts.length >= 5) {
                         self.showRoasts(roasts.slice(0, 5));
-                        self.notify('🔥 AI Success! Strategy ' + (self.state.retryCount + 1) + ' worked! Set #' + self.state.count, 'success');
-                        self.state.retryCount = 0; // Reset retry count on success
+                        self.notify('🔥 AI Success with ' + currentStrategy.model + '! Set #' + self.state.count, 'success');
+                        self.state.retryCount = 0; // Reset on success
                     } else {
-                        console.log('AI response parsing failed');
+                        console.log('Response parsing failed for model:', currentStrategy.model);
                         self.retryOrFallback();
                     }
                     self.setLoading(false);
                 }).catch(function(error) {
                     clearTimeout(timeoutId);
-                    console.error('AI error:', error);
+                    console.error('AI error with model', currentStrategy.model + ':', error);
                     self.retryOrFallback();
                 });
             },
@@ -577,61 +587,76 @@
             retryOrFallback: function() {
                 this.state.retryCount++;
                 
-                if (this.state.retryCount < 3) {
-                    console.log('Retrying with strategy', this.state.retryCount + 1);
-                    this.notify('AI attempt ' + this.state.retryCount + ' failed, trying strategy ' + (this.state.retryCount + 1) + '...', 'error');
+                if (this.state.retryCount < 4) { // Try 4 different models
+                    console.log('Retrying with different model...');
+                    this.notify('Trying different AI model...', 'error');
                     
                     var self = this;
                     setTimeout(function() {
                         self.tryAIGeneration();
-                    }, 2000); // Wait 2 seconds before retry
+                    }, 1000); // Quick retry
                 } else {
-                    console.log('All AI strategies failed, using fallbacks');
-                    this.useFallbacks('All AI strategies failed');
+                    console.log('All AI models failed, using fallbacks');
+                    this.useFallbacks('All AI models failed');
                     this.state.retryCount = 0; // Reset for next time
                 }
             },
             
-            // 🔥 ENHANCED: Multiple prompt strategies
-            buildSimplePrompt: function() {
-                return 'Write 5 brutal roasts about social failures. Each 25-35 words. Include Gen Z slang like "no cap", "fr", "deadass". Be savage but funny. Format as:\n1.\n2.\n3.\n4.\n5.';
+            buildOptimizedPrompt: function() {
+                // ✅ FIXED: Simple, reliable prompt that works across models
+                return 'Write 5 savage roasts about social failures. Each should be 25-35 words and include modern slang like "no cap", "fr", "deadass". Make them brutal but funny. Format as a numbered list:\n1.\n2.\n3.\n4.\n5.';
             },
             
-            buildShortPrompt: function() {
-                return 'Create 5 savage roasts (25-35 words each) with slang. Format:\n1.\n2.\n3.\n4.\n5.';
-            },
-            
-            buildMinimalPrompt: function() {
-                return '5 brutal roasts, 25-35 words each:\n1.\n2.\n3.\n4.\n5.';
-            },
-            
-            useFallbacks: function(reason) {
-                console.log('Using fallbacks due to:', reason);
-                var fallbacks = this.getBrutalFallbacks();
-                this.showRoasts(fallbacks);
-                this.notify(reason + ' - brutal fallbacks loaded! Set #' + this.state.count, 'error');
-                this.setLoading(false);
-            },
-            
-            parseEnhancedResponse: function(response) {
+            // ✅ FIXED: Correct response parsing for PuterJS format
+            parseCorrectResponse: function(response) {
                 var content = '';
                 
+                console.log('Parsing response of type:', typeof response);
+                
+                // Handle different PuterJS response formats
                 if (typeof response === 'string') {
                     content = response;
-                } else if (response && response.message && response.message.content) {
+                } 
+                // New PuterJS format with nested structure
+                else if (response && response.output && Array.isArray(response.output)) {
+                    var messageOutput = response.output.find(function(item) {
+                        return item.type === 'message';
+                    });
+                    if (messageOutput && messageOutput.content && Array.isArray(messageOutput.content)) {
+                        var textContent = messageOutput.content.find(function(item) {
+                            return item.type === 'output_text';
+                        });
+                        if (textContent && textContent.text) {
+                            content = textContent.text;
+                        }
+                    }
+                }
+                // Legacy format
+                else if (response && response.message && response.message.content) {
                     content = response.message.content;
-                } else if (response && response.content) {
+                } 
+                else if (response && response.content) {
                     content = response.content;
-                } else if (response && response.text) {
+                } 
+                else if (response && response.text) {
                     content = response.text;
-                } else if (response && response.response) {
-                    content = response.response;
-                } else {
-                    console.log('Unknown response format:', response);
+                }
+                // Direct message response
+                else if (response && typeof response.message === 'string') {
+                    content = response.message;
+                }
+                else {
+                    console.log('Unknown response format, trying JSON stringify');
                     content = JSON.stringify(response);
                 }
                 
-                console.log('Parsing content:', content.substring(0, 200) + '...');
+                console.log('Extracted content:', content.substring(0, 300) + '...');
+                
+                // Don't process lorem ipsum responses
+                if (content.toLowerCase().indexOf('lorem ipsum') !== -1) {
+                    console.log('Detected lorem ipsum response, rejecting');
+                    return null;
+                }
                 
                 var roasts = [];
                 var lines = content.split('\n');
@@ -640,14 +665,22 @@
                     var line = lines[i].trim();
                     if (/^\d+[\.\)]\s+/.test(line)) {
                         var roast = line.replace(/^\d+[\.\)]\s+/, '').trim();
-                        if (roast.length > 10) {
+                        if (roast.length > 15 && roast.length < 200) { // Reasonable length check
                             roasts.push(roast);
                         }
                     }
                 }
                 
-                console.log('Parsed roasts count:', roasts.length);
+                console.log('Successfully parsed', roasts.length, 'roasts');
                 return roasts.length >= 5 ? roasts : null;
+            },
+            
+            useFallbacks: function(reason) {
+                console.log('Using fallbacks due to:', reason);
+                var fallbacks = this.getBrutalFallbacks();
+                this.showRoasts(fallbacks);
+                this.notify(reason + ' - brutal fallbacks loaded! Set #' + this.state.count, 'error');
+                this.setLoading(false);
             },
             
             getBrutalFallbacks: function() {
@@ -798,7 +831,7 @@
                 this.notifyTimeout = setTimeout(function() {
                     self.el.toast.classList.remove('show');
                     self.notifyTimeout = null;
-                }, 5000);
+                }, 4000);
             }
         };
         
