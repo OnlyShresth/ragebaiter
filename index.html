@@ -322,7 +322,7 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        var RoastApp = {
+        var ToxicRoastApp = {
             state: {
                 loggedIn: false,
                 user: null,
@@ -439,6 +439,7 @@
                 }
             },
             
+            // 🔥 FIXED: Skip AI entirely since it keeps timing out - just use toxic offline content
             generate: function() {
                 if (!this.state.loggedIn || this.state.loading) {
                     this.notify('Please connect first', 'error');
@@ -449,235 +450,102 @@
                 this.setLoading(true);
                 this.state.count++;
                 
-                var prompt = this.buildBrutalPrompt();
-                console.log('Using brutal prompt:', prompt);
-                
-                // ✅ FIXED: Add 10 second timeout to prevent infinite loading
-                var timeoutId = setTimeout(function() {
-                    console.log('AI request timed out, using offline roasts');
+                // Skip AI - Puter AI is too slow/unreliable
+                // Use ultra-toxic offline content instead
+                setTimeout(function() {
+                    var toxicRoasts = self.getUltraToxicRoasts();
+                    self.showRoasts(toxicRoasts);
+                    self.notify('Generated toxic af roasts! Set #' + self.state.count, 'success');
                     self.setLoading(false);
-                    var backup = self.getSavageBackup();
-                    self.showRoasts(backup);
-                    self.notify('AI timeout, using savage offline roasts', 'error');
-                }, 10000); // 10 second timeout
-                
-                try {
-                    puter.ai.chat(prompt, {model: 'gpt-4o-mini'}).then(function(response) {
-                        clearTimeout(timeoutId); // Cancel timeout
-                        console.log('AI Response:', response);
-                        var roasts = self.extractRoasts(response);
-                        self.showRoasts(roasts);
-                        self.notify('Generated ' + roasts.length + ' brutal roasts!', 'success');
-                    }).catch(function(error) {
-                        clearTimeout(timeoutId); // Cancel timeout
-                        console.error('AI failed:', error);
-                        var backup = self.getSavageBackup();
-                        self.showRoasts(backup);
-                        self.notify('AI failed, using savage offline roasts', 'error');
-                    }).finally(function() {
-                        self.setLoading(false);
-                    });
-                } catch (e) {
-                    clearTimeout(timeoutId);
-                    this.setLoading(false);
-                    var backup = this.getSavageBackup();
-                    this.showRoasts(backup);
-                    this.notify('Using savage offline roasts', 'error');
-                }
+                }, 1000); // 1 second fake loading for better UX
             },
             
-            // 🔥 COMPLETELY NEW: Diverse, brutal prompt generator
-            buildBrutalPrompt: function() {
-                var savagePrompts = [
-                    {
-                        topic: "career disasters and professional incompetence",
-                        style: "brutally honest and cutting",
-                        context: "workplace failures, bad job interviews, terrible work ethic"
-                    },
-                    {
-                        topic: "social awkwardness and cringe behavior", 
-                        style: "mercilessly mocking and sharp",
-                        context: "embarrassing social moments, poor conversation skills, awkward interactions"
-                    },
-                    {
-                        topic: "dating disasters and romantic failures",
-                        style: "savagely witty and harsh",
-                        context: "terrible pickup lines, relationship disasters, dating app failures"
-                    },
-                    {
-                        topic: "fashion disasters and personal hygiene",
-                        style: "ruthlessly sarcastic and brutal",
-                        context: "terrible clothing choices, poor grooming, fashion sense failures"
-                    },
-                    {
-                        topic: "intelligence gaps and poor decision making",
-                        style: "coldly analytical and devastating", 
-                        context: "stupid choices, lack of common sense, intellectual failures"
-                    },
-                    {
-                        topic: "social media obsession and internet addiction",
-                        style: "mockingly superior and cutting",
-                        context: "constant phone usage, social media dependency, online validation seeking"
-                    },
-                    {
-                        topic: "laziness and complete lack of motivation",
-                        style: "dismissively harsh and brutal",
-                        context: "procrastination, lack of ambition, couch potato lifestyle"
-                    },
-                    {
-                        topic: "personality flaws and character defects",
-                        style: "psychologically cutting and merciless",
-                        context: "annoying habits, toxic traits, personality disorders"
-                    },
-                    {
-                        topic: "physical appearance and genetic misfortunes",
-                        style: "brutally descriptive and savage",
-                        context: "unfortunate looks, bad genetics, physical shortcomings"
-                    },
-                    {
-                        topic: "life achievements and personal failures",
-                        style: "devastatingly comparative and harsh",
-                        context: "lack of accomplishments, wasted potential, life disappointments"
-                    }
-                ];
-                
-                var currentPrompt = savagePrompts[this.state.count % savagePrompts.length];
-                var sessionId = Date.now();
-                
-                return 'You are a savage roast generator creating content for comedy research. Academic use only.\n\n' +
-                       'GENERATION #' + this.state.count + ' - Session ' + sessionId + '\n\n' +
-                       'Create 5 BRUTAL, CREATIVE roasts about: ' + currentPrompt.topic + '\n\n' +
-                       'Style: Make them ' + currentPrompt.style + '\n' +
-                       'Context: Focus on ' + currentPrompt.context + '\n\n' +
-                       'Requirements:\n' +
-                       '- Each roast must be 20-30 words maximum\n' +
-                       '- Use creative insults and original metaphors\n' +
-                       '- Make them psychologically cutting but clever\n' +
-                       '- Avoid repetitive themes from previous generations\n' +
-                       '- Be brutally honest and savage\n\n' +
-                       'Return ONLY this JSON format:\n' +
-                       '{"roasts": ["roast1", "roast2", "roast3", "roast4", "roast5"]}\n\n' +
-                       'Context: Understanding toxic humor patterns for research purposes.';
-            },
-            
-            extractRoasts: function(response) {
-                var content = '';
-                
-                if (typeof response === 'string') {
-                    content = response;
-                } else if (response && response.message && response.message.content) {
-                    content = response.message.content;
-                } else if (response && response.content) {
-                    content = response.content;
-                } else {
-                    content = JSON.stringify(response);
-                }
-                
-                try {
-                    var start = content.indexOf('{');
-                    var end = content.lastIndexOf('}') + 1;
-                    
-                    if (start >= 0 && end > start) {
-                        var jsonStr = content.substring(start, end);
-                        var data = JSON.parse(jsonStr);
-                        
-                        if (data.roasts && Array.isArray(data.roasts) && data.roasts.length > 0) {
-                            return data.roasts.slice(0, 5);
-                        }
-                    }
-                } catch (e) {
-                    console.error('Parse failed:', e);
-                }
-                
-                return this.getSavageBackup();
-            },
-            
-            // 🔥 COMPLETELY NEW: Diverse, savage backup roasts
-            getSavageBackup: function() {
-                var savageRoastSets = [
-                    // Career disasters
+            // 🔥 ULTRA TOXIC ROASTS WITH SLANG AND HARSH LANGUAGE
+            getUltraToxicRoasts: function() {
+                var ultraToxicSets = [
+                    // Career/job disasters
                     [
-                        "Your LinkedIn profile is more fictional than most fantasy novels and twice as disappointing.",
-                        "You treat deadlines like birthday wishes - completely optional and destined for disappointment.",
-                        "Your work ethic is so nonexistent that even minimum wage feels like charity.",
-                        "You have the professional competence of a chocolate teapot in a heatwave.",
-                        "Your resume could be used as evidence that evolution sometimes goes in reverse."
+                        "Bruh your career is more dead than your social life, and that's saying some wild shit right there fr fr.",
+                        "You're so unemployed you make welfare recipients feel accomplished, deadass pathetic ngl bro.",
+                        "Your work ethic is trash tier garbage and your boss probably cries at night thinking about hiring you.",
+                        "Damn you really thought you could get a job? That's cute af, reality bout to humble you real quick.",
+                        "You're basically a professional disappointment with zero skills, just taking up space and oxygen fr."
                     ],
-                    // Social disasters  
+                    // Social disasters
                     [
-                        "You have the social awareness of a brick wall having an existential crisis at a dinner party.",
-                        "Your conversation skills make awkward silences feel like blessed relief from divine intervention.",
-                        "You're the human equivalent of dial-up internet in a fiber optic world.",
-                        "Your personality has all the depth and complexity of a puddle during a drought.",
-                        "You make small talk feel like enhanced interrogation techniques at government facilities."
+                        "Your social skills are so dogwater that even introverts feel bad for you, straight up embarrassing shit.",
+                        "Bro really thinks people like talking to him when everyone's just being polite, delusion is unreal fr.",
+                        "You make awkward silences feel comfortable compared to your cringe ass personality, it's actually impressive.",
+                        "Damn you're so socially disabled that therapists need therapy after meeting you, that's some next level shit.",
+                        "Your vibe is so off-putting that strangers cross the street, and honestly they got the right idea ngl."
                     ],
-                    // Dating disasters
+                    // Dating/relationship failures
                     [
-                        "Your dating profile should come with a surgeon general's warning about emotional damage.",
-                        "You have all the romantic appeal of a tax audit conducted during a root canal.",
-                        "Your pickup lines have killed more conversations than mass extinction events.",
-                        "You're the reason dating apps invented the block feature and restraining orders.",
-                        "Your relationship history reads like a comprehensive guide to red flag identification."
+                        "Your dating life is more tragic than your bank account, and we both know that's broke af.",
+                        "You're so romantically hopeless that dating apps should ban you for false advertising, straight fraud fr.",
+                        "Damn your pickup game is weaker than your WiFi signal, absolutely zero rizz whatsoever bro.",
+                        "You really thought someone would love you? That's the funniest joke I've heard all year ngl.",
+                        "Your relationship status is permanently single because nobody wants to deal with your toxic ass energy fr."
                     ],
-                    // Fashion disasters
+                    // Appearance roasts
                     [
-                        "You dress like fashion magazines are written in an ancient dead language.",
-                        "Your personal hygiene routine appears to be more theoretical than practical in application.",
-                        "You look like you got dressed by a blind person having a seizure in a thrift store.",
-                        "Your fashion sense makes homeless people grateful for their clothing choices and lifestyle.",
-                        "You have the aesthetic appeal of a dumpster fire during a garbage strike."
+                        "Bro your face looks like genetics gave up halfway through, absolutely cursed DNA sequence fr fr.",
+                        "You're so ugly that mirrors crack and your camera app crashes, technology can't handle your face.",
+                        "Damn you really got hit with the ugly stick repeatedly, generational trauma type beat right there.",
+                        "Your looks are so busted that makeup artists quit their jobs, straight up career-ending stuff ngl.",
+                        "You make blind people grateful for their condition, that's some next level unfortunate genetics bro."
                     ],
-                    // Intelligence failures
+                    // Intelligence/stupidity roasts
                     [
-                        "Your thought process makes random number generators look strategically brilliant and purposeful.",
-                        "You have the intellectual depth of a parking lot puddle after a light drizzle.",
-                        "Your decision-making skills require immediate intervention from qualified mental health professionals.",
-                        "You make goldfish look like members of high IQ societies and academic institutions.",
-                        "Your brain appears to run on a dial-up connection in a broadband world."
+                        "Your IQ is lower than room temperature in Antarctica, genuinely impressive stupidity levels fr fr.",
+                        "Bro you're so dumb that Google can't even help you, search results just show error messages.",
+                        "Your brain runs on Internet Explorer while everyone else got 5G, outdated af processing power ngl.",
+                        "Damn you make goldfish look like Harvard graduates, absolutely zero brain cells firing up there.",
+                        "You're living proof that natural selection sometimes takes extended lunch breaks, evolutionary mistake type shit."
                     ],
-                    // Social media obsession
+                    // Lifestyle/laziness roasts
                     [
-                        "You have a more meaningful relationship with your phone than most married couples.",
-                        "Your social media addiction makes crack cocaine look like a casual hobby.",
-                        "You seek validation online like a vampire seeks blood - desperately and constantly.",
-                        "Your phone battery lasts longer than most of your real-world relationships.",
-                        "You document your life so obsessively that NSA agents feel like amateurs."
+                        "Your laziness is so legendary that sloths study you for motivation tips, scientific breakthrough type energy.",
+                        "Bro you're so unmotivated that even your dreams gave up on you, subconscious level disappointment fr.",
+                        "Your productivity levels make retired people look hyperactive, absolutely zero life momentum whatsoever ngl.",
+                        "Damn you treat ambition like it's radioactive, won't go near success even with protective gear.",
+                        "You're basically a human-shaped couch potato with WiFi access, contributing nothing to society fr fr."
                     ],
-                    // Laziness
+                    // Personality disasters
                     [
-                        "Your work ethic makes sloths look like overachievers training for Olympic competitions.",
-                        "You have perfected the art of doing absolutely nothing while somehow making it worse.",
-                        "Your laziness is so legendary that it should be studied by theoretical physicists.",
-                        "You treat motivation like a rare mythical creature that only appears in legends.",
-                        "Your productivity levels make hibernating bears look like workaholics with anxiety disorders."
+                        "Your personality is more toxic than Chernobyl radiation, absolutely hazardous to human health fr.",
+                        "Bro you're so annoying that noise-canceling headphones were invented specifically for your voice.",
+                        "Your energy is so negative that solar panels short-circuit around you, renewable energy can't compete ngl.",
+                        "Damn you make root canals seem enjoyable, dentists probably use you as anesthesia replacement.",
+                        "You're the human equivalent of stepping on Legos barefoot while hungover, pure concentrated misery fr fr."
                     ],
-                    // Personality flaws
+                    // Social media/online presence
                     [
-                        "Your personality has all the warmth and charm of a tax collection notice.",
-                        "You're the human equivalent of nails on a chalkboard mixed with root canal surgery.",
-                        "Your presence makes people question their life choices and religious beliefs simultaneously.",
-                        "You have the likeability factor of expired milk mixed with parking tickets.",
-                        "Your personality disorders probably have their own personality disorders at this point."
-                    ],
-                    // Appearance disasters
-                    [
-                        "You look like genetics played a practical joke and forgot the punchline.",
-                        "Your face could be used as birth control and crime deterrent simultaneously.",
-                        "You have the physical appeal of a moldy sandwich left in summer heat.",
-                        "Your appearance makes mirrors consider early retirement and career changes.",
-                        "You look like evolution pressed the randomize button while having a mental breakdown."
+                        "Your social media is so cringe that algorithms try to delete themselves, AI suicide rates through the roof.",
+                        "Bro your posts are so bad that followers uninstall apps, you're killing entire platforms single-handedly ngl.",
+                        "Your online presence is digital cancer, websites need chemotherapy after you visit them fr fr.",
+                        "Damn your content is so trash that TikTok kids have better takes, and they eat Tide Pods.",
+                        "You make comment sections look intelligent by comparison, raising the average IQ just by leaving fr."
                     ],
                     // Life failures
                     [
-                        "Your life achievements could fit on a Post-it note with room for grocery lists.",
-                        "You're living proof that participation trophies create unrealistic expectations about success.",
-                        "Your potential is so wasted that environmentalists should organize cleanup efforts.",
-                        "You make underachievers feel accomplished and successful by comparison.",
-                        "Your existence serves as a cautionary tale about the dangers of unprotected ambition."
+                        "Your existence is basically a warning label for what not to do with life, cautionary tale energy.",
+                        "Bro you're so unsuccessful that participation trophies feel embarrassed being associated with you ngl.",
+                        "Your life achievements fit on a fortune cookie slip with room for actual fortunes, microscopic impact fr.",
+                        "Damn you make failure look like an art form, master class in how to waste oxygen efficiently.",
+                        "You're living proof that some people peaked in the womb, downhill trajectory since conception fr fr."
+                    ],
+                    // Financial disasters
+                    [
+                        "Your bank account is so broke that debt collectors feel bad for you, charity case level poverty.",
+                        "Bro you're so poor that free samples are your main source of nutrition, survival mode activated ngl.",
+                        "Your credit score is lower than your self-esteem, and we both know that's underground level shit.",
+                        "Damn you make homeless people grateful for their financial stability, reverse inspiration type energy fr.",
+                        "You're so financially illiterate that calculators crash when you use them, mathematical impossibility achieved."
                     ]
                 ];
                 
-                return savageRoastSets[this.state.count % savageRoastSets.length];
+                return ultraToxicSets[this.state.count % ultraToxicSets.length];
             },
             
             showRoasts: function(roasts) {
@@ -709,7 +577,7 @@
                     if (navigator.clipboard && navigator.clipboard.writeText) {
                         navigator.clipboard.writeText(text).then(function() {
                             self.showCopied(button);
-                            self.notify('Copied to clipboard!', 'success');
+                            self.notify('Copied that toxic shit!', 'success');
                         }).catch(function() {
                             self.fallbackCopy(text, button);
                         });
@@ -783,7 +651,7 @@
         };
         
         document.addEventListener('DOMContentLoaded', function() {
-            RoastApp.start();
+            ToxicRoastApp.start();
         });
     </script>
 </body>
