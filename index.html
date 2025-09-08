@@ -307,11 +307,6 @@
                 padding: 40px 16px 20px;
             }
             
-            .auth-section {
-                top: 16px;
-                right: 16px;
-            }
-            
             .hero-title {
                 font-size: 2.8rem;
             }
@@ -319,20 +314,11 @@
             .generate-section {
                 padding: 30px 20px;
             }
-            
-            .generate-btn {
-                padding: 16px 30px;
-                font-size: 16px;
-            }
         }
 
         @media (max-width: 480px) {
             .hero-title {
                 font-size: 2.2rem;
-            }
-            
-            .generate-section {
-                padding: 24px 16px;
             }
         }
     </style>
@@ -373,482 +359,308 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        // Completely rewritten JavaScript with proper error handling
-        (function() {
-            'use strict';
+        var App = {
+            state: {
+                loggedIn: false,
+                user: null,
+                loading: false,
+                count: 0
+            },
             
-            // Application state
-            let appState = {
-                isAuthenticated: false,
-                currentUser: null,
-                generationCount: 0,
-                isGenerating: false
-            };
+            el: {},
             
-            // DOM elements - cached for performance
-            const elements = {
-                loginBtn: null,
-                logoutBtn: null,
-                userInfo: null,
-                userName: null,
-                generateBtn: null,
-                btnText: null,
-                btnLoader: null,
-                resultsContainer: null,
-                resultsGrid: null,
-                toast: null
-            };
+            start: function() {
+                this.getElements();
+                this.bindEvents();
+                this.checkAuth();
+            },
             
-            // Initialize DOM elements
-            function initElements() {
-                elements.loginBtn = document.getElementById('loginBtn');
-                elements.logoutBtn = document.getElementById('logoutBtn');
-                elements.userInfo = document.getElementById('userInfo');
-                elements.userName = document.getElementById('userName');
-                elements.generateBtn = document.getElementById('generateBtn');
-                elements.btnText = document.querySelector('.btn-text');
-                elements.btnLoader = document.querySelector('.btn-loader');
-                elements.resultsContainer = document.getElementById('resultsContainer');
-                elements.resultsGrid = document.getElementById('resultsGrid');
-                elements.toast = document.getElementById('toast');
+            getElements: function() {
+                this.el.loginBtn = document.getElementById('loginBtn');
+                this.el.logoutBtn = document.getElementById('logoutBtn');
+                this.el.userInfo = document.getElementById('userInfo');
+                this.el.userName = document.getElementById('userName');
+                this.el.generateBtn = document.getElementById('generateBtn');
+                this.el.btnText = document.querySelector('.btn-text');
+                this.el.btnLoader = document.querySelector('.btn-loader');
+                this.el.resultsContainer = document.getElementById('resultsContainer');
+                this.el.resultsGrid = document.getElementById('resultsGrid');
+                this.el.toast = document.getElementById('toast');
+            },
+            
+            bindEvents: function() {
+                var self = this;
                 
-                // Verify all elements exist
-                for (const [key, element] of Object.entries(elements)) {
-                    if (!element) {
-                        console.error(`Element not found: ${key}`);
+                this.el.loginBtn.onclick = function() {
+                    self.login();
+                };
+                
+                this.el.logoutBtn.onclick = function() {
+                    self.logout();
+                };
+                
+                this.el.generateBtn.onclick = function() {
+                    self.generate();
+                };
+                
+                document.onclick = function(e) {
+                    if (e.target.className.includes('copy-btn')) {
+                        var text = e.target.getAttribute('data-text');
+                        self.copyText(text, e.target);
                     }
-                }
-            }
+                };
+            },
             
-            // Toast notification system
-            function showToast(message, type = 'info') {
-                if (!elements.toast) return;
-                
-                // Clear any existing toast
-                elements.toast.classList.remove('show', 'success', 'error');
-                elements.toast.style.opacity = '0';
-                
-                setTimeout(() => {
-                    elements.toast.textContent = message;
-                    elements.toast.classList.add('show', type);
-                    elements.toast.style.opacity = '1';
-                    
-                    // Auto-hide after 4 seconds
-                    setTimeout(() => {
-                        elements.toast.classList.remove('show');
-                        elements.toast.style.opacity = '0';
-                    }, 4000);
-                }, 100);
-            }
-            
-            // Update UI based on authentication state
-            function updateAuthUI() {
-                if (appState.isAuthenticated && appState.currentUser) {
-                    elements.loginBtn.classList.add('hidden');
-                    elements.userInfo.classList.remove('hidden');
-                    elements.userName.textContent = appState.currentUser.username || 'User';
-                    elements.generateBtn.disabled = false;
-                } else {
-                    elements.loginBtn.classList.remove('hidden');
-                    elements.userInfo.classList.add('hidden');
-                    elements.generateBtn.disabled = true;
-                }
-            }
-            
-            // Reset login button state
-            function resetLoginButton() {
-                elements.loginBtn.disabled = false;
-                elements.loginBtn.textContent = 'Connect';
-            }
-            
-            // Handle authentication
-            async function handleLogin() {
+            checkAuth: function() {
                 try {
-                    elements.loginBtn.disabled = true;
-                    elements.loginBtn.textContent = 'Connecting...';
-                    
-                    console.log('Attempting to sign in...');
-                    
-                    // Use Puter.js authentication - this will handle popup automatically
-                    const result = await puter.auth.signIn();
-                    
-                    console.log('Sign in result:', result);
-                    
-                    // Get user info after successful sign in
-                    const userInfo = await puter.auth.getUser();
-                    
-                    console.log('User info:', userInfo);
-                    
-                    appState.isAuthenticated = true;
-                    appState.currentUser = userInfo;
-                    
-                    updateAuthUI();
-                    showToast('Connected successfully!', 'success');
-                    
-                } catch (error) {
-                    console.error('Login failed:', error);
-                    appState.isAuthenticated = false;
-                    appState.currentUser = null;
-                    resetLoginButton();
-                    showToast('Connection failed: ' + (error.message || 'Unknown error'), 'error');
+                    if (puter.auth.isSignedIn()) {
+                        var self = this;
+                        puter.auth.getUser().then(function(user) {
+                            self.state.loggedIn = true;
+                            self.state.user = user;
+                            self.updateUI();
+                        });
+                    }
+                } catch (e) {
+                    console.log('Auth check failed');
                 }
-            }
+            },
             
-            // Handle logout  
-            async function handleLogout() {
-                try {
-                    await puter.auth.signOut();
-                    appState.isAuthenticated = false;
-                    appState.currentUser = null;
-                    updateAuthUI();
-                    resetLoginButton();
-                    showToast('Logged out successfully', 'success');
-                } catch (error) {
-                    console.error('Logout error:', error);
-                    // Force logout even if API call fails
-                    appState.isAuthenticated = false;
-                    appState.currentUser = null;
-                    updateAuthUI();
-                    resetLoginButton();
-                    showToast('Logged out', 'success');
-                }
-            }
-            
-            // Set loading state for generate button
-            function setGeneratingState(isGenerating) {
-                appState.isGenerating = isGenerating;
+            login: function() {
+                var self = this;
+                this.el.loginBtn.disabled = true;
+                this.el.loginBtn.textContent = 'Connecting...';
                 
-                if (isGenerating) {
-                    elements.generateBtn.disabled = true;
-                    elements.btnText.classList.add('hidden');
-                    elements.btnLoader.classList.remove('hidden');
+                puter.auth.signIn().then(function(result) {
+                    return puter.auth.getUser();
+                }).then(function(user) {
+                    self.state.loggedIn = true;
+                    self.state.user = user;
+                    self.updateUI();
+                    self.notify('Connected!', 'success');
+                }).catch(function(error) {
+                    self.resetLogin();
+                    self.notify('Connection failed', 'error');
+                });
+            },
+            
+            logout: function() {
+                var self = this;
+                puter.auth.signOut().then(function() {
+                    self.state.loggedIn = false;
+                    self.state.user = null;
+                    self.updateUI();
+                    self.notify('Logged out', 'success');
+                }).catch(function() {
+                    self.state.loggedIn = false;
+                    self.state.user = null;
+                    self.updateUI();
+                    self.notify('Logged out', 'success');
+                });
+            },
+            
+            resetLogin: function() {
+                this.el.loginBtn.disabled = false;
+                this.el.loginBtn.textContent = 'Connect';
+            },
+            
+            updateUI: function() {
+                if (this.state.loggedIn) {
+                    this.el.loginBtn.classList.add('hidden');
+                    this.el.userInfo.classList.remove('hidden');
+                    this.el.userName.textContent = this.state.user.username || 'User';
+                    this.el.generateBtn.disabled = false;
                 } else {
-                    elements.generateBtn.disabled = !appState.isAuthenticated;
-                    elements.btnText.classList.remove('hidden');
-                    elements.btnLoader.classList.add('hidden');
+                    this.el.loginBtn.classList.remove('hidden');
+                    this.el.userInfo.classList.add('hidden');
+                    this.el.generateBtn.disabled = true;
+                    this.resetLogin();
                 }
-            }
+            },
             
-            // Create prompt for AI
-            function createPrompt() {
-                appState.generationCount++;
+            generate: function() {
+                if (!this.state.loggedIn || this.state.loading) {
+                    return;
+                }
                 
-                const topics = [
-                    'career failures and professional incompetence',
-                    'social awkwardness and relationship disasters',
-                    'poor life decisions and lack of common sense',
-                    'personal hygiene and appearance issues',
-                    'communication skills and intelligence gaps',
-                    'lifestyle choices and personal habits',
-                    'emotional immaturity and social awareness',
-                    'basic life skills and adult responsibilities'
+                var self = this;
+                this.setLoading(true);
+                this.state.count++;
+                
+                var prompt = this.buildPrompt();
+                
+                puter.ai.chat(prompt, {model: 'gpt-4o-mini'}).then(function(response) {
+                    var roasts = self.extractRoasts(response);
+                    self.showRoasts(roasts);
+                    self.notify('Generated new roasts!', 'success');
+                }).catch(function(error) {
+                    var backup = self.getBackup();
+                    self.showRoasts(backup);
+                    self.notify('Using offline roasts', 'error');
+                }).finally(function() {
+                    self.setLoading(false);
+                });
+            },
+            
+            buildPrompt: function() {
+                var topics = [
+                    'career failures',
+                    'social awkwardness', 
+                    'poor decisions',
+                    'communication issues',
+                    'life skills',
+                    'personal habits'
                 ];
                 
-                const currentTopic = topics[appState.generationCount % topics.length];
-                const sessionId = Date.now();
+                var topic = topics[this.state.count % topics.length];
                 
-                return `Create 5 harsh but creative roasts about ${currentTopic}. 
-                
-Generation #${appState.generationCount} - Session ${sessionId}
-
-Requirements:
-- Each roast should be 15-25 words
-- Be cutting and memorable
-- Focus on the topic: ${currentTopic}
-- Make them fresh and unique
-- No violence or threats
-
-Return ONLY a JSON object in this exact format:
-{
-  "roasts": [
-    "roast 1 text here",
-    "roast 2 text here", 
-    "roast 3 text here",
-    "roast 4 text here",
-    "roast 5 text here"
-  ]
-}`;
-            }
+                return 'Create 5 roasts about ' + topic + '. Return only JSON: {"roasts": ["text1", "text2", "text3", "text4", "text5"]}';
+            },
             
-            // Parse AI response and extract roasts
-            function parseAIResponse(response) {
-                console.log('Raw AI response:', response);
+            extractRoasts: function(response) {
+                var content = '';
                 
-                let content = '';
-                
-                // Handle different response formats
                 if (typeof response === 'string') {
                     content = response;
-                } else if (response && typeof response === 'object') {
-                    // Try different possible structures
-                    if (response.message && response.message.content) {
-                        content = response.message.content;
-                    } else if (response.content) {
-                        content = response.content;
-                    } else if (response.text) {
-                        content = response.text;
-                    } else {
-                        content = JSON.stringify(response);
-                    }
+                } else if (response && response.message && response.message.content) {
+                    content = response.message.content;
+                } else {
+                    content = JSON.stringify(response);
                 }
                 
-                console.log('Extracted content:', content);
-                
-                // Try to extract JSON from content
                 try {
-                    // Look for JSON in the content
-                    let jsonStr = content;
+                    var start = content.indexOf('{');
+                    var end = content.lastIndexOf('}') + 1;
                     
-                    // Remove markdown code blocks if present
-                    if (content.includes('```
-                        const start = content.indexOf('```json') + 7;
-                        const end = content.lastIndexOf('```
-                        if (start > 6 && end > start) {
-                            jsonStr = content.substring(start, end).trim();
-                        }
-                    } else if (content.includes('```')) {
-                        const start = content.indexOf('```
-                        const end = content.lastIndexOf('```');
-                        if (start > 2 && end > start) {
-                            jsonStr = content.substring(start, end).trim();
+                    if (start >= 0 && end > start) {
+                        var jsonStr = content.substring(start, end);
+                        var data = JSON.parse(jsonStr);
+                        
+                        if (data.roasts && Array.isArray(data.roasts)) {
+                            return data.roasts.slice(0, 5);
                         }
                     }
-                    
-                    // Try to find JSON object in the string
-                    const jsonMatch = jsonStr.match(/\{[\s\S]*\}/);
-                    if (jsonMatch) {
-                        jsonStr = jsonMatch[0];
-                    }
-                    
-                    console.log('Cleaned JSON string:', jsonStr);
-                    
-                    const parsed = JSON.parse(jsonStr);
-                    
-                    if (parsed.roasts && Array.isArray(parsed.roasts) && parsed.roasts.length > 0) {
-                        return parsed.roasts.slice(0, 5); // Ensure max 5 roasts
-                    }
-                    
-                    throw new Error('No roasts found in response');
-                    
-                } catch (parseError) {
-                    console.error('Failed to parse AI response:', parseError);
-                    throw new Error('Could not parse AI response');
+                } catch (e) {
+                    console.log('Parse failed');
                 }
-            }
+                
+                return this.getBackup();
+            },
             
-            // Get fallback roasts if AI fails
-            function getFallbackRoasts() {
-                const fallbackSets = [
+            getBackup: function() {
+                var sets = [
                     [
-                        "Your career peaked the day you learned to use a calculator.",
-                        "You're the reason job applications ask about basic computer skills.",
-                        "Your LinkedIn profile is more fiction than your favorite novel.",
-                        "You treat deadlines like suggestions and wonder why nobody takes you seriously.",
-                        "Your work ethic is so poor it makes minimum wage feel overpaid."
+                        "Your resume is shorter than your attention span.",
+                        "You make participation trophies feel overachieving.",
+                        "Your career peaked at learning to spell your name.",
+                        "You treat job interviews like casual conversations.",
+                        "Your work ethic makes sloths look ambitious."
                     ],
                     [
-                        "You have the social awareness of a brick wall at a dinner party.",
-                        "Your conversation skills make small talk feel like interrogation.",
-                        "You're the person everyone avoids at networking events.",
-                        "Your dating profile probably lists 'existing' as your main hobby.",
-                        "You make awkward silences feel like blessed relief."
+                        "Your social skills need a warning label.",
+                        "You make small talk feel like interrogation.",
+                        "Your conversation starters kill conversations.",
+                        "You have the charm of a parking ticket.",
+                        "Your networking events clear rooms faster than fire alarms."
                     ],
                     [
-                        "Your decision-making process involves a magic 8-ball and immediate regret.",
-                        "You consistently choose the worst possible option in any scenario.",
-                        "Your life choices read like a manual on what not to do.",
-                        "You have the judgment skills of a goldfish with amnesia.",
-                        "Your thought process is a masterclass in missing the point entirely."
+                        "Your decisions make coin flips look strategic.",
+                        "You choose chaos when given simple options.",
+                        "Your judgment calls need professional intervention.",
+                        "You make bad choices look like art forms.",
+                        "Your thought process defies logic and reason."
                     ]
                 ];
                 
-                return fallbackSets[appState.generationCount % fallbackSets.length];
-            }
+                return sets[this.state.count % sets.length];
+            },
             
-            // Generate roasts using AI
-            async function generateRoasts() {
-                if (!appState.isAuthenticated) {
-                    showToast('Please connect first', 'error');
-                    return;
-                }
+            showRoasts: function(roasts) {
+                this.el.resultsGrid.innerHTML = '';
                 
-                if (appState.isGenerating) {
-                    return; // Prevent double clicks
-                }
-                
-                setGeneratingState(true);
-                
-                try {
-                    console.log('Starting AI generation...');
-                    
-                    const prompt = createPrompt();
-                    console.log('Using prompt:', prompt);
-                    
-                    // Call Puter AI with GPT-4o-mini
-                    const response = await puter.ai.chat(prompt, {
-                        model: 'gpt-4o-mini'
-                    });
-                    
-                    console.log('AI response received:', response);
-                    
-                    const roasts = parseAIResponse(response);
-                    
-                    displayRoasts(roasts);
-                    showToast(`Generated ${roasts.length} fresh roasts!`, 'success');
-                    
-                } catch (error) {
-                    console.error('AI generation failed:', error);
-                    
-                    // Use fallback roasts
-                    const fallbackRoasts = getFallbackRoasts();
-                    displayRoasts(fallbackRoasts);
-                    showToast('AI unavailable, using offline roasts', 'error');
-                    
-                } finally {
-                    setGeneratingState(false);
-                }
-            }
-            
-            // Display roasts in the UI
-            function displayRoasts(roasts) {
-                if (!Array.isArray(roasts) || roasts.length === 0) {
-                    console.error('Invalid roasts array:', roasts);
-                    return;
-                }
-                
-                // Clear previous results
-                elements.resultsGrid.innerHTML = '';
-                
-                // Create roast cards
-                roasts.forEach((roast, index) => {
-                    const card = document.createElement('div');
+                for (var i = 0; i < roasts.length; i++) {
+                    var card = document.createElement('div');
                     card.className = 'result-card';
-                    card.style.animationDelay = (index * 100) + 'ms';
                     
-                    card.innerHTML = `
-                        <div class="roast-number">Roast #${index + 1}</div>
-                        <div class="roast-text">${roast}</div>
-                        <button class="copy-btn" data-roast="${roast}">Copy Roast</button>
-                    `;
+                    card.innerHTML = '<div class="roast-number">Roast #' + (i + 1) + '</div>' +
+                                   '<div class="roast-text">' + roasts[i] + '</div>' +
+                                   '<button class="copy-btn" data-text="' + roasts[i] + '">Copy Roast</button>';
                     
-                    elements.resultsGrid.appendChild(card);
-                });
+                    this.el.resultsGrid.appendChild(card);
+                }
                 
-                // Show results container
-                elements.resultsContainer.classList.remove('hidden');
+                this.el.resultsContainer.classList.remove('hidden');
                 
-                // Scroll to results after a short delay
-                setTimeout(() => {
-                    elements.resultsContainer.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
+                var self = this;
+                setTimeout(function() {
+                    self.el.resultsContainer.scrollIntoView({behavior: 'smooth'});
+                }, 200);
+            },
+            
+            copyText: function(text, button) {
+                var self = this;
+                
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(text).then(function() {
+                        self.showCopied(button);
+                        self.notify('Copied!', 'success');
                     });
-                }, 300);
-            }
-            
-            // Copy roast to clipboard
-            async function copyRoast(text, button) {
-                try {
-                    await navigator.clipboard.writeText(text);
-                    
-                    // Update button state
-                    const originalText = button.textContent;
-                    button.textContent = '✓ Copied!';
-                    button.classList.add('copied');
-                    
-                    setTimeout(() => {
-                        button.textContent = originalText;
-                        button.classList.remove('copied');
-                    }, 2000);
-                    
-                    showToast('Copied to clipboard!', 'success');
-                    
-                } catch (error) {
-                    console.error('Copy failed:', error);
-                    
-                    // Fallback for older browsers
-                    try {
-                        const textArea = document.createElement('textarea');
-                        textArea.value = text;
-                        textArea.style.position = 'fixed';
-                        textArea.style.opacity = '0';
-                        document.body.appendChild(textArea);
-                        textArea.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(textArea);
-                        
-                        showToast('Copied to clipboard!', 'success');
-                    } catch (fallbackError) {
-                        showToast('Copy failed', 'error');
-                    }
+                } else {
+                    var textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    self.showCopied(button);
+                    self.notify('Copied!', 'success');
                 }
-            }
+            },
             
-            // Event listeners
-            function attachEventListeners() {
-                // Login button
-                elements.loginBtn.addEventListener('click', handleLogin);
+            showCopied: function(button) {
+                var original = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
                 
-                // Logout button  
-                elements.logoutBtn.addEventListener('click', handleLogout);
-                
-                // Generate button
-                elements.generateBtn.addEventListener('click', generateRoasts);
-                
-                // Copy buttons (using event delegation)
-                document.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('copy-btn')) {
-                        const roastText = e.target.getAttribute('data-roast');
-                        if (roastText) {
-                            copyRoast(roastText, e.target);
-                        }
-                    }
-                });
-            }
+                setTimeout(function() {
+                    button.textContent = original;
+                    button.classList.remove('copied');
+                }, 1500);
+            },
             
-            // Check initial authentication state
-            async function checkInitialAuth() {
-                try {
-                    // Check if user is already signed in
-                    if (puter.auth.isSignedIn()) {
-                        const userInfo = await puter.auth.getUser();
-                        appState.isAuthenticated = true;
-                        appState.currentUser = userInfo;
-                        updateAuthUI();
-                        console.log('User already authenticated:', userInfo);
-                    }
-                } catch (error) {
-                    console.log('No existing authentication:', error);
-                    appState.isAuthenticated = false;
-                    appState.currentUser = null;
-                    updateAuthUI();
+            setLoading: function(loading) {
+                this.state.loading = loading;
+                
+                if (loading) {
+                    this.el.generateBtn.disabled = true;
+                    this.el.btnText.classList.add('hidden');
+                    this.el.btnLoader.classList.remove('hidden');
+                } else {
+                    this.el.generateBtn.disabled = !this.state.loggedIn;
+                    this.el.btnText.classList.remove('hidden');
+                    this.el.btnLoader.classList.add('hidden');
                 }
-            }
+            },
             
-            // Initialize the application
-            async function init() {
-                console.log('Initializing Master Baiter app...');
+            notify: function(message, type) {
+                this.el.toast.className = 'toast';
+                this.el.toast.textContent = message;
+                this.el.toast.classList.add(type || 'info');
                 
-                // Initialize DOM elements
-                initElements();
+                var self = this;
+                setTimeout(function() {
+                    self.el.toast.classList.add('show');
+                }, 50);
                 
-                // Attach event listeners  
-                attachEventListeners();
-                
-                // Check authentication state
-                await checkInitialAuth();
-                
-                console.log('App initialized successfully');
+                setTimeout(function() {
+                    self.el.toast.classList.remove('show');
+                }, 3000);
             }
-            
-            // Start the app when DOM is ready
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', init);
-            } else {
-                init();
-            }
-            
-        })();
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            App.start();
+        });
     </script>
 </body>
 </html>
