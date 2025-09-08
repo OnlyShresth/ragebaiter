@@ -494,7 +494,7 @@
                 this.loginBtn.textContent = 'Connect';
             }
 
-            // FIXED: All backticks now properly escaped with double quotes
+            // COMPLETELY FIXED: Using variables to avoid syntax errors with backticks
             parseAIResponse(aiResponse) {
                 console.log('AI raw response:', aiResponse);
                 
@@ -514,17 +514,20 @@
                 try {
                     let jsonStr = content;
                     
-                    // FIXED: Using double quotes to avoid backtick escaping issues
-                    if (content.includes("```
-                        const startMarker = content.indexOf("```json") + 7;
-                        const endMarker = content.lastIndexOf("```
-                        if (startMarker > 6 && endMarker > startMarker) {
+                    // FIXED: Use variables to avoid backtick syntax errors
+                    const tripleBackticks = String.fromCharCode(96) + String.fromCharCode(96) + String.fromCharCode(96);
+                    const jsonMarker = tripleBackticks + 'json';
+                    
+                    if (content.includes(jsonMarker)) {
+                        const startMarker = content.indexOf(jsonMarker) + jsonMarker.length;
+                        const endMarker = content.lastIndexOf(tripleBackticks);
+                        if (startMarker > jsonMarker.length - 1 && endMarker > startMarker) {
                             jsonStr = content.substring(startMarker, endMarker).trim();
                         }
-                    } else if (content.includes("```")) {
-                        const startMarker = content.indexOf("```
-                        const endMarker = content.lastIndexOf("```");
-                        if (startMarker > 2 && endMarker > startMarker) {
+                    } else if (content.includes(tripleBackticks)) {
+                        const startMarker = content.indexOf(tripleBackticks) + tripleBackticks.length;
+                        const endMarker = content.lastIndexOf(tripleBackticks);
+                        if (startMarker > tripleBackticks.length - 1 && endMarker > startMarker) {
                             jsonStr = content.substring(startMarker, endMarker).trim();
                         }
                     }
