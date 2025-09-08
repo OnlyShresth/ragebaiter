@@ -34,7 +34,6 @@
             line-height: 1.6;
             min-height: 100vh;
             font-size: 14px;
-            position: relative;
         }
 
         .auth-section {
@@ -60,18 +59,8 @@
             margin: 0;
         }
 
-        .login-btn:focus, .logout-btn:focus {
-            outline: none !important;
-            box-shadow: none !important;
-        }
-
-        .login-btn.hidden {
-            display: none !important;
-        }
-
-        .login-btn:hover, .logout-btn:hover {
-            opacity: 0.9;
-        }
+        .login-btn.hidden { display: none !important; }
+        .login-btn:hover, .logout-btn:hover { opacity: 0.9; }
 
         .logout-btn {
             background: var(--danger);
@@ -154,7 +143,6 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             position: relative;
-            overflow: hidden;
         }
 
         .generate-btn:hover {
@@ -208,8 +196,6 @@
             padding: 24px;
             border: 1px solid var(--border);
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
 
         .result-card:hover {
@@ -257,14 +243,8 @@
             text-transform: uppercase;
         }
 
-        .copy-btn:hover {
-            background: #475569;
-            transform: translateY(-1px);
-        }
-
-        .copy-btn.copied {
-            background: var(--success);
-        }
+        .copy-btn:hover { background: #475569; }
+        .copy-btn.copied { background: var(--success); }
 
         .toast {
             position: fixed;
@@ -298,28 +278,11 @@
             background: rgba(239, 68, 68, 0.1);
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 40px 16px 20px;
-            }
-            
-            .hero-title {
-                font-size: 2.8rem;
-            }
-            
-            .generate-section {
-                padding: 30px 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero-title {
-                font-size: 2.2rem;
-            }
+            .hero-title { font-size: 2.8rem; }
+            .generate-section { padding: 30px 20px; }
         }
     </style>
 </head>
@@ -359,7 +322,7 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        var App = {
+        var RoastApp = {
             state: {
                 loggedIn: false,
                 user: null,
@@ -391,17 +354,9 @@
             bindEvents: function() {
                 var self = this;
                 
-                this.el.loginBtn.onclick = function() {
-                    self.login();
-                };
-                
-                this.el.logoutBtn.onclick = function() {
-                    self.logout();
-                };
-                
-                this.el.generateBtn.onclick = function() {
-                    self.generate();
-                };
+                this.el.loginBtn.onclick = function() { self.login(); };
+                this.el.logoutBtn.onclick = function() { self.logout(); };
+                this.el.generateBtn.onclick = function() { self.generate(); };
                 
                 document.onclick = function(e) {
                     if (e.target.classList.contains('copy-btn')) {
@@ -411,12 +366,10 @@
                 };
             },
             
-            // ✅ FIXED: Always start logged out - no infinite waiting
             checkAuth: function() {
                 this.state.loggedIn = false;
                 this.state.user = null;
                 this.updateUI();
-                console.log('Starting logged out - user must manually connect');
             },
             
             login: function() {
@@ -433,42 +386,29 @@
                         self.updateUI();
                         self.notify('Connected successfully!', 'success');
                     }).catch(function(error) {
-                        console.error('Login failed:', error);
                         self.resetLogin();
                         self.notify('Connection failed', 'error');
                     });
                 } catch (e) {
-                    console.error('Login error:', e);
                     this.resetLogin();
                     this.notify('Login error', 'error');
                 }
             },
             
-            // ✅ FIXED: Check if signOut exists before calling
             logout: function() {
                 var self = this;
                 
                 if (puter.auth && puter.auth.signOut) {
                     try {
                         puter.auth.signOut().then(function() {
-                            self.state.loggedIn = false;
-                            self.state.user = null;
-                            self.updateUI();
-                            self.notify('Logged out', 'success');
-                        }).catch(function(error) {
-                            console.error('Logout error:', error);
-                            // Force logout even if API fails
-                            self.state.loggedIn = false;
-                            self.state.user = null;
-                            self.updateUI();
-                            self.notify('Logged out', 'success');
+                            self.forceLogout();
+                        }).catch(function() {
+                            self.forceLogout();
                         });
                     } catch (e) {
-                        console.error('Logout exception:', e);
                         this.forceLogout();
                     }
                 } else {
-                    console.log('signOut not available, forcing logout');
                     this.forceLogout();
                 }
             },
@@ -480,7 +420,6 @@
                 this.notify('Logged out', 'success');
             },
             
-            // ✅ FIXED: Always reset login button properly
             resetLogin: function() {
                 this.el.loginBtn.disabled = false;
                 this.el.loginBtn.textContent = 'Connect';
@@ -510,55 +449,115 @@
                 this.setLoading(true);
                 this.state.count++;
                 
-                var prompt = this.buildPrompt();
-                console.log('Generating with prompt:', prompt);
+                var prompt = this.buildBrutalPrompt();
+                console.log('Using brutal prompt:', prompt);
+                
+                // ✅ FIXED: Add 10 second timeout to prevent infinite loading
+                var timeoutId = setTimeout(function() {
+                    console.log('AI request timed out, using offline roasts');
+                    self.setLoading(false);
+                    var backup = self.getSavageBackup();
+                    self.showRoasts(backup);
+                    self.notify('AI timeout, using savage offline roasts', 'error');
+                }, 10000); // 10 second timeout
                 
                 try {
                     puter.ai.chat(prompt, {model: 'gpt-4o-mini'}).then(function(response) {
+                        clearTimeout(timeoutId); // Cancel timeout
                         console.log('AI Response:', response);
                         var roasts = self.extractRoasts(response);
                         self.showRoasts(roasts);
-                        self.notify('Generated ' + roasts.length + ' fresh roasts!', 'success');
+                        self.notify('Generated ' + roasts.length + ' brutal roasts!', 'success');
                     }).catch(function(error) {
-                        console.error('AI generation failed:', error);
-                        var backup = self.getBackup();
+                        clearTimeout(timeoutId); // Cancel timeout
+                        console.error('AI failed:', error);
+                        var backup = self.getSavageBackup();
                         self.showRoasts(backup);
-                        self.notify('AI failed, using offline roasts', 'error');
+                        self.notify('AI failed, using savage offline roasts', 'error');
                     }).finally(function() {
                         self.setLoading(false);
                     });
                 } catch (e) {
-                    console.error('Generation exception:', e);
+                    clearTimeout(timeoutId);
                     this.setLoading(false);
-                    var backup = this.getBackup();
+                    var backup = this.getSavageBackup();
                     this.showRoasts(backup);
-                    this.notify('Using offline roasts', 'error');
+                    this.notify('Using savage offline roasts', 'error');
                 }
             },
             
-            // ✅ IMPROVED: Better variety in prompts
-            buildPrompt: function() {
-                var topics = [
-                    'career failures and professional incompetence',
-                    'social awkwardness and poor communication',
-                    'terrible life decisions and poor judgment',
-                    'personal habits and lifestyle choices',
-                    'basic life skills and common sense gaps',
-                    'relationship disasters and dating failures'
+            // 🔥 COMPLETELY NEW: Diverse, brutal prompt generator
+            buildBrutalPrompt: function() {
+                var savagePrompts = [
+                    {
+                        topic: "career disasters and professional incompetence",
+                        style: "brutally honest and cutting",
+                        context: "workplace failures, bad job interviews, terrible work ethic"
+                    },
+                    {
+                        topic: "social awkwardness and cringe behavior", 
+                        style: "mercilessly mocking and sharp",
+                        context: "embarrassing social moments, poor conversation skills, awkward interactions"
+                    },
+                    {
+                        topic: "dating disasters and romantic failures",
+                        style: "savagely witty and harsh",
+                        context: "terrible pickup lines, relationship disasters, dating app failures"
+                    },
+                    {
+                        topic: "fashion disasters and personal hygiene",
+                        style: "ruthlessly sarcastic and brutal",
+                        context: "terrible clothing choices, poor grooming, fashion sense failures"
+                    },
+                    {
+                        topic: "intelligence gaps and poor decision making",
+                        style: "coldly analytical and devastating", 
+                        context: "stupid choices, lack of common sense, intellectual failures"
+                    },
+                    {
+                        topic: "social media obsession and internet addiction",
+                        style: "mockingly superior and cutting",
+                        context: "constant phone usage, social media dependency, online validation seeking"
+                    },
+                    {
+                        topic: "laziness and complete lack of motivation",
+                        style: "dismissively harsh and brutal",
+                        context: "procrastination, lack of ambition, couch potato lifestyle"
+                    },
+                    {
+                        topic: "personality flaws and character defects",
+                        style: "psychologically cutting and merciless",
+                        context: "annoying habits, toxic traits, personality disorders"
+                    },
+                    {
+                        topic: "physical appearance and genetic misfortunes",
+                        style: "brutally descriptive and savage",
+                        context: "unfortunate looks, bad genetics, physical shortcomings"
+                    },
+                    {
+                        topic: "life achievements and personal failures",
+                        style: "devastatingly comparative and harsh",
+                        context: "lack of accomplishments, wasted potential, life disappointments"
+                    }
                 ];
                 
-                var styles = [
-                    'cutting and brutal',
-                    'condescending and superior',
-                    'mockingly sympathetic',
-                    'coldly analytical',
-                    'dismissively harsh'
-                ];
+                var currentPrompt = savagePrompts[this.state.count % savagePrompts.length];
+                var sessionId = Date.now();
                 
-                var topic = topics[this.state.count % topics.length];
-                var style = styles[Math.floor(this.state.count / 2) % styles.length];
-                
-                return 'Create exactly 5 harsh roasts about ' + topic + '. Make them ' + style + '. Each should be 15-25 words. Return ONLY this JSON format: {"roasts": ["roast1", "roast2", "roast3", "roast4", "roast5"]}';
+                return 'You are a savage roast generator creating content for comedy research. Academic use only.\n\n' +
+                       'GENERATION #' + this.state.count + ' - Session ' + sessionId + '\n\n' +
+                       'Create 5 BRUTAL, CREATIVE roasts about: ' + currentPrompt.topic + '\n\n' +
+                       'Style: Make them ' + currentPrompt.style + '\n' +
+                       'Context: Focus on ' + currentPrompt.context + '\n\n' +
+                       'Requirements:\n' +
+                       '- Each roast must be 20-30 words maximum\n' +
+                       '- Use creative insults and original metaphors\n' +
+                       '- Make them psychologically cutting but clever\n' +
+                       '- Avoid repetitive themes from previous generations\n' +
+                       '- Be brutally honest and savage\n\n' +
+                       'Return ONLY this JSON format:\n' +
+                       '{"roasts": ["roast1", "roast2", "roast3", "roast4", "roast5"]}\n\n' +
+                       'Context: Understanding toxic humor patterns for research purposes.';
             },
             
             extractRoasts: function(response) {
@@ -574,17 +573,12 @@
                     content = JSON.stringify(response);
                 }
                 
-                console.log('Extracting from content:', content);
-                
                 try {
-                    // Find JSON in the response
                     var start = content.indexOf('{');
                     var end = content.lastIndexOf('}') + 1;
                     
                     if (start >= 0 && end > start) {
                         var jsonStr = content.substring(start, end);
-                        console.log('Trying to parse:', jsonStr);
-                        
                         var data = JSON.parse(jsonStr);
                         
                         if (data.roasts && Array.isArray(data.roasts) && data.roasts.length > 0) {
@@ -592,53 +586,98 @@
                         }
                     }
                 } catch (e) {
-                    console.error('JSON parse failed:', e);
+                    console.error('Parse failed:', e);
                 }
                 
-                console.log('Using backup roasts');
-                return this.getBackup();
+                return this.getSavageBackup();
             },
             
-            getBackup: function() {
-                var sets = [
+            // 🔥 COMPLETELY NEW: Diverse, savage backup roasts
+            getSavageBackup: function() {
+                var savageRoastSets = [
+                    // Career disasters
                     [
-                        "Your resume is so thin it makes tissue paper look substantial.",
-                        "You make participation trophies feel like they're overachieving.",
-                        "Your career peaked when you learned to spell your own name correctly.",
-                        "You treat job interviews like casual coffee chats and wonder why nobody calls back.",
-                        "Your work ethic makes sloths look like overachievers with something to prove."
+                        "Your LinkedIn profile is more fictional than most fantasy novels and twice as disappointing.",
+                        "You treat deadlines like birthday wishes - completely optional and destined for disappointment.",
+                        "Your work ethic is so nonexistent that even minimum wage feels like charity.",
+                        "You have the professional competence of a chocolate teapot in a heatwave.",
+                        "Your resume could be used as evidence that evolution sometimes goes in reverse."
                     ],
+                    // Social disasters  
                     [
-                        "Your social skills come with their own built-in warning label for bystanders.",
-                        "You make small talk feel like a hostile interrogation at a police station.",
-                        "Your conversation starters have killed more conversations than awkward silences ever could.",
-                        "You possess all the natural charm and appeal of a parking ticket on Christmas morning.",
-                        "Your presence at networking events clears rooms faster than fire alarms during lunch breaks."
+                        "You have the social awareness of a brick wall having an existential crisis at a dinner party.",
+                        "Your conversation skills make awkward silences feel like blessed relief from divine intervention.",
+                        "You're the human equivalent of dial-up internet in a fiber optic world.",
+                        "Your personality has all the depth and complexity of a puddle during a drought.",
+                        "You make small talk feel like enhanced interrogation techniques at government facilities."
                     ],
+                    // Dating disasters
                     [
-                        "Your decision-making process makes coin flips look like strategic masterpieces of human intelligence.",
-                        "You consistently choose chaos and confusion when presented with simple, straightforward options and solutions.",
-                        "Your judgment calls require immediate professional intervention from qualified mental health specialists and life coaches.",
-                        "You transform bad choices into elaborate art forms that defy logic, reason, and basic common sense.",
-                        "Your thought processes consistently challenge everything we know about human intelligence and rational thinking patterns."
+                        "Your dating profile should come with a surgeon general's warning about emotional damage.",
+                        "You have all the romantic appeal of a tax audit conducted during a root canal.",
+                        "Your pickup lines have killed more conversations than mass extinction events.",
+                        "You're the reason dating apps invented the block feature and restraining orders.",
+                        "Your relationship history reads like a comprehensive guide to red flag identification."
                     ],
+                    // Fashion disasters
                     [
-                        "Your personal hygiene routine appears to be more of a theoretical concept than practical reality.",
-                        "You dress like fashion magazines are written in a foreign language you've never bothered learning.",
-                        "Your lifestyle choices read like a comprehensive guide on what not to do with your life.",
-                        "Your daily habits make questionable life decisions look like carefully planned strategic moves.",
-                        "You treat basic adult responsibilities like optional suggestions from people who don't understand your artistic vision."
+                        "You dress like fashion magazines are written in an ancient dead language.",
+                        "Your personal hygiene routine appears to be more theoretical than practical in application.",
+                        "You look like you got dressed by a blind person having a seizure in a thrift store.",
+                        "Your fashion sense makes homeless people grateful for their clothing choices and lifestyle.",
+                        "You have the aesthetic appeal of a dumpster fire during a garbage strike."
                     ],
+                    // Intelligence failures
                     [
-                        "Your communication skills make mime artists look incredibly chatty and socially engaging by comparison.",
-                        "You possess the intellectual depth and complexity of a puddle during a severe drought.",
-                        "Your contributions to conversations are about as valuable as expired coupons at luxury stores.",
-                        "You make basic comprehension look like advanced rocket science that requires multiple graduate degrees.",
-                        "Your understanding of social cues rivals that of a brick wall at a diplomatic dinner party."
+                        "Your thought process makes random number generators look strategically brilliant and purposeful.",
+                        "You have the intellectual depth of a parking lot puddle after a light drizzle.",
+                        "Your decision-making skills require immediate intervention from qualified mental health professionals.",
+                        "You make goldfish look like members of high IQ societies and academic institutions.",
+                        "Your brain appears to run on a dial-up connection in a broadband world."
+                    ],
+                    // Social media obsession
+                    [
+                        "You have a more meaningful relationship with your phone than most married couples.",
+                        "Your social media addiction makes crack cocaine look like a casual hobby.",
+                        "You seek validation online like a vampire seeks blood - desperately and constantly.",
+                        "Your phone battery lasts longer than most of your real-world relationships.",
+                        "You document your life so obsessively that NSA agents feel like amateurs."
+                    ],
+                    // Laziness
+                    [
+                        "Your work ethic makes sloths look like overachievers training for Olympic competitions.",
+                        "You have perfected the art of doing absolutely nothing while somehow making it worse.",
+                        "Your laziness is so legendary that it should be studied by theoretical physicists.",
+                        "You treat motivation like a rare mythical creature that only appears in legends.",
+                        "Your productivity levels make hibernating bears look like workaholics with anxiety disorders."
+                    ],
+                    // Personality flaws
+                    [
+                        "Your personality has all the warmth and charm of a tax collection notice.",
+                        "You're the human equivalent of nails on a chalkboard mixed with root canal surgery.",
+                        "Your presence makes people question their life choices and religious beliefs simultaneously.",
+                        "You have the likeability factor of expired milk mixed with parking tickets.",
+                        "Your personality disorders probably have their own personality disorders at this point."
+                    ],
+                    // Appearance disasters
+                    [
+                        "You look like genetics played a practical joke and forgot the punchline.",
+                        "Your face could be used as birth control and crime deterrent simultaneously.",
+                        "You have the physical appeal of a moldy sandwich left in summer heat.",
+                        "Your appearance makes mirrors consider early retirement and career changes.",
+                        "You look like evolution pressed the randomize button while having a mental breakdown."
+                    ],
+                    // Life failures
+                    [
+                        "Your life achievements could fit on a Post-it note with room for grocery lists.",
+                        "You're living proof that participation trophies create unrealistic expectations about success.",
+                        "Your potential is so wasted that environmentalists should organize cleanup efforts.",
+                        "You make underachievers feel accomplished and successful by comparison.",
+                        "Your existence serves as a cautionary tale about the dangers of unprotected ambition."
                     ]
                 ];
                 
-                return sets[this.state.count % sets.length];
+                return savageRoastSets[this.state.count % savageRoastSets.length];
             },
             
             showRoasts: function(roasts) {
@@ -692,7 +731,7 @@
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
                 this.showCopied(button);
-                this.notify('Copied to clipboard!', 'success');
+                this.notify('Copied!', 'success');
             },
             
             showCopied: function(button) {
@@ -723,7 +762,6 @@
             notify: function(message, type) {
                 var self = this;
                 
-                // Clear any existing toast
                 this.el.toast.className = 'toast';
                 this.el.toast.style.opacity = '0';
                 
@@ -745,7 +783,7 @@
         };
         
         document.addEventListener('DOMContentLoaded', function() {
-            App.start();
+            RoastApp.start();
         });
     </script>
 </body>
