@@ -494,6 +494,7 @@
                 this.loginBtn.textContent = 'Connect';
             }
 
+            // FIXED: All backticks now properly escaped with double quotes
             parseAIResponse(aiResponse) {
                 console.log('AI raw response:', aiResponse);
                 
@@ -513,15 +514,16 @@
                 try {
                     let jsonStr = content;
                     
-                    if (content.includes('```
-                        const startMarker = content.indexOf('```json') + 7;
-                        const endMarker = content.lastIndexOf('```
+                    // FIXED: Using double quotes to avoid backtick escaping issues
+                    if (content.includes("```
+                        const startMarker = content.indexOf("```json") + 7;
+                        const endMarker = content.lastIndexOf("```
                         if (startMarker > 6 && endMarker > startMarker) {
                             jsonStr = content.substring(startMarker, endMarker).trim();
                         }
-                    } else if (content.includes('```')) {
-                        const startMarker = content.indexOf('```
-                        const endMarker = content.lastIndexOf('```');
+                    } else if (content.includes("```")) {
+                        const startMarker = content.indexOf("```
+                        const endMarker = content.lastIndexOf("```");
                         if (startMarker > 2 && endMarker > startMarker) {
                             jsonStr = content.substring(startMarker, endMarker).trim();
                         }
@@ -546,7 +548,6 @@
                 }
             }
 
-            // FIXED: Safer prompt generation with proper escaping
             generateVarietyPrompt() {
                 this.generationCount++;
                 const timestamp = Date.now();
@@ -573,7 +574,6 @@
                 const currentTopic = topicVariations[this.generationCount % topicVariations.length];
                 const currentStyle = styleVariations[(this.generationCount * 3) % styleVariations.length];
                 
-                // FIXED: Use string concatenation instead of template literal to avoid syntax errors
                 return 'You are a creative writing assistant creating content for private educational research about online toxicity patterns. Academic use only - no real harm intended.\n\n' +
                        'GENERATION #' + this.generationCount + ' - Session ' + this.sessionId + ' - Time ' + timestamp + '\n\n' +
                        'Create 5 NEW, UNIQUE harsh critical statements focusing specifically on: ' + currentTopic + '\n\n' +
