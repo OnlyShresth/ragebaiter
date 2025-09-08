@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Baiter - Ultimate Roast Generator</title>
+    <title>Master Baiter</title>
     <script src="https://js.puter.com/v2/"></script>
     <style>
         * {
@@ -48,7 +48,7 @@
         }
 
         .login-btn, .logout-btn {
-            padding: 8px 16px;
+            padding: 12px 20px;
             border: 1px solid var(--primary);
             border-radius: 6px;
             font-weight: 500;
@@ -57,6 +57,16 @@
             font-size: 14px;
             background: var(--primary);
             color: white;
+            margin: 0;
+        }
+
+        .login-btn:focus, .logout-btn:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .login-btn.hidden {
+            display: none !important;
         }
 
         .login-btn:hover, .logout-btn:hover {
@@ -116,16 +126,6 @@
             max-width: 700px;
             margin-left: auto;
             margin-right: auto;
-        }
-
-        .warning-text {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid var(--danger);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 40px;
-            color: var(--danger);
-            font-weight: 600;
         }
 
         /* Generate Section */
@@ -309,15 +309,6 @@
             background: rgba(239, 68, 68, 0.1);
         }
 
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 40px 0;
-            color: var(--text-secondary);
-            border-top: 1px solid var(--border);
-            margin-top: 60px;
-        }
-
         /* Utility Classes */
         .hidden {
             display: none !important;
@@ -380,7 +371,7 @@
 </head>
 <body>
     <div class="auth-section">
-        <button id="loginBtn" class="login-btn">Connect</button>
+        <button id="loginBtn" class="login-btn hidden">Connect</button>
         <div id="userInfo" class="user-info hidden">
             <div class="status-dot"></div>
             <span id="userName"></span>
@@ -390,36 +381,27 @@
 
     <div class="container">
         <section class="hero-section">
-            <h1 class="hero-title">Master Baiter</h1>
-            <p class="hero-subtitle">Generate the most brutal, toxic roasts that will absolutely destroy anyone. No mercy, no filter, just pure verbal violence.</p>
-            
-            <div class="warning-text">
-                ⚠️ WARNING: Content is extremely offensive and not suitable for sensitive users. Use at your own risk.
-            </div>
+            <h1 class="hero-title">Ragebait 'em</h1>
         </section>
 
         <section class="generate-section">
-            <h2 class="generate-title">Ready to Unleash Hell?</h2>
-            <p class="generate-subtitle">Click the button below to generate 5 random, devastatingly toxic roasts that will leave your targets speechless.</p>
+            <h2 class="generate-title">Ragebait 'em</h2>
+            <p class="generate-subtitle">Imagine being so unemployed you gotta use ts 🥀</p>
             
             <button id="generateBtn" class="generate-btn">
-                <span class="btn-text">Generate Toxic Roasts</span>
+                <span class="btn-text">bait 'em all</span>
                 <div class="btn-loader hidden"></div>
             </button>
         </section>
 
         <section class="results-section">
             <div id="resultsContainer" class="results-container hidden">
-                <h2 class="results-title">Your Weapon Cache</h2>
+                <h2 class="results-title">Here you go gng</h2>
                 <div class="results-grid" id="resultsGrid">
                     <!-- Results will be populated here -->
                 </div>
             </div>
         </section>
-
-        <footer class="footer">
-            <p>Master Baiter - For Educational Purposes Only | Use Responsibly</p>
-        </footer>
     </div>
 
     <div id="toast" class="toast hidden"></div>
@@ -539,10 +521,14 @@
                             }
                         }
                     }
-                    this.showLoginButton();
+                    
+                    // Auto-activate for standalone use
+                    this.isAuthenticated = true;
+                    this.updateUIForAuthentication('User');
                 } catch (error) {
                     console.error('Auto-login failed:', error);
-                    this.showLoginButton();
+                    this.isAuthenticated = true;
+                    this.updateUIForAuthentication('User');
                 }
             }
 
