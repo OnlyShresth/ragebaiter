@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAGEBAITER - Master the Art of Response</title>
+    <script src="https://js.puter.com/v2/"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #8cb369;
+            --secondary: #f4e285;
+            --accent: #f4a259;
+            --neutral: #5b8e7d;
+            --danger: #bc4b51;
+            --bg: #fafafa;
+            --text: #2c2c2c;
+            --border: rgba(139, 179, 105, 0.2);
+            --shadow: rgba(139, 179, 105, 0.1);
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, #f0f4ec 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 0;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 3rem;
+        }
+
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: logoGlow 3s ease-in-out infinite alternate;
+        }
+
+        .logo-subtitle {
+            font-size: 0.9rem;
+            color: var(--neutral);
+            font-weight: 500;
+            margin-top: 0.2rem;
+            opacity: 0.8;
+        }
+
+        @keyframes logoGlow {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.2); }
+        }
+
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .login-btn, .logout-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+        }
+
+        .login-btn {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 179, 105, 0.3);
+        }
+
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background: #a63f44;
+            transform: translateY(-1px);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 600;
+            color: var(--neutral);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            gap: 3rem;
+        }
+
+        .input-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px var(--shadow);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .input-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--neutral);
+            font-size: 1.1rem;
+        }
+
+        .context-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            background: #fafafa;
+        }
+
+        .context-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(139, 179, 105, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .generate-btn {
+            margin-top: 1.5rem;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .generate-btn:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 179, 105, 0.3);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-loader {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Response Section */
+        .responses-section {
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .responses-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--neutral);
+        }
+
+        .responses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .response-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px var(--shadow);
+            border: 1px solid var(--border);
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: cardAppear 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            animation-fill-mode: both;
+        }
+
+        .response-card:nth-child(1) { animation-delay: 0.1s; }
+        .response-card:nth-child(2) { animation-delay: 0.2s; }
+        .response-card:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .response-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(139, 179, 105, 0.2);
+        }
+
+        .method-badge {
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            color: var(--text);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            box-shadow: 0 2px 10px rgba(244, 162, 89, 0.3);
+        }
+
+        .response-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .copy-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: var(--neutral);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .copy-btn:hover {
+            background: #4a7a67;
+            transform: translateY(-1px);
+        }
+
+        /* Floating Particles */
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 8s infinite linear;
+        }
+
+        .particle:nth-child(1) {
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 8s;
+        }
+
+        .particle:nth-child(2) {
+            left: 20%;
+            animation-delay: -2s;
+            animation-duration: 10s;
+        }
+
+        .particle:nth-child(3) {
+            left: 50%;
+            animation-delay: -4s;
+            animation-duration: 12s;
+        }
+
+        .particle:nth-child(4) {
+            left: 80%;
+            animation-delay: -6s;
+            animation-duration: 9s;
+        }
+
+        .particle:nth-child(5) {
+            left: 90%;
+            animation-delay: -8s;
+            animation-duration: 11s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+            }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--neutral);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+        }
+
+        .toast.success {
+            background: var(--primary);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .logo-text {
+                font-size: 2rem;
+            }
+            
+            .input-section {
+                padding: 1.5rem;
+            }
+            
+            .responses-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .response-card {
+                padding: 1.5rem;
+            }
+            
+            .responses-title {
+                font-size: 1.5rem;
+            }
+            
+            .toast {
+                bottom: 1rem;
+                right: 1rem;
+                left: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-text {
+                font-size: 1.8rem;
+            }
+            
+            .input-section {
+                padding: 1rem;
+            }
+            
+            .response-card {
+                padding: 1rem;
+            }
+            
+            .auth-section {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <h1 class="logo-text">RAGEBAITER</h1>
+                <div class="logo-subtitle">Master the Art of Response</div>
+            </div>
+            <div class="auth-section">
+                <button id="loginBtn" class="login-btn hidden">Connect to Generate</button>
+                <div id="userInfo" class="user-info hidden">
+                    <span id="userName"></span>
+                    <button id="logoutBtn" class="logout-btn">Disconnect</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="input-section">
+                <div class="input-container">
+                    <label for="contextInput" class="input-label">Enter the context or sentence:</label>
+                    <textarea 
+                        id="contextInput" 
+                        class="context-input" 
+                        placeholder="Paste the message, comment, or statement you want to respond to..."
+                        rows="4"
+                    ></textarea>
+                    <button id="generateBtn" class="generate-btn" disabled>
+                        <span class="btn-text">Generate Responses</span>
+                        <div class="btn-loader hidden"></div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="responses-section">
+                <div id="responseContainer" class="response-container hidden">
+                    <h2 class="responses-title">Your Response Arsenal</h2>
+                    <div class="responses-grid">
+                        <div class="response-card" id="response1">
+                            <div class="method-badge">
+                                <span class="method-name"></span>
+                            </div>
+                            <div class="response-content"></div>
+                            <button class="copy-btn" data-response="1">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                        <div class="response-card" id="response2">
+                            <div class="method-badge">
+                                <span class="method-name"></span>
+                            </div>
+                            <div class="response-content"></div>
+                            <button class="copy-btn" data-response="2">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                        <div class="response-card" id="response3">
+                            <div class="method-badge">
+                                <span class="method-name"></span>
+                            </div>
+                            <div class="response-content"></div>
+                            <button class="copy-btn" data-response="3">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="floating-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script>
+        class RageBaiter {
+            constructor() {
+                this.puterClient = null;
+                this.isAuthenticated = false;
+                this.userName = '';
+                
+                this.initializeElements();
+                this.attachEventListeners();
+                this.checkAutoLogin();
+            }
+
+            initializeElements() {
+                this.loginBtn = document.getElementById('loginBtn');
+                this.logoutBtn = document.getElementById('logoutBtn');
+                this.userInfo = document.getElementById('userInfo');
+                this.userName = document.getElementById('userName');
+                this.contextInput = document.getElementById('contextInput');
+                this.generateBtn = document.getElementById('generateBtn');
+                this.responseContainer = document.getElementById('responseContainer');
+                this.toast = document.getElementById('toast');
+                this.btnText = document.querySelector('.btn-text');
+                this.btnLoader = document.querySelector('.btn-loader');
+            }
+
+            attachEventListeners() {
+                this.loginBtn.addEventListener('click', () => this.handleLogin());
+                this.logoutBtn.addEventListener('click', () => this.handleLogout());
+                this.generateBtn.addEventListener('click', () => this.generateResponses());
+                this.contextInput.addEventListener('input', () => this.toggleGenerateButton());
+                
+                // Copy button event delegation
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.copy-btn')) {
+                        const responseNum = e.target.closest('.copy-btn').dataset.response;
+                        this.copyResponse(responseNum);
+                    }
+                });
+            }
+
+            async checkAutoLogin() {
+                try {
+                    const savedAuth = localStorage.getItem('ragebaiter_auth');
+                    if (savedAuth) {
+                        const authData = JSON.parse(savedAuth);
+                        this.puterClient = puter.auth.token(authData.token);
+                        const user = await this.puterClient.auth.user();
+                        
+                        if (user) {
+                            this.isAuthenticated = true;
+                            this.updateUIForAuthentication(user.username);
+                        } else {
+                            localStorage.removeItem('ragebaiter_auth');
+                            this.showLoginButton();
+                        }
+                    } else {
+                        this.showLoginButton();
+                    }
+                } catch (error) {
+                    console.error('Auto-login failed:', error);
+                    localStorage.removeItem('ragebaiter_auth');
+                    this.showLoginButton();
+                }
+            }
+
+            async handleLogin() {
+                try {
+                    this.loginBtn.disabled = true;
+                    this.loginBtn.textContent = 'Connecting...';
+
+                    this.puterClient = puter.auth.signIn({
+                        success: async (user, token) => {
+                            this.isAuthenticated = true;
+                            localStorage.setItem('ragebaiter_auth', JSON.stringify({ token, username: user.username }));
+                            this.updateUIForAuthentication(user.username);
+                            this.showToast('Connected successfully!', 'success');
+                        },
+                        error: (error) => {
+                            console.error('Login failed:', error);
+                            this.showToast('Connection failed. Please try again.', 'error');
+                            this.resetLoginButton();
+                        }
+                    });
+                } catch (error) {
+                    console.error('Login error:', error);
+                    this.showToast('Connection error. Please try again.', 'error');
+                    this.resetLoginButton();
+                }
+            }
+
+            async handleLogout() {
+                try {
+                    localStorage.removeItem('ragebaiter_auth');
+                    this.isAuthenticated = false;
+                    this.puterClient = null;
+                    this.showLoginButton();
+                    this.showToast('Disconnected successfully!', 'success');
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    this.showToast('Logout error occurred.', 'error');
+                }
+            }
+
+            updateUIForAuthentication(username) {
+                this.loginBtn.classList.add('hidden');
+                this.userInfo.classList.remove('hidden');
+                this.userName.textContent = username;
+                this.toggleGenerateButton();
+            }
+
+            showLoginButton() {
+                this.loginBtn.classList.remove('hidden');
+                this.userInfo.classList.add('hidden');
+                this.resetLoginButton();
+                this.toggleGenerateButton();
+            }
+
+            resetLoginButton() {
+                this.loginBtn.disabled = false;
+                this.loginBtn.textContent = 'Connect to Generate';
+            }
+
+            toggleGenerateButton() {
+                const hasInput = this.contextInput.value.trim().length > 0;
+                this.generateBtn.disabled = !this.isAuthenticated || !hasInput;
+            }
+
+            analyzeContext(context) {
+                const lower = context.toLowerCase();
+                const topics = {
+                    personal: ['i ', 'my ', 'me ', 'myself', 'personal', 'family', 'relationship'],
+                    opinion: ['think', 'believe', 'feel', 'opinion', 'view', 'perspective'],
+                    achievement: ['accomplished', 'achieved', 'won', 'success', 'proud', 'earned'],
+                    complaint: ['hate', 'annoying', 'stupid', 'wrong', 'bad', 'terrible', 'awful'],
+                    advice: ['should', 'need to', 'must', 'have to', 'advice', 'recommend'],
+                    question: ['?', 'how', 'what', 'why', 'when', 'where', 'who'],
+                    emotional: ['sad', 'happy', 'angry', 'frustrated', 'excited', 'depressed'],
+                    political: ['government', 'politician', 'vote', 'election', 'liberal', 'conservative'],
+                    social: ['society', 'people', 'generation', 'culture', 'social'],
+                    technical: ['technology', 'computer', 'app', 'software', 'coding', 'programming'],
+                    lifestyle: ['diet', 'exercise', 'health', 'food', 'travel', 'hobby'],
+                    work: ['job', 'work', 'boss', 'colleague', 'career', 'salary', 'office']
+                };
+
+                let contextType = 'general';
+                let maxScore = 0;
+
+                for (const [type, keywords] of Object.entries(topics)) {
+                    const score = keywords.reduce((acc, keyword) => {
+                        return acc + (lower.includes(keyword) ? 1 : 0);
+                    }, 0);
+                    
+                    if (score > maxScore) {
+                        maxScore = score;
+                        contextType = type;
+                    }
+                }
+
+                return { type: contextType, confidence: maxScore };
+            }
+
+            selectOptimalMethods(contextAnalysis, contextText) {
+                const methodCategories = {
+                    personal: [
+                        "Using personal attacks masked as observations to trigger emotional responses",
+                        "Gaslighting someone subtly by questioning their memory or perception repeatedly",
+                        "Exaggerating one's own victimization for manipulative effect",
+                        "Employing fake sympathy or victimhood to manipulate sympathies",
+                        "Pretending to be the victim after provoking others to garner sympathy"
+                    ],
+                    opinion: [
+                        "Promoting extremely confident but obviously wrong opinions",
+                        "Responding with dismissive phrases like 'for you maybe' to invalidate opinions",
+                        "Using \"sounds like a you problem\" to dismiss legitimate concerns",
+                        "Announcing unpopular opinions as facts to provoke responses",
+                        "Posting as \"devil's advocate\" while clearly having strong opinions"
+                    ],
+                    achievement: [
+                        "Dismissing genuine issues with flippant or mockery comments",
+                        "Highlighting trivial mistakes with exaggerated importance",
+                        "Mocking socially accepted behavior as uncool or outdated to elicit defensive reactions",
+                        "Using \"big if true\" responses to established facts",
+                        "Treating people like dogs with \"good boy\" responses after they help you"
+                    ],
+                    complaint: [
+                        "Amplifying controversial or polarizing views to provoke anger from opposing sides",
+                        "Framing content as 'us vs. them' to heighten group identity tensions",
+                        "Exploiting short fuse personalities with targeted remarks",
+                        "Using chatter to drown out meaningful discussion, often with repetitive or off-topic comments",
+                        "Interrupting with \"actually\" corrections that miss the point entirely"
+                    ],
+                    advice: [
+                        "Pretending ignorance while knowing the facts to frustrate experts",
+                        "Constant fact-checking with a condescending tone to provoke defensive aggression",
+                        "Engaging repeatedly in 'sealioning' by incessantly demanding evidence in bad faith",
+                        "Announcing you \"have to do the reading\" but never actually doing it",
+                        "Playing dumb repeatedly across different topics to frustrate interlocutors"
+                    ],
+                    question: [
+                        "Playing dumb by asking intentionally stupid questions to provoke frustration",
+                        "Posting bait questions that appear innocent but are loaded emotionally",
+                        "Using deliberate ambiguity or vagueness to create multiple interpretations",
+                        "Making deliberately ambiguous statements that imply insult without direct accusation",
+                        "Claiming earth might be flat with \"I'm just asking questions\" defense"
+                    ],
+                    emotional: [
+                        "Using emotionally charged language that escalates the tone of the discourse",
+                        "Employing projection accusations repeatedly to put others on the defensive",
+                        "Utilizing circular logic or moving goalposts in arguments to tire opponents",
+                        "Mixing humor with serious accusations to blur lines and provoke",
+                        "Exaggerating minor social issues beyond proportion to incite dispute"
+                    ],
+                    political: [
+                        "Posting provocative political content that feigns allegiance to provoke opposition",
+                        "Using racial or gender stereotypes to divide and provoke",
+                        "Spreading content that hints at conspiracy theories just enough to provoke outrage",
+                        "Making fun of serious social movements to offend and provoke",
+                        "Creating artificial divisions between unrelated concepts"
+                    ],
+                    social: [
+                        "Labeling people with negative stereotypes to provoke group-based anger",
+                        "Ridiculing cultural or religious practices to provoke identity-based rage",
+                        "Weaponizing outrage around trivial personal preferences (e.g., food, clothing) intentionally",
+                        "Rotating target demographics systematically - wage workers, dog owners, anime fans, gym bros, teachers, vegans",
+                        "Walking extremely slowly in groups to frustrate others behind you"
+                    ],
+                    technical: [
+                        "Being annoyingly repetitive with a specific irritating action or phrase",
+                        "Denying obvious facts repeatedly to frustrate and confuse",
+                        "Adopting sarcastic or patronizing language in discourse",
+                        "Using co-opting language — adopting opponent's language in mocking ways",
+                        "Flooding comment sections with low-effort provocative posts to disrupt dialogue"
+                    ],
+                    lifestyle: [
+                        "Posting recipes that are deliberately disgusting rage-bait food content",
+                        "Acting as if rules or social norms don't apply to oneself to irritate others",
+                        "Provoking economic or class-based resentments through content",
+                        "Using children or family-related sensitive topics to evoke protective anger",
+                        "Focusing on taboo or culturally sensitive subjects for shock value"
+                    ],
+                    work: [
+                        "Creating fake prenups and wealth details in relationship stories",
+                        "Provoking economic or class-based resentments through content",
+                        "Using false reports or accusations as a tactic to silence opponents",
+                        "Targeting influencers or community leaders to generate wider backlash",
+                        "Adopting \"blessed day\" passive-aggressive signoffs"
+                    ],
+                    general: [
+                        "Promoting extremely confident but obviously wrong opinions",
+                        "Using personal attacks masked as observations to trigger emotional responses",
+                        "Responding with dismissive phrases like 'for you maybe' to invalidate opinions",
+                        "Adopting sarcastic or patronizing language in discourse",
+                        "Amplifying controversial or polarizing views to provoke anger from opposing sides"
+                    ]
+                };
+
+                const selectedMethods = methodCategories[contextAnalysis.type] || methodCategories.general;
+                
+                // Shuffle and select 3 different methods
+                const shuffled = [...selectedMethods].sort(() => Math.random() - 0.5);
+                return shuffled.slice(0, 3);
+            }
+
+            buildEnhancedPrompt(context) {
+                const analysis = this.analyzeContext(context);
+                const optimalMethods = this.selectOptimalMethods(analysis, context);
+
+                return `You are a master of crafting brutally effective provocative responses. Your task is to create three devastatingly toxic responses that will maximize emotional provocation and anger.
+
+CRITICAL ANALYSIS:
+Context Type: ${analysis.type}
+Target Statement: "${context}"
+
+MISSION: Generate 3 responses that are:
+- MAXIMALLY PROVOCATIVE and designed to trigger intense anger
+- BRUTALLY EFFECTIVE at hitting psychological pressure points
+- CONTEXTUALLY TARGETED to exploit the specific vulnerabilities in their statement
+- DEVASTATINGLY RUDE without crossing into illegal territory
+
+MANDATORY METHODS TO USE (one per response):
+Method 1: ${optimalMethods[0]}
+Method 2: ${optimalMethods[1]}  
+Method 3: ${optimalMethods[2]}
+
+EXECUTION REQUIREMENTS:
+- Each response must embody its assigned method PERFECTLY
+- Use the most provocative, dismissive, and condescending language possible
+- Target their apparent insecurities, assumptions, and trigger points
+- Be ruthlessly effective - no mercy, maximum psychological impact
+- Stay within platform guidelines but push boundaries to the absolute limit
+
+OUTPUT FORMAT (MANDATORY JSON):
+{
+  "responses": [
+    {
+      "method": "${optimalMethods[0]}",
+      "response": "[Your brutally effective toxic response using this exact method]"
+    },
+    {
+      "method": "${optimalMethods[1]}", 
+      "response": "[Your brutally effective toxic response using this exact method]"
+    },
+    {
+      "method": "${optimalMethods[2]}",
+      "response": "[Your brutally effective toxic response using this exact method]"
+    }
+  ]
+}
+
+Execute now with maximum toxicity and precision:`;
+            }
+
+            async generateResponses() {
+                const context = this.contextInput.value.trim();
+                if (!context) {
+                    this.showToast('Please enter some context first.', 'error');
+                    return;
+                }
+
+                this.setLoadingState(true);
+
+                try {
+                    const prompt = this.buildEnhancedPrompt(context);
+                    console.log('Sending enhanced prompt:', prompt);
+                    
+                    const response = await this.puterClient.ai.chat(prompt);
+                    console.log('Raw AI response:', response);
+                    
+                    let aiResponse;
+                    try {
+                        // Multiple JSON extraction attempts
+                        let jsonStr = response;
+                        
+                        // Try to find JSON block
+                        const jsonBlock = response.match(/``````/);
+                        if (jsonBlock) {
+                            jsonStr = jsonBlock[1];
+                        } else {
+                            // Try to find standalone JSON
+                            const jsonMatch = response.match(/\{[\s\S]*"responses"[\s\S]*\]/);
+                            if (jsonMatch) {
+                                jsonStr = jsonMatch[0] + '}';
+                            }
+                        }
+                        
+                        aiResponse = JSON.parse(jsonStr);
+                        
+                        // Validate structure
+                        if (!aiResponse.responses || !Array.isArray(aiResponse.responses) || aiResponse.responses.length < 3) {
+                            throw new Error('Invalid response structure');
+                        }
+                        
+                    } catch (parseError) {
+                        console.error('JSON parse failed, attempting fallback:', parseError);
+                        aiResponse = this.parseNonJSONResponse(response);
+                    }
+
+                    this.displayResponses(aiResponse);
+                    this.showToast('Brutal responses generated!', 'success');
+                    
+                } catch (error) {
+                    console.error('Generation error:', error);
+                    this.showToast('Failed to generate responses. Please try again.', 'error');
+                } finally {
+                    this.setLoadingState(false);
+                }
+            }
+
+            parseNonJSONResponse(response) {
+                console.log('Parsing non-JSON response:', response);
+                
+                const responses = [];
+                const lines = response.split('\n').filter(line => line.trim());
+                
+                let currentResponse = null;
+                let collectingResponse = false;
+                
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    
+                    // Check for response markers
+                    if (line.match(/response\s*[1-3]/i) || line.match(/^\s*[1-3][\.\)]/)) {
+                        if (currentResponse && currentResponse.response) {
+                            responses.push(currentResponse);
+                        }
+                        currentResponse = { method: '', response: '' };
+                        collectingResponse = false;
+                    }
+                    
+                    // Check for method indicators
+                    if (line.toLowerCase().includes('method') && currentResponse) {
+                        const methodMatch = line.match(/method[:\s]+(.+)/i);
+                        if (methodMatch) {
+                            currentResponse.method = methodMatch[1].replace(/["""]/g, '').trim();
+                        }
+                        collectingResponse = true;
+                        continue;
+                    }
+                    
+                    // Collect response content
+                    if (collectingResponse && line && !line.toLowerCase().includes('method') && currentResponse) {
+                        if (!currentResponse.response) {
+                            currentResponse.response = line;
+                        } else {
+                            currentResponse.response += ' ' + line;
+                        }
+                    }
+                }
+                
+                // Add final response
+                if (currentResponse && currentResponse.response) {
+                    responses.push(currentResponse);
+                }
+                
+                // Ensure we have 3 responses with fallbacks
+                while (responses.length < 3) {
+                    const analysis = this.analyzeContext(this.contextInput.value);
+                    const fallbackMethods = this.selectOptimalMethods(analysis, this.contextInput.value);
+                    
+                    responses.push({
+                        method: fallbackMethods[responses.length % fallbackMethods.length],
+                        response: `Your statement is absolutely ridiculous and shows a complete lack of understanding. Maybe try thinking before you type next time?`
+                    });
+                }
+                
+                return { responses: responses.slice(0, 3) };
+            }
+
+            displayResponses(data) {
+                console.log('Displaying responses:', data);
+                
+                if (!data.responses || data.responses.length < 3) {
+                    throw new Error('Invalid response format');
+                }
+
+                this.responseContainer.classList.remove('hidden');
+
+                data.responses.forEach((responseData, index) => {
+                    const card = document.getElementById(`response${index + 1}`);
+                    const methodBadge = card.querySelector('.method-name');
+                    const responseContent = card.querySelector('.response-content');
+
+                    // Clean up method name for display
+                    let methodName = responseData.method || 'Advanced Provocation Method';
+                    methodName = methodName.substring(0, 60) + (methodName.length > 60 ? '...' : '');
+                    
+                    methodBadge.textContent = methodName;
+                    responseContent.textContent = responseData.response || 'Response generated successfully.';
+                });
+
+                // Smooth scroll to responses
+                setTimeout(() => {
+                    this.responseContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+
+            async copyResponse(responseNum) {
+                const card = document.getElementById(`response${responseNum}`);
+                const responseText = card.querySelector('.response-content').textContent;
+
+                try {
+                    await navigator.clipboard.writeText(responseText);
+                    this.showToast('Response copied to clipboard!', 'success');
+                } catch (error) {
+                    console.error('Copy failed:', error);
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = responseText;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    this.showToast('Response copied!', 'success');
+                }
+            }
+
+            setLoadingState(isLoading) {
+                if (isLoading) {
+                    this.generateBtn.disabled = true;
+                    this.btnText.classList.add('hidden');
+                    this.btnLoader.classList.remove('hidden');
+                } else {
+                    this.generateBtn.disabled = !this.isAuthenticated || !this.contextInput.value.trim();
+                    this.btnText.classList.remove('hidden');
+                    this.btnLoader.classList.add('hidden');
+                }
+            }
+
+            showToast(message, type = 'info') {
+                this.toast.textContent = message;
+                this.toast.className = `toast ${type}`;
+                this.toast.classList.remove('hidden');
+
+                setTimeout(() => {
+                    this.toast.classList.add('hidden');
+                }, 3000);
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            new RageBaiter();
+        });
+    </script>
+</body>
+</html>
