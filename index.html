@@ -322,7 +322,7 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        var ToxicRoastApp = {
+        var SavageRoastApp = {
             state: {
                 loggedIn: false,
                 user: null,
@@ -384,14 +384,14 @@
                         self.state.loggedIn = true;
                         self.state.user = user;
                         self.updateUI();
-                        self.notify('Connected successfully gng!', 'success');
+                        self.notify('Connected successfully!', 'success');
                     }).catch(function(error) {
                         self.resetLogin();
-                        self.notify('Connection failed fr', 'error');
+                        self.notify('Connection failed', 'error');
                     });
                 } catch (e) {
                     this.resetLogin();
-                    this.notify('Login error bestie', 'error');
+                    this.notify('Login error', 'error');
                 }
             },
             
@@ -417,7 +417,7 @@
                 this.state.loggedIn = false;
                 this.state.user = null;
                 this.updateUI();
-                this.notify('Peace out bestie', 'success');
+                this.notify('Logged out', 'success');
             },
             
             resetLogin: function() {
@@ -441,7 +441,7 @@
             
             generate: function() {
                 if (!this.state.loggedIn || this.state.loading) {
-                    this.notify('Connect first gng, sybau', 'error');
+                    this.notify('Please connect first', 'error');
                     return;
                 }
                 
@@ -450,100 +450,90 @@
                 this.state.count++;
                 
                 setTimeout(function() {
-                    var mixedRoasts = self.getMixedToxicRoasts();
-                    self.showRoasts(mixedRoasts);
-                    self.notify('Cooked them hard bestie! Set #' + self.state.count, 'success');
+                    var brutalRoasts = self.getBrutalDiverseRoasts();
+                    self.showRoasts(brutalRoasts);
+                    self.notify('Destroyed them completely! Set #' + self.state.count, 'success');
                     self.setLoading(false);
                 }, 1000);
             },
             
-            // 🔥 FIXED: Each roast hits different topics + MORE GEN Z SLANG
-            getMixedToxicRoasts: function() {
-                // Different topics for each roast
-                var roastTopics = [
-                    // Career/work fails
+            // 🔥 FIXED: BRUTAL insults with minimal slang, diverse topics
+            getBrutalDiverseRoasts: function() {
+                var brutalSets = [
+                    // Mixed brutal roasts - each hitting different topics
                     [
-                        "Gng your work ethic is absolutely cooked, managers probably cry themselves to sleep thinking bout hiring your bum ass fr fr no cap.",
-                        "You're so unemployed that welfare offices use you as motivation for other people, straight up embarrassing type beat bestie sybau.",
-                        "Your resume is more fiction than Marvel movies, recruiters need therapy after reading your delusional achievements ngl fam.",
-                        "Deadass you treat job interviews like TikTok lives, zero preparation and maximum cringe energy that's sending me bestie.",
-                        "Your career is more dead than your dating life, and we both know that graveyard been empty since birth gng fr."
+                        "You're the reason job applications ask for previous experience - nobody wants to be your first mistake, no cap.",
+                        "Every conversation with you feels like wasted oxygen that could have been better used by literally anything else.",
+                        "Your dating profile should come with a surgeon general's warning about the risk of permanent emotional damage.",
+                        "You have the fashion sense of a colorblind person shopping during an earthquake in complete darkness.",
+                        "Your decision-making skills are so bad that Magic 8-Balls file restraining orders against you for harassment."
                     ],
-                    // Social/personality disasters  
                     [
-                        "Bestie your social skills are absolutely sending me to another dimension, awkward energy off the charts no cap periodt.",
-                        "You make introverts feel like social butterflies, that's some next level anti-charisma type beat fr fr gng sybau.",
-                        "Your personality is drier than the Sahara during a drought, conversational skills nonexistent bestie it's giving tumbleweeds.",
-                        "Gng you really thought you were funny but comedy clubs blacklist you for emotional damage, straight up career-ending vibes.",
-                        "Your energy is so negative that solar panels malfunction around you, renewable energy can't compete with your toxicity bestie."
+                        "Your work ethic is so nonexistent that unemployment benefits feel like overpayment, fr.",
+                        "You make awkward silences feel like blessed relief from divine intervention during social interactions.",
+                        "Your romantic history reads like a comprehensive guide to red flag identification for future victims.",
+                        "You dress like fashion magazines are written in a dead language you've never bothered to learn.",
+                        "Your brain operates on dial-up internet while everyone else has fiber optic processing speed."
                     ],
-                    // Dating/relationship fails
                     [
-                        "Your dating game is more tragic than your bank account, and we both know that's broke broke fr fr gng.",
-                        "Bestie your rizz is so nonexistent that dating apps pay you to stay off their platforms, straight up public service.",
-                        "You get more action from your Netflix recommendations than actual humans, algorithm got better game than you ngl sybau.",
-                        "Gng your pickup lines are war crimes against romance, Geneva Convention needs new articles specifically for your attempts.",
-                        "Your relationship status is permanently single because cupid filed a restraining order, divine intervention type beat bestie fr."
+                        "You're living proof that natural selection sometimes takes extended lunch breaks and coffee breaks too.",
+                        "Your personality has all the warmth and charm of a tax collection notice delivered during Christmas morning.",
+                        "You get less action than a broken vending machine in an abandoned building, deadass.",
+                        "Your skincare routine appears to be more theoretical than practical, like your entire life philosophy.",
+                        "You make goldfish look like Harvard graduates with advanced degrees in quantum physics and emotional intelligence."
                     ],
-                    // Appearance/style disasters
                     [
-                        "Bestie your fashion sense is giving goodwill clearance section mixed with dumpster fire aesthetic, it's absolutely sending me.",
-                        "You dress like you're colorblind shopping during an earthquake, zero coordination and maximum chaos energy gng fr.",
-                        "Your skincare routine is theoretical at best, dermatologists study your face for worst-case scenario training sybau.",
-                        "Gng your haircut looks like you lost a bet with a lawnmower, barbers probably have PTSD from your requests.",
-                        "Your style is so busted that fashion police need backup units, straight up emergency response situation bestie no cap."
+                        "Your career peaked when you learned to spell your name correctly, and even that's questionable.",
+                        "You're the human equivalent of a participation trophy that everyone's embarrassed to display on their shelf.",
+                        "Your pickup lines are classified as war crimes against romance by the Geneva Convention, no cap.",
+                        "You have the aesthetic appeal of a dumpster fire during a garbage strike in the middle of summer.",
+                        "Your thought process makes random number generators look strategically brilliant and purposefully calculated by comparison."
                     ],
-                    // Intelligence/decision making
                     [
-                        "Bestie your decision-making skills are absolutely cooked, Magic 8-Balls have better judgment than your whole existence fr.",
-                        "You make goldfish look like Harvard professors, intellectual capacity is giving single-cell organism energy gng sybau.",
-                        "Your common sense is so rare it should be in museums, scientists study you for evolutionary regression research ngl.",
-                        "Gng your brain runs on dial-up while everyone else got fiber optic, processing speed is prehistoric type beat bestie.",
-                        "Your IQ is lower than gas prices during a crisis, and that's saying something considering inflation fr fr."
+                        "Your LinkedIn profile is more fictional than most fantasy novels and twice as disappointing to read.",
+                        "You bring everyone so much joy when you leave the room that they should charge admission fees.",
+                        "Your love life is more tragic than your bank account, and we both know that's broke beyond repair, fr.",
+                        "You look like you got dressed by a blind person having a seizure in a thrift store clearance section.",
+                        "Your IQ is so low that it's causing a shortage of room temperature readings across multiple continents."
                     ],
-                    // Lifestyle/laziness
                     [
-                        "Bestie your productivity levels make retired people look hyperactive, ambition left the chat years ago fr fr gng.",
-                        "You're so lazy that sloths sponsor you for motivational speaking, animal kingdom representation type beat sybau.",
-                        "Your motivation is more extinct than dinosaurs, paleontologists can't even find traces of your work ethic bestie.",
-                        "Gng you treat responsibility like it's radioactive, hazmat suits required for basic adult tasks no cap fr.",
-                        "Your daily routine is basically professional couch warming, contributing absolutely nothing to society bestie it's giving npc energy."
+                        "You treat deadlines like birthday wishes - completely optional and destined for disappointment every single time.",
+                        "Your social awareness is comparable to a brick wall having an existential crisis at a dinner party.",
+                        "You're the reason dating apps invented the block feature and implemented emergency restraining order protocols.",
+                        "Your style choices make homeless people grateful for their current fashion situation and lifestyle decisions, no cap.",
+                        "You have the intellectual depth of a parking lot puddle after a light drizzle in the desert."
                     ],
-                    // Social media/online presence
                     [
-                        "Bestie your social media is so cringe that algorithms try to delete themselves, AI suicide rates through the roof fr fr.",
-                        "You post more L's than a spelling bee failure, timeline is just documented embarrassment after embarrassment gng sybau.",
-                        "Your content is so trash that followers need eye bleach subscriptions, visual pollution type beat bestie no cap.",
-                        "Gng your stories are less interesting than watching paint dry in slow motion, engagement rates in negative numbers fr.",
-                        "Your online presence is digital cancer, websites need chemotherapy after you visit them bestie it's absolutely sending me."
+                        "Your productivity levels make sloths look like overachievers training for Olympic competitions in various athletic events.",
+                        "You're proof that evolution sometimes goes in reverse and forgets to leave a forwarding address.",
+                        "Your relationship status is permanently single because cupid filed a restraining order citing emotional trauma, fr.",
+                        "You make bad decisions look like carefully planned strategic moves executed by military tactical experts.",
+                        "Your face could be used as birth control and crime deterrent simultaneously in multiple jurisdictions."
                     ],
-                    // Financial disasters
                     [
-                        "Bestie your bank account is more empty than your personality, overdraft fees are your main source of communication fr fr gng.",
-                        "You're so broke that penny stocks feel bad for your financial situation, stock market sympathy type beat sybau.",
-                        "Your credit score is lower than your self-esteem, and we both know that's underground basement level bestie no cap.",
-                        "Gng you make bankruptcy look aspirational, debt collectors use you as cautionary tales for their training sessions fr.",
-                        "Your financial planning skills are giving toddler with monopoly money energy, economic disaster in human form bestie."
+                        "You're so unemployed that welfare offices use you as motivation for other people to find jobs.",
+                        "Your conversation skills make small talk feel like enhanced interrogation techniques at government black sites.",
+                        "You have all the romantic appeal of a tax audit conducted during a root canal procedure without anesthesia.",
+                        "Your personal hygiene routine is more theoretical than Einstein's theory of relativity, and less practical too.",
+                        "You make participation trophies feel like they're overachieving and setting unrealistic expectations for others, deadass."
                     ],
-                    // Life achievements/failures
                     [
-                        "Bestie your life achievements fit on a Post-it note with room for grocery lists, microscopic impact energy fr fr gng.",
-                        "You're living proof that participation trophies create unrealistic expectations, existence is giving consolation prize vibes sybau.",
-                        "Your potential is so wasted that environmentalists organize cleanup efforts, ecological disaster type beat bestie no cap.",
-                        "Gng your accomplishments are so rare that archaeologists can't find evidence of your success, prehistoric failure energy fr.",
-                        "Your legacy is gonna be a cautionary tale about what not to do with life, educational purposes only bestie."
+                        "Your resume could be used as evidence that time travel exists and someone's fucking with the timeline.",
+                        "You're the human version of a typo on the resume of life that nobody bothers to correct anymore.",
+                        "Your rizz is so nonexistent that dating apps pay you to stay off their platforms as a public service, no cap.",
+                        "You have the coordination of a drunk giraffe on roller skates during an earthquake in an ice rink.",
+                        "Your existence serves as a cautionary tale about the dangers of unprotected ambition and unrealistic expectations."
                     ],
-                    // Family/home life
                     [
-                        "Bestie your family tree is probably embarrassed to claim you, generational disappointment type beat fr fr gng sybau.",
-                        "You still live with your parents but they charge you rent for emotional damage, household liability insurance needed no cap.",
-                        "Your relatives probably lie about knowing you at family reunions, blood relation denial type beat bestie fr.",
-                        "Gng your mom probably regrets not getting that abortion, late-term disappointment energy that's absolutely sending me.",
-                        "Your bloodline is gonna end with you and honestly that's probably for the best bestie, genetic mercy type beat."
+                        "You're basically a professional disappointment with a PhD in wasting everyone's time and emotional energy, fr.",
+                        "Your personality disorders probably have their own personality disorders at this point in your pathetic existence.",
+                        "You make bad pickup lines look like Shakespeare's greatest romantic poetry by comparison to your attempts.",
+                        "Your life achievements could fit on a Post-it note with room left over for grocery lists and phone numbers.",
+                        "You're the reason aliens avoid Earth - they've seen what humanity is capable of producing and they're terrified."
                     ]
                 ];
                 
-                return roastTopics[this.state.count % roastTopics.length];
+                return brutalSets[this.state.count % brutalSets.length];
             },
             
             showRoasts: function(roasts) {
@@ -575,7 +565,7 @@
                     if (navigator.clipboard && navigator.clipboard.writeText) {
                         navigator.clipboard.writeText(text).then(function() {
                             self.showCopied(button);
-                            self.notify('Copied that fire bestie!', 'success');
+                            self.notify('Copied that devastating burn!', 'success');
                         }).catch(function() {
                             self.fallbackCopy(text, button);
                         });
@@ -597,12 +587,12 @@
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
                 this.showCopied(button);
-                this.notify('Copied gng!', 'success');
+                this.notify('Copied!', 'success');
             },
             
             showCopied: function(button) {
                 var original = button.textContent;
-                button.textContent = '✓ Copied bestie!';
+                button.textContent = '✓ Copied!';
                 button.classList.add('copied');
                 
                 setTimeout(function() {
@@ -649,7 +639,7 @@
         };
         
         document.addEventListener('DOMContentLoaded', function() {
-            ToxicRoastApp.start();
+            SavageRoastApp.start();
         });
     </script>
 </body>
