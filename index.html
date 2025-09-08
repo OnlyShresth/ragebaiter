@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Baiter</title>
-    <!-- ✅ FIXED: Use HTTPS URL for PuterJS -->
     <script src="https://js.puter.com/v2/"></script>
     <style>
+        /* [Keep all your existing CSS styles] */
         * {
             margin: 0;
             padding: 0;
@@ -292,7 +292,8 @@
                 user: null,
                 loading: false,
                 count: 0,
-                puterLoaded: false
+                puterLoaded: false,
+                retryCount: 0
             },
             
             el: {},
@@ -301,7 +302,6 @@
             start: function() {
                 var self = this;
                 
-                // ✅ FIXED: Better PuterJS loading detection
                 this.waitForPuter().then(function() {
                     self.initializePuter();
                 }).catch(function() {
@@ -313,7 +313,7 @@
             waitForPuter: function() {
                 return new Promise(function(resolve, reject) {
                     var attempts = 0;
-                    var maxAttempts = 100; // 10 seconds
+                    var maxAttempts = 100;
                     
                     var checkPuter = function() {
                         if (typeof puter !== 'undefined' && puter.ai && puter.auth) {
@@ -438,7 +438,6 @@
                 this.el.loginBtn.textContent = 'Connecting...';
                 
                 try {
-                    // ✅ FIXED: Proper PuterJS authentication
                     puter.auth.signIn().then(function(user) {
                         console.log('Sign in successful:', user);
                         self.state.loggedIn = true;
@@ -468,7 +467,7 @@
                         }).catch(function(error) {
                             console.error('Logout error:', error);
                             self.forceLogout();
-                            self.notify('Logout completed', 'success');
+                            self.notify('Logged out', 'success');
                         });
                     } catch (e) {
                         console.error('Logout exception:', e);
@@ -520,69 +519,103 @@
                 this.setLoading(true);
                 this.state.count++;
                 
-                var enhancedPrompt = this.buildEnhancedPrompt();
-                console.log('Generating with prompt length:', enhancedPrompt.length);
+                // 🔥 ENHANCED: Multiple AI strategies with retries
+                this.tryAIGeneration();
+            },
+            
+            tryAIGeneration: function() {
+                var self = this;
                 
-                // ✅ FIXED: Proper AI API call with better error handling
-                if (this.state.puterLoaded && puter.ai && puter.ai.chat) {
-                    console.log('Using PuterJS AI...');
-                    
-                    var timeoutId = setTimeout(function() {
-                        console.log('AI request timed out');
-                        self.useFallbacks('AI timeout');
-                    }, 20000);
-                    
-                    // ✅ FIXED: Proper AI call with model specification
-                    puter.ai.chat(enhancedPrompt, { 
-                        model: 'gpt-5-nano',
-                        temperature: 0.8,
-                        max_tokens: 500
-                    }).then(function(response) {
-                        clearTimeout(timeoutId);
-                        console.log('AI response received:', typeof response, response);
-                        
-                        var roasts = self.parseEnhancedResponse(response);
-                        if (roasts && roasts.length >= 5) {
-                            self.showRoasts(roasts.slice(0, 5));
-                            self.notify('🔥 AI generated brutal roasts! Set #' + self.state.count, 'success');
-                        } else {
-                            console.log('AI response parsing failed, using fallbacks');
-                            self.useFallbacks('AI parsing failed');
-                        }
-                        self.setLoading(false);
-                    }).catch(function(error) {
-                        clearTimeout(timeoutId);
-                        console.error('AI error:', error);
-                        self.useFallbacks('AI error: ' + (error.message || 'Unknown'));
-                    });
-                } else {
+                if (!this.state.puterLoaded || !puter.ai || !puter.ai.chat) {
                     console.log('PuterJS AI not available');
                     this.useFallbacks('AI not available');
+                    return;
                 }
+                
+                // Try multiple AI strategies with different timeouts
+                var strategies = [
+                    { prompt: this.buildSimplePrompt(), timeout: 60000, model: 'gpt-5-nano' }, // 60 seconds, simple prompt
+                    { prompt: this.buildShortPrompt(), timeout: 45000, model: 'gpt-5-nano' },  // 45 seconds, shorter prompt
+                    { prompt: this.buildMinimalPrompt(), timeout: 30000, model: 'gpt-5-nano' } // 30 seconds, minimal prompt
+                ];
+                
+                var currentStrategy = strategies[this.state.retryCount % strategies.length];
+                
+                console.log('AI Strategy', this.state.retryCount + 1, '- Timeout:', currentStrategy.timeout/1000 + 's, Prompt length:', currentStrategy.prompt.length);
+                
+                var timeoutId = setTimeout(function() {
+                    console.log('AI request timed out after', currentStrategy.timeout/1000, 'seconds');
+                    self.retryOrFallback();
+                }, currentStrategy.timeout);
+                
+                // Try the AI request with current strategy
+                puter.ai.chat(currentStrategy.prompt, { 
+                    model: currentStrategy.model,
+                    temperature: 0.7,
+                    max_tokens: 300
+                }).then(function(response) {
+                    clearTimeout(timeoutId);
+                    console.log('AI response received:', response);
+                    
+                    var roasts = self.parseEnhancedResponse(response);
+                    if (roasts && roasts.length >= 5) {
+                        self.showRoasts(roasts.slice(0, 5));
+                        self.notify('🔥 AI Success! Strategy ' + (self.state.retryCount + 1) + ' worked! Set #' + self.state.count, 'success');
+                        self.state.retryCount = 0; // Reset retry count on success
+                    } else {
+                        console.log('AI response parsing failed');
+                        self.retryOrFallback();
+                    }
+                    self.setLoading(false);
+                }).catch(function(error) {
+                    clearTimeout(timeoutId);
+                    console.error('AI error:', error);
+                    self.retryOrFallback();
+                });
+            },
+            
+            retryOrFallback: function() {
+                this.state.retryCount++;
+                
+                if (this.state.retryCount < 3) {
+                    console.log('Retrying with strategy', this.state.retryCount + 1);
+                    this.notify('AI attempt ' + this.state.retryCount + ' failed, trying strategy ' + (this.state.retryCount + 1) + '...', 'error');
+                    
+                    var self = this;
+                    setTimeout(function() {
+                        self.tryAIGeneration();
+                    }, 2000); // Wait 2 seconds before retry
+                } else {
+                    console.log('All AI strategies failed, using fallbacks');
+                    this.useFallbacks('All AI strategies failed');
+                    this.state.retryCount = 0; // Reset for next time
+                }
+            },
+            
+            // 🔥 ENHANCED: Multiple prompt strategies
+            buildSimplePrompt: function() {
+                return 'Write 5 brutal roasts about social failures. Each 25-35 words. Include Gen Z slang like "no cap", "fr", "deadass". Be savage but funny. Format as:\n1.\n2.\n3.\n4.\n5.';
+            },
+            
+            buildShortPrompt: function() {
+                return 'Create 5 savage roasts (25-35 words each) with slang. Format:\n1.\n2.\n3.\n4.\n5.';
+            },
+            
+            buildMinimalPrompt: function() {
+                return '5 brutal roasts, 25-35 words each:\n1.\n2.\n3.\n4.\n5.';
             },
             
             useFallbacks: function(reason) {
                 console.log('Using fallbacks due to:', reason);
                 var fallbacks = this.getBrutalFallbacks();
                 this.showRoasts(fallbacks);
-                this.notify(reason + ' - using fallbacks! Set #' + this.state.count, 'error');
+                this.notify(reason + ' - brutal fallbacks loaded! Set #' + this.state.count, 'error');
                 this.setLoading(false);
-            },
-            
-            buildEnhancedPrompt: function() {
-                var promptTemplates = [
-                    "You are a brutal comedy writer for roast battles. Write 5 savage, diverse roasts about career disasters. Each 25-35 words, different themes, include 1-2 Gen Z slang words (no cap, fr, deadass, lowkey). Be psychologically cutting with creative metaphors. Return as numbered list 1-5.",
-                    "You are a harsh social commentator writing about awkward people. Create 5 brutal, diverse roasts about social failures. Each 25-35 words, different aspects, include modern slang (no cap, fr, deadass, lowkey). Be psychologically sharp. Return numbered 1-5.",
-                    "You are a savage relationship advisor doing comedy roasts. Write 5 brutal, diverse roasts about dating disasters. Each 25-35 words, different themes, include Gen Z slang (no cap, fr, deadass, lowkey). Be devastatingly honest. Return numbered 1-5."
-                ];
-                
-                return promptTemplates[this.state.count % promptTemplates.length];
             },
             
             parseEnhancedResponse: function(response) {
                 var content = '';
                 
-                // ✅ FIXED: Better response parsing for different response formats
                 if (typeof response === 'string') {
                     content = response;
                 } else if (response && response.message && response.message.content) {
@@ -605,7 +638,6 @@
                 
                 for (var i = 0; i < lines.length; i++) {
                     var line = lines[i].trim();
-                    // Match numbered lines
                     if (/^\d+[\.\)]\s+/.test(line)) {
                         var roast = line.replace(/^\d+[\.\)]\s+/, '').trim();
                         if (roast.length > 10) {
@@ -766,7 +798,7 @@
                 this.notifyTimeout = setTimeout(function() {
                     self.el.toast.classList.remove('show');
                     self.notifyTimeout = null;
-                }, 4000);
+                }, 5000);
             }
         };
         
