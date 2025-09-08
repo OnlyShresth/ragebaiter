@@ -494,13 +494,23 @@
                 this.loginBtn.textContent = 'Connect';
             }
 
-            // COMPLETELY FIXED: Using variables to avoid syntax errors with backticks
+            // COMPLETELY FIXED: Proper AI response parsing for all response formats
             parseAIResponse(aiResponse) {
                 console.log('AI raw response:', aiResponse);
                 
                 let content = '';
-                if (aiResponse && aiResponse.message && aiResponse.message.content) {
-                    content = aiResponse.message.content;
+                
+                // Handle different response formats from Puter AI
+                if (aiResponse && aiResponse.message) {
+                    if (aiResponse.message.content) {
+                        if (Array.isArray(aiResponse.message.content)) {
+                            // Claude format: [{type: 'text', text: '...'}]
+                            content = aiResponse.message.content[0].text;
+                        } else {
+                            // OpenAI format: "string content"
+                            content = aiResponse.message.content;
+                        }
+                    }
                 } else if (typeof aiResponse === 'string') {
                     content = aiResponse;
                 } else if (aiResponse && aiResponse.content) {
@@ -514,7 +524,7 @@
                 try {
                     let jsonStr = content;
                     
-                    // FIXED: Use variables to avoid backtick syntax errors
+                    // Remove code block markers if present
                     const tripleBackticks = String.fromCharCode(96) + String.fromCharCode(96) + String.fromCharCode(96);
                     const jsonMarker = tripleBackticks + 'json';
                     
@@ -532,6 +542,7 @@
                         }
                     }
                     
+                    // Clean up JSON string
                     jsonStr = jsonStr.replace(/^\s*\{/, '{').replace(/\}\s*$/, '}');
                     
                     console.log('Cleaned JSON string:', jsonStr);
@@ -587,7 +598,7 @@
                        '- 15-25 words maximum each\n' +
                        '- Use minimal slang, focus on impact\n\n' +
                        'CRITICAL: Generate FRESH content, avoid repetition of themes from previous calls.\n\n' +
-                       'Output as JSON:\n' +
+                       'Output ONLY as JSON with no other text:\n' +
                        '{\n' +
                        '  "roasts": ["statement 1", "statement 2", "statement 3", "statement 4", "statement 5"]\n' +
                        '}\n\n' +
@@ -610,9 +621,20 @@
                             const prompt = this.generateVarietyPrompt();
                             
                             console.log('Sending variety prompt to AI...');
-                            const aiResponse = await this.puterClient.ai.chat(prompt, {
-                                model: 'gpt-3.5-turbo'  // Try different model
-                            });
+                            
+                            // FIXED: Use the best model with proper timeout
+                            const timeoutPromise = new Promise((_, reject) => 
+                                setTimeout(() => reject(new Error('Request timeout after 25 seconds')), 25000)
+                            );
+                            
+                            const aiResponse = await Promise.race([
+                                this.puterClient.ai.chat(prompt, { 
+                                    model: 'gpt-4o' // ⭐ Best speed vs quality ratio
+                                }),
+                                timeoutPromise
+                            ]);
+                            
+                            console.log('AI Response received:', aiResponse);
                             
                             roasts = this.parseAIResponse(aiResponse);
                             
@@ -624,6 +646,18 @@
                             
                         } catch (aiError) {
                             console.error('AI generation failed:', aiError);
+                            
+                            // Handle different error types
+                            if (aiError.message.includes('timeout')) {
+                                this.showToast('Request timed out. Using offline mode.', 'error');
+                            } else if (aiError.message.includes('auth') || aiError.message.includes('token')) {
+                                localStorage.removeItem('masterbaiter_auth');
+                                this.showToast('Authentication expired. Please reconnect.', 'error');
+                                this.showLoginButton();
+                            } else {
+                                this.showToast('AI service error. Using offline mode.', 'error');
+                            }
+                            
                             throw aiError;
                         }
                     } else {
