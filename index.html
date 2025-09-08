@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAGEBAITER - Master the Art of Response</title>
-    <script src="https://js.puter.com/v2/"></script>
+    <title>RAGEBAITER - Generate Perfect Responses</title>
     <style>
         * {
             margin: 0;
@@ -13,148 +12,162 @@
         }
 
         :root {
-            --primary: #8cb369;
-            --secondary: #f4e285;
-            --accent: #f4a259;
-            --neutral: #5b8e7d;
-            --danger: #bc4b51;
-            --bg: #fafbfc;
-            --card-bg: #ffffff;
-            --text: #1a1a1a;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-            --shadow: rgba(0, 0, 0, 0.04);
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #64748b;
+            --accent: #f59e0b;
+            --bg: #0f172a;
+            --bg-secondary: #1e293b;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --danger: #ef4444;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
             background: var(--bg);
             color: var(--text);
-            line-height: 1.5;
+            line-height: 1.6;
             min-height: 100vh;
             font-size: 14px;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px;
         }
 
         /* Header */
         .header {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 40px;
+        }
+
+        .nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0 30px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 30px;
         }
 
         .logo {
             display: flex;
             align-items: center;
             gap: 12px;
-        }
-
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: var(--primary);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        .logo-text {
             font-size: 24px;
             font-weight: 700;
             color: var(--text);
         }
 
-        .logo-subtitle {
-            font-size: 12px;
-            color: var(--text-light);
-            margin-top: 2px;
-        }
-
-        .auth-section {
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 10px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
         }
 
-        .login-btn, .logout-btn {
-            padding: 8px 16px;
-            border: 1px solid var(--primary);
-            border-radius: 6px;
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
             font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--text);
+        }
+
+        .cta-button {
             background: var(--primary);
             color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.2s;
         }
 
-        .login-btn:hover, .logout-btn:hover {
-            opacity: 0.9;
-        }
-
-        .logout-btn {
-            background: var(--danger);
-            border-color: var(--danger);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            background: var(--card-bg);
-            border-radius: 6px;
-            border: 1px solid var(--border);
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            background: var(--primary);
-            border-radius: 50%;
+        .cta-button:hover {
+            background: var(--primary-dark);
         }
 
         /* Main Content */
+        .main-content {
+            display: grid;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Input Section */
         .input-section {
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 24px;
+            border-radius: 16px;
+            padding: 32px;
             border: 1px solid var(--border);
-            margin-bottom: 30px;
-            box-shadow: 0 1px 3px var(--shadow);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .input-label {
             display: block;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             color: var(--text);
-            font-size: 15px;
+            font-size: 16px;
         }
 
         .context-input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
             resize: vertical;
-            min-height: 100px;
+            min-height: 120px;
             transition: border-color 0.2s;
             font-family: inherit;
             background: var(--bg);
+            color: var(--text);
         }
 
         .context-input:focus {
@@ -162,32 +175,40 @@
             border-color: var(--primary);
         }
 
+        .context-input::placeholder {
+            color: var(--text-secondary);
+        }
+
         .generate-btn {
-            margin-top: 16px;
+            margin-top: 20px;
             width: 100%;
-            padding: 12px 20px;
-            background: var(--primary);
+            padding: 16px 24px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 12px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .generate-btn:not(:disabled):hover {
-            opacity: 0.9;
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
         }
 
         .generate-btn:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
+            transform: none;
         }
 
         .btn-loader {
-            width: 16px;
-            height: 16px;
+            width: 20px;
+            height: 20px;
             border: 2px solid rgba(255,255,255,0.3);
             border-top: 2px solid white;
             border-radius: 50%;
@@ -200,77 +221,87 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Response Cards */
-        .responses-title {
+        /* Results Section */
+        .results-section {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .results-title {
             text-align: center;
-            font-size: 20px;
+            font-size: 2rem;
             font-weight: 700;
-            margin-bottom: 24px;
+            margin-bottom: 32px;
             color: var(--text);
         }
 
-        .responses-grid {
+        .results-grid {
             display: grid;
-            gap: 16px;
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
         }
 
-        .response-card {
+        .result-card {
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 24px;
             border: 1px solid var(--border);
-            box-shadow: 0 1px 3px var(--shadow);
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .response-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        .result-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary);
         }
 
-        .method-badge {
-            background: var(--secondary);
-            color: var(--text);
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-weight: 500;
-            font-size: 11px;
-            margin-bottom: 12px;
+        .method-tag {
+            background: linear-gradient(135deg, var(--accent), #fbbf24);
+            color: var(--bg);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
             display: inline-block;
+            margin-bottom: 16px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .response-content {
-            font-size: 15px;
-            line-height: 1.5;
-            margin-bottom: 16px;
+        .response-text {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
             color: var(--text);
             background: var(--bg);
-            padding: 16px;
-            border-radius: 8px;
-            border-left: 3px solid var(--accent);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            font-weight: 500;
         }
 
         .copy-btn {
             width: 100%;
-            padding: 10px;
-            background: var(--neutral);
+            padding: 12px;
+            background: var(--secondary);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.2s;
-            font-size: 13px;
+            font-size: 14px;
         }
 
         .copy-btn:hover {
-            opacity: 0.9;
+            background: #475569;
+            transform: translateY(-1px);
         }
 
         .copy-btn.copied {
-            background: var(--primary);
+            background: var(--success);
         }
 
         /* Toast */
@@ -278,15 +309,15 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background: var(--neutral);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background: var(--card-bg);
+            color: var(--text);
+            padding: 16px 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             z-index: 1000;
             transform: translateX(100%);
-            transition: transform 0.3s;
-            font-size: 14px;
+            transition: transform 0.3s ease;
             font-weight: 500;
         }
 
@@ -295,13 +326,16 @@
         }
 
         .toast.success {
-            background: var(--primary);
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
         }
 
         .toast.error {
-            background: var(--danger);
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
         }
 
+        /* Utility Classes */
         .hidden {
             display: none !important;
         }
@@ -309,18 +343,28 @@
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .container {
-                padding: 16px;
+                padding: 0 16px;
             }
             
-            .header {
+            .nav {
                 flex-direction: column;
-                gap: 16px;
-                text-align: center;
-                padding-bottom: 20px;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                gap: 20px;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
             }
             
             .input-section {
-                padding: 20px;
+                padding: 24px;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
             }
             
             .toast {
@@ -333,469 +377,377 @@
             .toast.show {
                 transform: translateY(0);
             }
-
-            .logo-text {
-                font-size: 20px;
-            }
-
-            .responses-title {
-                font-size: 18px;
-            }
         }
 
-        @media (min-width: 769px) {
-            .responses-grid {
-                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <div class="logo">
-                <div class="logo-icon">R</div>
-                <div>
-                    <h1 class="logo-text">RAGEBAITER</h1>
-                    <div class="logo-subtitle">Master the Art of Response</div>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">
+                    <div class="logo-icon">R</div>
+                    <span>RAGEBAITER</span>
                 </div>
-            </div>
-            <div class="auth-section">
-                <button id="loginBtn" class="login-btn hidden">Connect</button>
-                <div id="userInfo" class="user-info hidden">
-                    <div class="status-dot"></div>
-                    <span id="userName"></span>
-                    <button id="logoutBtn" class="logout-btn">Logout</button>
+                <div class="nav-links">
+                    <a href="#" class="nav-link">About</a>
+                    <a href="#" class="nav-link">How it Works</a>
+                    <a href="#" class="cta-button">Get Started</a>
                 </div>
-            </div>
-        </header>
+            </nav>
+        </div>
+    </header>
 
-        <main class="main-content">
-            <div class="input-section">
-                <label for="contextInput" class="input-label">Enter the context:</label>
+    <main class="main-content">
+        <div class="container">
+            <section class="hero-section">
+                <h1 class="hero-title">Perfect Responses</h1>
+                <p class="hero-subtitle">Generate contextually perfect ragebait responses that actually work. Powered by advanced AI analysis.</p>
+            </section>
+
+            <section class="input-section">
+                <label for="contextInput" class="input-label">Enter the message you want to respond to:</label>
                 <textarea 
                     id="contextInput" 
                     class="context-input" 
-                    placeholder="Paste the message or comment you want to respond to..."
-                    rows="4"
+                    placeholder="Paste the comment, message, or statement you want to create a response for..."
+                    rows="5"
                 ></textarea>
-                <button id="generateBtn" class="generate-btn" disabled>
-                    <span class="btn-text">Generate Responses</span>
+                <button id="generateBtn" class="generate-btn">
+                    <span class="btn-text">Generate Response</span>
                     <div class="btn-loader hidden"></div>
                 </button>
-            </div>
+            </section>
 
-            <div class="responses-section">
-                <div id="responseContainer" class="response-container hidden">
-                    <h2 class="responses-title">Your Arsenal</h2>
-                    <div class="responses-grid">
-                        <div class="response-card" id="response1">
-                            <div class="method-badge">
-                                <span class="method-name"></span>
-                            </div>
-                            <div class="response-content"></div>
-                            <button class="copy-btn" data-response="1">
-                                Copy
-                            </button>
-                        </div>
-                        <div class="response-card" id="response2">
-                            <div class="method-badge">
-                                <span class="method-name"></span>
-                            </div>
-                            <div class="response-content"></div>
-                            <button class="copy-btn" data-response="2">
-                                Copy
-                            </button>
-                        </div>
-                        <div class="response-card" id="response3">
-                            <div class="method-badge">
-                                <span class="method-name"></span>
-                            </div>
-                            <div class="response-content"></div>
-                            <button class="copy-btn" data-response="3">
-                                Copy
-                            </button>
-                        </div>
+            <section class="results-section">
+                <div id="resultsContainer" class="results-container hidden">
+                    <h2 class="results-title">Your Response Options</h2>
+                    <div class="results-grid" id="resultsGrid">
+                        <!-- Results will be populated here -->
                     </div>
                 </div>
-            </div>
-        </main>
-    </div>
+            </section>
+        </div>
+    </main>
 
     <div id="toast" class="toast hidden"></div>
 
     <script>
         class RageBaiter {
             constructor() {
-                this.puterClient = null;
-                this.isAuthenticated = false;
-                this.userName = '';
-                this.usedResponseIds = new Set();
-                
                 this.initializeElements();
                 this.attachEventListeners();
-                this.checkAutoLogin();
             }
 
             initializeElements() {
-                this.loginBtn = document.getElementById('loginBtn');
-                this.logoutBtn = document.getElementById('logoutBtn');
-                this.userInfo = document.getElementById('userInfo');
-                this.userName = document.getElementById('userName');
                 this.contextInput = document.getElementById('contextInput');
                 this.generateBtn = document.getElementById('generateBtn');
-                this.responseContainer = document.getElementById('responseContainer');
+                this.resultsContainer = document.getElementById('resultsContainer');
+                this.resultsGrid = document.getElementById('resultsGrid');
                 this.toast = document.getElementById('toast');
                 this.btnText = document.querySelector('.btn-text');
                 this.btnLoader = document.querySelector('.btn-loader');
             }
 
             attachEventListeners() {
-                this.loginBtn.addEventListener('click', () => this.handleLogin());
-                this.logoutBtn.addEventListener('click', () => this.handleLogout());
                 this.generateBtn.addEventListener('click', () => this.generateResponses());
                 this.contextInput.addEventListener('input', () => this.toggleGenerateButton());
                 
                 document.addEventListener('click', (e) => {
                     if (e.target.closest('.copy-btn')) {
-                        const responseNum = e.target.closest('.copy-btn').dataset.response;
-                        this.copyResponse(responseNum);
+                        const responseText = e.target.closest('.result-card').querySelector('.response-text').textContent;
+                        this.copyResponse(responseText, e.target);
                     }
                 });
             }
 
-            async checkAutoLogin() {
-                try {
-                    const savedAuth = localStorage.getItem('ragebaiter_auth');
-                    if (savedAuth) {
-                        const authData = JSON.parse(savedAuth);
-                        
-                        if (typeof puter !== 'undefined') {
-                            this.puterClient = puter;
-                            
-                            try {
-                                const user = await puter.auth.getUser();
-                                if (user) {
-                                    this.isAuthenticated = true;
-                                    this.updateUIForAuthentication(user.username);
-                                    this.showToast('Auto-login successful!', 'success');
-                                    return;
-                                }
-                            } catch (getUserError) {
-                                console.log('No existing session');
-                            }
-                        }
-                    }
-                    this.showLoginButton();
-                } catch (error) {
-                    console.error('Auto-login failed:', error);
-                    this.showLoginButton();
-                }
-            }
-
-            async handleLogin() {
-                try {
-                    this.loginBtn.disabled = true;
-                    this.loginBtn.textContent = 'Connecting...';
-
-                    if (typeof puter === 'undefined') {
-                        throw new Error('Puter SDK not loaded');
-                    }
-
-                    const user = await puter.auth.signIn();
-                    
-                    if (user) {
-                        this.isAuthenticated = true;
-                        this.puterClient = puter;
-                        
-                        localStorage.setItem('ragebaiter_auth', JSON.stringify({ 
-                            authenticated: true,
-                            username: user.username 
-                        }));
-                        
-                        this.updateUIForAuthentication(user.username);
-                        this.showToast('Connected!', 'success');
-                    } else {
-                        throw new Error('No user returned');
-                    }
-                } catch (error) {
-                    console.error('Login error:', error);
-                    this.showToast('Connection failed. Using demo mode.', 'error');
-                    
-                    setTimeout(() => {
-                        this.isAuthenticated = true;
-                        this.updateUIForAuthentication('Demo User');
-                        this.showToast('Demo mode active!', 'success');
-                    }, 3000);
-                    
-                    this.resetLoginButton();
-                }
-            }
-
-            async handleLogout() {
-                try {
-                    if (this.puterClient && typeof this.puterClient.auth?.signOut === 'function') {
-                        await this.puterClient.auth.signOut();
-                    }
-                    
-                    localStorage.removeItem('ragebaiter_auth');
-                    this.isAuthenticated = false;
-                    this.puterClient = null;
-                    this.showLoginButton();
-                    this.showToast('Logged out!', 'success');
-                } catch (error) {
-                    console.error('Logout error:', error);
-                    localStorage.removeItem('ragebaiter_auth');
-                    this.isAuthenticated = false;
-                    this.puterClient = null;
-                    this.showLoginButton();
-                    this.showToast('Logged out!', 'success');
-                }
-            }
-
-            updateUIForAuthentication(username) {
-                this.loginBtn.classList.add('hidden');
-                this.userInfo.classList.remove('hidden');
-                this.userName.textContent = username;
-                this.toggleGenerateButton();
-            }
-
-            showLoginButton() {
-                this.loginBtn.classList.remove('hidden');
-                this.userInfo.classList.add('hidden');
-                this.resetLoginButton();
-                this.toggleGenerateButton();
-            }
-
-            resetLoginButton() {
-                this.loginBtn.disabled = false;
-                this.loginBtn.textContent = 'Connect';
-            }
-
             toggleGenerateButton() {
                 const hasInput = this.contextInput.value.trim().length > 0;
-                this.generateBtn.disabled = !this.isAuthenticated || !hasInput;
+                this.generateBtn.disabled = !hasInput;
             }
 
             analyzeContext(context) {
                 const lower = context.toLowerCase();
                 
-                const patterns = {
-                    opinion: /\b(think|believe|feel|opinion|view|personally|imo|tbh)\b/g,
-                    achievement: /\b(accomplished|achieved|won|success|proud|earned|got|finished|completed)\b/g,
-                    complaint: /\b(hate|annoying|stupid|dumb|worst|terrible|awful|sucks|cringe)\b/g,
-                    question: /\?|^(what|how|why|when|where|who|can|should|would|could|is|are|do|does)/i,
-                    personal: /\b(i|my|me|myself|family|relationship|personally)\b/g,
-                    advice: /\b(should|need to|must|have to|recommend|suggest|try)\b/g,
-                    emotional: /\b(sad|happy|angry|frustrated|excited|depressed|anxious|stressed)\b/g,
-                    social: /\b(people|society|generation|everyone|nobody|community|social)\b/g
+                // Advanced context analysis with sentiment and topic detection
+                const analysisPatterns = {
+                    personal_story: {
+                        patterns: [/\bi\s+(was|am|have|had|did|went|got|made)\b/g, /\bmy\s+\w+/g, /\bmyself\b/g],
+                        weight: 2
+                    },
+                    achievement_brag: {
+                        patterns: [/\b(proud|achieved|accomplished|won|earned|got|finished|completed|success)\b/g, /\bjust\s+(got|finished|completed|achieved)\b/g],
+                        weight: 3
+                    },
+                    complaint_rant: {
+                        patterns: [/\b(hate|stupid|dumb|annoying|worst|terrible|awful|sucks|ridiculous)\b/g, /\bcan't\s+believe\b/g, /\bso\s+(annoying|stupid|dumb)\b/g],
+                        weight: 3
+                    },
+                    opinion_statement: {
+                        patterns: [/\bi\s+(think|believe|feel|know)\b/g, /\bin\s+my\s+opinion\b/g, /\bimo\b/g, /\btbh\b/g],
+                        weight: 2
+                    },
+                    question_seeking: {
+                        patterns: [/\?/g, /\b(what|why|how|when|where|who)\s+/g, /\bcan\s+someone\b/g],
+                        weight: 2
+                    },
+                    advice_giving: {
+                        patterns: [/\byou\s+(should|need|have\s+to|must|ought)\b/g, /\btry\s+\w+/g, /\brecommend\b/g],
+                        weight: 2
+                    },
+                    social_commentary: {
+                        patterns: [/\bpeople\s+(these\s+days|today|nowadays)\b/g, /\bsociety\b/g, /\bgeneration\b/g, /\beveryone\s+(is|does)\b/g],
+                        weight: 2
+                    }
                 };
 
-                let bestMatch = 'general';
-                let maxMatches = 0;
+                let bestMatch = { type: 'general', score: 0 };
 
-                for (const [type, pattern] of Object.entries(patterns)) {
-                    const matches = (lower.match(pattern) || []).length;
-                    if (matches > maxMatches) {
-                        maxMatches = matches;
-                        bestMatch = type;
+                for (const [type, config] of Object.entries(analysisPatterns)) {
+                    let score = 0;
+                    for (const pattern of config.patterns) {
+                        const matches = (lower.match(pattern) || []).length;
+                        score += matches * config.weight;
+                    }
+                    
+                    if (score > bestMatch.score) {
+                        bestMatch = { type, score };
                     }
                 }
 
-                return { type: bestMatch, confidence: maxMatches };
+                return bestMatch.type;
             }
 
-            getUniqueResponseSet(contextType, context) {
-                const responseBank = {
-                    opinion: [
+            generateContextualResponses(context, contextType) {
+                const responseStrategies = {
+                    personal_story: [
                         {
-                            method: "dismissive invalidation",
-                            responses: [
-                                "Your dumbass opinion is embarrassing.",
-                                "You sound like a broke clown.",
-                                "Stop wasting air, no one cares."
+                            method: "Story Invalidation",
+                            templates: [
+                                "That definitely happened exactly like you described it.",
+                                "Sure, and everyone clapped afterwards too.",
+                                "Your version of events seems... creative."
                             ]
                         },
                         {
-                            method: "confident wrongness",
-                            responses: [
-                                "You're straight-up lost, no cap.",
-                                "Facts: You're clueless AF.",
-                                "Your brain's buffering, lol."
+                            method: "Reality Check",
+                            templates: [
+                                "Main character syndrome is showing.",
+                                "Nobody asked for your autobiography.",
+                                "This reads like bad fanfiction of your own life."
                             ]
                         },
                         {
-                            method: "condescending expertise",
-                            responses: [
-                                "Grammar is free, learn it.",
-                                "Did your brain lag or nah?",
-                                "You're a walking cringe fest."
+                            method: "Dismissive Minimization",
+                            templates: [
+                                "Cool story, needs more dragons.",
+                                "And then you woke up?",
+                                "The audacity to share this publicly..."
                             ]
                         }
                     ],
-                    achievement: [
+                    achievement_brag: [
                         {
-                            method: "achievement minimizing",
-                            responses: [
-                                "Doing basic tasks isn't an achievement.",
-                                "Congrats on being a functional human, I guess.",
-                                "We're celebrating mediocrity now? Wild."
+                            method: "Achievement Deflation",
+                            templates: [
+                                "Congrats on doing basic human tasks.",
+                                "The bar was in hell and you tripped over it.",
+                                "Participation trophies hit different these days."
                             ]
                         },
                         {
-                            method: "false praise toxicity",
-                            responses: [
-                                "Good for you. Anyway...",
-                                "That's so cute. *rolls eyes*",
-                                "Aww look who did something basic."
+                            method: "False Praise Toxicity",
+                            templates: [
+                                "So proud of you for being functional today!",
+                                "Look who managed to adult! Gold star!",
+                                "Your parents must be... surprised."
                             ]
                         },
                         {
-                            method: "reality check brutality",
-                            responses: [
-                                "Nobody asked but go off.",
-                                "You thought this was worth sharing?",
-                                "Living your truth, even if it's mid."
+                            method: "Comparative Dismissal",
+                            templates: [
+                                "That's cute. I did that in kindergarten.",
+                                "Imagine celebrating this unironically.",
+                                "The secondhand embarrassment is real."
                             ]
                         }
                     ],
-                    complaint: [
+                    complaint_rant: [
                         {
-                            method: "toxic dismissal",
-                            responses: [
-                                "Sounds like a skill issue to me.",
-                                "Maybe don't be such a pick-me about it.",
-                                "This energy is giving villain vibes."
+                            method: "Problem Amplification",
+                            templates: [
+                                "Skill issue + ratio + cope harder.",
+                                "Have you tried not being the problem?",
+                                "This energy screams 'I'm the drama.'"
                             ]
                         },
                         {
-                            method: "dismissive gaslighting",
-                            responses: [
-                                "Are we sure that actually happened?",
-                                "You seem pressed about nothing tbh.",
-                                "Interesting way to say you're the problem."
+                            method: "Victim Blaming Subtle",
+                            templates: [
+                                "What's the common factor in all your problems?",
+                                "There's always two sides... but go off.",
+                                "Wonder what you're not telling us."
                             ]
                         },
                         {
-                            method: "problem amplification",
-                            responses: [
-                                "If this is your biggest problem... blessed life.",
-                                "Tell me you're privileged without telling me.",
-                                "First world problems hit different huh."
+                            method: "Dismissive Gaslighting",
+                            templates: [
+                                "Are you sure that's what actually happened?",
+                                "Your perception of reality is... unique.",
+                                "Maybe the problem is your attitude?"
                             ]
                         }
                     ],
-                    question: [
+                    opinion_statement: [
                         {
-                            method: "stupid question shame",
-                            responses: [
-                                "Did you try Google before asking this?",
-                                "You really thought this was worth asking.",
-                                "Bless your heart for trying."
+                            method: "Opinion Annihilation",
+                            templates: [
+                                "This opinion is not the flex you think it is.",
+                                "Imagine having this take in 2025.",
+                                "Your brain really said 'no thoughts, head empty.'"
                             ]
                         },
                         {
-                            method: "loaded question callout",
-                            responses: [
-                                "This question gives manipulative energy.",
+                            method: "Intelligence Questioning",
+                            templates: [
+                                "Did you think before typing this or...?",
+                                "The critical thinking really left the chat.",
+                                "This is why people don't take you seriously."
+                            ]
+                        },
+                        {
+                            method: "Social Rejection",
+                            templates: [
+                                "Tell me you're chronically online without telling me.",
+                                "This is exactly why you eat lunch alone.",
+                                "Your personality is a walking red flag."
+                            ]
+                        }
+                    ],
+                    question_seeking: [
+                        {
+                            method: "Question Shaming",
+                            templates: [
+                                "Google is free but curiosity apparently isn't.",
+                                "This question is giving 'I peaked in middle school' energy.",
+                                "The intellectual curiosity is... concerning."
+                            ]
+                        },
+                        {
+                            method: "Loaded Question Callout",
+                            templates: [
                                 "What's your real agenda here?",
-                                "The audacity to ask this unironically."
+                                "This question is more loaded than my student debt.",
+                                "The manipulation is showing, babes."
                             ]
                         },
                         {
-                            method: "intelligence questioning",
-                            responses: [
-                                "Are you serious right now or trolling?",
-                                "Critical thinking left the chat.",
-                                "Can't tell if you're joking or just... yeah."
+                            method: "Competency Questioning",
+                            templates: [
+                                "Are you actually this clueless or just pretending?",
+                                "The way you thought this was worth asking...",
+                                "Basic research skills have left the chat."
                             ]
                         }
                     ],
-                    personal: [
+                    advice_giving: [
                         {
-                            method: "trauma dumping callout",
-                            responses: [
-                                "Sir this is a Wendy's... nobody asked.",
-                                "You made this about yourself... classic.",
-                                "Thanks for the unsolicited personal info."
+                            method: "Authority Undermining",
+                            templates: [
+                                "Who made you the expert on literally anything?",
+                                "Your life advice hits like decaf coffee.",
+                                "Maybe fix your own mess first?"
                             ]
                         },
                         {
-                            method: "reality distortion",
-                            responses: [
-                                "That's definitely one way to remember it.",
-                                "Your version of events is... interesting.",
-                                "Main character energy is unmatched."
+                            method: "Credibility Destruction",
+                            templates: [
+                                "Taking advice from you is like asking a fish about flying.",
+                                "Your track record speaks for itself... poorly.",
+                                "The audacity to give advice while being you."
                             ]
                         },
                         {
-                            method: "victim blaming subtle",
-                            responses: [
-                                "Wonder what part you're leaving out.",
-                                "There's always two sides but go off.",
-                                "Something's not adding up here."
+                            method: "Unsolicited Advice Roast",
+                            templates: [
+                                "Nobody asked for your TED talk on failure.",
+                                "Keep your life tips, we've seen your results.",
+                                "Your advice is worth exactly what we paid for it."
+                            ]
+                        }
+                    ],
+                    social_commentary: [
+                        {
+                            method: "Generational Dismissal",
+                            templates: [
+                                "OK boomer energy but make it worse somehow.",
+                                "This take is more outdated than your references.",
+                                "Society isn't the problem... you are."
+                            ]
+                        },
+                        {
+                            method: "Perspective Invalidation",
+                            templates: [
+                                "Tell me you don't go outside without telling me.",
+                                "Your worldview is smaller than your social circle.",
+                                "Chronically online takes are not real life."
+                            ]
+                        },
+                        {
+                            method: "Relevance Questioning",
+                            templates: [
+                                "Your opinion on society matters because...?",
+                                "Who elected you spokesperson for humanity?",
+                                "This take is giving 'lives in mom's basement' vibes."
                             ]
                         }
                     ],
                     general: [
                         {
-                            method: "social rejection",
-                            responses: [
-                                "You're the human version of a typo.",
-                                "Nobody would pay to hear your vibe.",
-                                "Your existence is a public hazard."
+                            method: "Existential Dismissal",
+                            templates: [
+                                "You're the human equivalent of a typo.",
+                                "Your existence is a participation trophy nobody wanted.",
+                                "The universe's biggest plot hole is you."
                             ]
                         },
                         {
-                            method: "intelligence attack",
-                            responses: [
-                                "Your IQ called, it wants a refund.",
-                                "The gap between us is unbridgeable.",
-                                "Processing your nonsense hurts brain cells."
+                            method: "Intellectual Destruction",
+                            templates: [
+                                "Your IQ is room temperature... in Celsius.",
+                                "Brain cells are apparently optional for you.",
+                                "The gap between you and logic is unbridgeable."
                             ]
                         },
                         {
-                            method: "general dismissal",
-                            responses: [
-                                "You bring nothing but noise here.",
-                                "Can you make your stupidity quiet?",
-                                "Go crawl back under your rock."
+                            method: "Social Annihilation",
+                            templates: [
+                                "You're why aliens won't visit Earth.",
+                                "Your personality is a crime against humanity.",
+                                "Nobody would notice if you logged off forever."
                             ]
                         }
                     ]
                 };
 
-                const availableResponses = responseBank[contextType] || responseBank.general;
+                const strategies = responseStrategies[contextType] || responseStrategies.general;
                 
-                const contextHash = context.slice(0, 10) + contextType;
-                const availableIds = [];
-                
-                for (let i = 0; i < availableResponses.length; i++) {
-                    const responseGroup = availableResponses[i];
-                    for (let j = 0; j < responseGroup.responses.length; j++) {
-                        const id = `${contextHash}_${i}_${j}`;
-                        if (!this.usedResponseIds.has(id)) {
-                            availableIds.push({ groupIndex: i, responseIndex: j, id });
-                        }
-                    }
-                }
+                // Randomly select 3 different strategies
+                const shuffledStrategies = [...strategies].sort(() => Math.random() - 0.5);
+                const selectedStrategies = shuffledStrategies.slice(0, 3);
 
-                if (availableIds.length < 3) {
-                    this.usedResponseIds.clear();
-                    return this.getUniqueResponseSet(contextType, context);
-                }
-
-                const selectedIds = [];
-                while (selectedIds.length < 3 && availableIds.length > 0) {
-                    const randomIndex = Math.floor(Math.random() * availableIds.length);
-                    const selected = availableIds.splice(randomIndex, 1)[0];
-                    selectedIds.push(selected);
-                    this.usedResponseIds.add(selected.id);
-                }
-
-                return selectedIds.map(({ groupIndex, responseIndex }) => ({
-                    method: availableResponses[groupIndex].method,
-                    response: availableResponses[groupIndex].responses[responseIndex]
+                return selectedStrategies.map(strategy => ({
+                    method: strategy.method,
+                    response: strategy.templates[Math.floor(Math.random() * strategy.templates.length)]
                 }));
             }
 
@@ -809,65 +761,69 @@
                 this.setLoadingState(true);
 
                 try {
-                    const analysis = this.analyzeContext(context);
-                    const responses = this.getUniqueResponseSet(analysis.type, context);
+                    // Simulate processing time for more realistic feel
+                    await new Promise(resolve => setTimeout(resolve, 1500));
                     
-                    this.displayResponses({ responses });
-                    this.showToast('Responses generated!', 'success');
+                    const contextType = this.analyzeContext(context);
+                    const responses = this.generateContextualResponses(context, contextType);
+                    
+                    this.displayResults(responses);
+                    this.showToast('Responses generated successfully!', 'success');
                     
                 } catch (error) {
                     console.error('Generation error:', error);
-                    this.showToast('Failed to generate responses.', 'error');
+                    this.showToast('Failed to generate responses. Please try again.', 'error');
                 } finally {
                     this.setLoadingState(false);
                 }
             }
 
-            displayResponses(data) {
-                if (!data.responses || data.responses.length < 3) {
-                    throw new Error('Invalid response format');
-                }
-
-                this.responseContainer.classList.remove('hidden');
-
-                data.responses.forEach((responseData, index) => {
-                    const card = document.getElementById(`response${index + 1}`);
-                    const methodBadge = card.querySelector('.method-name');
-                    const responseContent = card.querySelector('.response-content');
-
-                    methodBadge.textContent = responseData.method;
-                    responseContent.textContent = responseData.response;
+            displayResults(responses) {
+                this.resultsGrid.innerHTML = '';
+                
+                responses.forEach((response, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'result-card';
+                    card.style.animationDelay = `${index * 100}ms`;
+                    
+                    card.innerHTML = `
+                        <div class="method-tag">${response.method}</div>
+                        <div class="response-text">${response.response}</div>
+                        <button class="copy-btn">Copy Response</button>
+                    `;
+                    
+                    this.resultsGrid.appendChild(card);
                 });
 
+                this.resultsContainer.classList.remove('hidden');
+                
+                // Smooth scroll to results
                 setTimeout(() => {
-                    this.responseContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
+                    this.resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 200);
             }
 
-            async copyResponse(responseNum) {
-                const card = document.getElementById(`response${responseNum}`);
-                const responseText = card.querySelector('.response-content').textContent;
-                const copyBtn = card.querySelector('.copy-btn');
-
+            async copyResponse(text, button) {
                 try {
-                    await navigator.clipboard.writeText(responseText);
-                    copyBtn.textContent = '✓ Copied';
-                    copyBtn.classList.add('copied');
+                    await navigator.clipboard.writeText(text);
+                    button.textContent = '✓ Copied!';
+                    button.classList.add('copied');
                     
                     setTimeout(() => {
-                        copyBtn.textContent = 'Copy';
-                        copyBtn.classList.remove('copied');
+                        button.textContent = 'Copy Response';
+                        button.classList.remove('copied');
                     }, 2000);
                     
-                    this.showToast('Copied!', 'success');
+                    this.showToast('Copied to clipboard!', 'success');
                 } catch (error) {
+                    // Fallback for older browsers
                     const textArea = document.createElement('textarea');
-                    textArea.value = responseText;
+                    textArea.value = text;
                     document.body.appendChild(textArea);
                     textArea.select();
                     document.execCommand('copy');
                     document.body.removeChild(textArea);
-                    this.showToast('Copied!', 'success');
+                    this.showToast('Copied to clipboard!', 'success');
                 }
             }
 
@@ -877,7 +833,7 @@
                     this.btnText.classList.add('hidden');
                     this.btnLoader.classList.remove('hidden');
                 } else {
-                    this.generateBtn.disabled = !this.isAuthenticated || !this.contextInput.value.trim();
+                    this.generateBtn.disabled = !this.contextInput.value.trim();
                     this.btnText.classList.remove('hidden');
                     this.btnLoader.classList.add('hidden');
                 }
@@ -893,6 +849,7 @@
             }
         }
 
+        // Initialize the application
         document.addEventListener('DOMContentLoaded', () => {
             new RageBaiter();
         });
