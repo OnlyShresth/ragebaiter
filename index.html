@@ -610,7 +610,9 @@
                             const prompt = this.generateVarietyPrompt();
                             
                             console.log('Sending variety prompt to AI...');
-                            const aiResponse = await this.puterClient.ai.chat(prompt);
+                            const aiResponse = await this.puterClient.ai.chat(prompt, {
+                                model: 'gpt-3.5-turbo'  // Try different model
+                            });
                             
                             roasts = this.parseAIResponse(aiResponse);
                             
