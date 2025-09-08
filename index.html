@@ -11,7 +11,6 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         :root {
             --primary: #dc2626;
             --primary-dark: #b91c1c;
@@ -26,7 +25,6 @@
             --success: #10b981;
             --danger: #ef4444;
         }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
             background: var(--bg);
@@ -35,7 +33,6 @@
             min-height: 100vh;
             font-size: 14px;
         }
-
         .auth-section {
             position: fixed;
             top: 20px;
@@ -45,7 +42,6 @@
             align-items: center;
             gap: 12px;
         }
-
         .login-btn, .logout-btn {
             padding: 12px 20px;
             border: 1px solid var(--primary);
@@ -58,15 +54,12 @@
             color: white;
             margin: 0;
         }
-
         .login-btn.hidden { display: none !important; }
         .login-btn:hover, .logout-btn:hover { opacity: 0.9; }
-
         .logout-btn {
             background: var(--danger);
             border-color: var(--danger);
         }
-
         .user-info {
             display: flex;
             align-items: center;
@@ -76,25 +69,21 @@
             border-radius: 6px;
             border: 1px solid var(--border);
         }
-
         .status-dot {
             width: 6px;
             height: 6px;
             background: var(--primary);
             border-radius: 50%;
         }
-
         .container {
             max-width: 1000px;
             margin: 0 auto;
             padding: 60px 20px 40px;
         }
-
         .hero-section {
             text-align: center;
             padding: 80px 0 60px;
         }
-
         .hero-title {
             font-size: 4rem;
             font-weight: 900;
@@ -106,7 +95,6 @@
             text-transform: uppercase;
             letter-spacing: -2px;
         }
-
         .generate-section {
             background: var(--card-bg);
             border-radius: 16px;
@@ -116,20 +104,17 @@
             margin-bottom: 50px;
             text-align: center;
         }
-
         .generate-title {
             font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 20px;
             color: var(--text);
         }
-
         .generate-subtitle {
             color: var(--text-secondary);
             margin-bottom: 30px;
             font-size: 1.1rem;
         }
-
         .generate-btn {
             padding: 20px 40px;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -143,19 +128,17 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             position: relative;
+            will-change: transform;
         }
-
         .generate-btn:hover {
-            transform: translateY(-3px);
+            transform: translate3d(0, -3px, 0);
             box-shadow: 0 15px 35px rgba(220, 38, 38, 0.4);
         }
-
         .generate-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
-
         .btn-loader {
             width: 24px;
             height: 24px;
@@ -165,16 +148,13 @@
             animation: spin 1s linear infinite;
             margin: 0 auto;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
         .results-section {
             margin-top: 50px;
         }
-
         .results-title {
             text-align: center;
             font-size: 2.5rem;
@@ -183,27 +163,24 @@
             color: var(--primary);
             text-transform: uppercase;
         }
-
         .results-grid {
             display: grid;
             gap: 20px;
             grid-template-columns: 1fr;
         }
-
         .result-card {
             background: var(--card-bg);
             border-radius: 12px;
             padding: 24px;
             border: 1px solid var(--border);
             transition: all 0.3s ease;
+            will-change: transform;
         }
-
         .result-card:hover {
-            transform: translateY(-4px);
+            transform: translate3d(0, -4px, 0);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
             border-color: var(--primary);
         }
-
         .roast-number {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
@@ -216,7 +193,6 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-
         .roast-text {
             font-size: 18px;
             line-height: 1.6;
@@ -228,7 +204,6 @@
             border-left: 4px solid var(--primary);
             font-weight: 600;
         }
-
         .copy-btn {
             width: 100%;
             padding: 14px;
@@ -242,10 +217,8 @@
             font-size: 14px;
             text-transform: uppercase;
         }
-
         .copy-btn:hover { background: #475569; }
         .copy-btn.copied { background: var(--success); }
-
         .toast {
             position: fixed;
             top: 80px;
@@ -262,24 +235,19 @@
             font-weight: 500;
             opacity: 0;
         }
-
         .toast.show {
             transform: translateX(0);
             opacity: 1;
         }
-
         .toast.success {
             border-color: var(--success);
             background: rgba(16, 185, 129, 0.1);
         }
-
         .toast.error {
             border-color: var(--danger);
             background: rgba(239, 68, 68, 0.1);
         }
-
         .hidden { display: none !important; }
-
         @media (max-width: 768px) {
             .hero-title { font-size: 2.8rem; }
             .generate-section { padding: 30px 20px; }
@@ -295,12 +263,10 @@
             <button id="logoutBtn" class="logout-btn">Logout</button>
         </div>
     </div>
-
     <div class="container">
         <section class="hero-section">
             <h1 class="hero-title">Ragebait 'em</h1>
         </section>
-
         <section class="generate-section">
             <h2 class="generate-title">Ragebait 'em</h2>
             <p class="generate-subtitle">Imagine being so unemployed you gotta use ts 🥀</p>
@@ -310,7 +276,6 @@
                 <div class="btn-loader hidden"></div>
             </button>
         </section>
-
         <section class="results-section">
             <div id="resultsContainer" class="results-container hidden">
                 <h2 class="results-title">Here you go gng</h2>
@@ -318,24 +283,64 @@
             </div>
         </section>
     </div>
-
     <div id="toast" class="toast"></div>
-
     <script>
         var EnhancedRoastApp = {
             state: {
                 loggedIn: false,
                 user: null,
                 loading: false,
-                count: 0
+                count: 0,
+                puterLoaded: false
             },
             
             el: {},
+            notifyTimeout: null,
             
             start: function() {
+                var self = this;
+                
+                // Wait for PuterJS to load
+                if (typeof puter === 'undefined') {
+                    var checkPuter = setInterval(function() {
+                        if (typeof puter !== 'undefined') {
+                            clearInterval(checkPuter);
+                            self.initializePuter();
+                        }
+                    }, 100);
+                    
+                    // Timeout after 10 seconds
+                    setTimeout(function() {
+                        clearInterval(checkPuter);
+                        if (!self.state.puterLoaded) {
+                            self.notify('PuterJS failed to load - using offline mode', 'error');
+                            self.initializeOffline();
+                        }
+                    }, 10000);
+                } else {
+                    this.initializePuter();
+                }
+            },
+            
+            initializePuter: function() {
+                try {
+                    this.state.puterLoaded = true;
+                    this.getElements();
+                    this.bindEvents();
+                    this.checkAuth();
+                    this.notify('PuterJS loaded successfully', 'success');
+                } catch (e) {
+                    console.error('PuterJS initialization error:', e);
+                    this.initializeOffline();
+                }
+            },
+            
+            initializeOffline: function() {
+                this.state.puterLoaded = false;
                 this.getElements();
                 this.bindEvents();
-                this.checkAuth();
+                this.updateUI();
+                this.notify('Running in offline mode', 'error');
             },
             
             getElements: function() {
@@ -358,7 +363,8 @@
                 this.el.logoutBtn.onclick = function() { self.logout(); };
                 this.el.generateBtn.onclick = function() { self.generate(); };
                 
-                document.onclick = function(e) {
+                // Use event delegation on results grid instead of global document
+                this.el.resultsGrid.onclick = function(e) {
                     if (e.target.classList.contains('copy-btn')) {
                         var text = e.target.getAttribute('data-text');
                         self.copyText(text, e.target);
@@ -367,49 +373,96 @@
             },
             
             checkAuth: function() {
-                this.state.loggedIn = false;
-                this.state.user = null;
-                this.updateUI();
+                if (!this.state.puterLoaded) {
+                    this.state.loggedIn = false;
+                    this.state.user = null;
+                    this.updateUI();
+                    return;
+                }
+                
+                var self = this;
+                try {
+                    if (puter.auth && puter.auth.getUser) {
+                        puter.auth.getUser().then(function(user) {
+                            if (user && user.username) {
+                                self.state.loggedIn = true;
+                                self.state.user = user;
+                            } else {
+                                self.state.loggedIn = false;
+                                self.state.user = null;
+                            }
+                            self.updateUI();
+                        }).catch(function() {
+                            self.state.loggedIn = false;
+                            self.state.user = null;
+                            self.updateUI();
+                        });
+                    } else {
+                        this.state.loggedIn = false;
+                        this.state.user = null;
+                        this.updateUI();
+                    }
+                } catch (e) {
+                    console.error('Auth check error:', e);
+                    this.state.loggedIn = false;
+                    this.state.user = null;
+                    this.updateUI();
+                }
             },
             
             login: function() {
+                if (!this.state.puterLoaded) {
+                    this.notify('PuterJS not available - running in offline mode', 'error');
+                    // Enable offline mode
+                    this.state.loggedIn = true;
+                    this.state.user = { username: 'Offline User' };
+                    this.updateUI();
+                    return;
+                }
+                
                 var self = this;
                 this.el.loginBtn.disabled = true;
                 this.el.loginBtn.textContent = 'Connecting...';
                 
                 try {
-                    puter.auth.signIn().then(function(result) {
-                        return puter.auth.getUser();
-                    }).then(function(user) {
+                    puter.auth.signIn().then(function(user) {
                         self.state.loggedIn = true;
                         self.state.user = user;
                         self.updateUI();
                         self.notify('Connected successfully!', 'success');
                     }).catch(function(error) {
+                        console.error('Auth error:', error);
                         self.resetLogin();
-                        self.notify('Connection failed', 'error');
+                        self.notify('Connection failed: ' + (error.message || 'Unknown error'), 'error');
                     });
                 } catch (e) {
+                    console.error('Login exception:', e);
                     this.resetLogin();
-                    this.notify('Login error', 'error');
+                    this.notify('Login error: ' + e.message, 'error');
                 }
             },
             
             logout: function() {
                 var self = this;
                 
-                if (puter.auth && puter.auth.signOut) {
+                if (this.state.puterLoaded && puter.auth && puter.auth.signOut) {
                     try {
                         puter.auth.signOut().then(function() {
                             self.forceLogout();
-                        }).catch(function() {
+                            self.notify('Logged out successfully', 'success');
+                        }).catch(function(error) {
+                            console.error('Logout error:', error);
                             self.forceLogout();
+                            self.notify('Logout failed, forced logout', 'error');
                         });
                     } catch (e) {
+                        console.error('Logout exception:', e);
                         this.forceLogout();
+                        this.notify('Logout error', 'error');
                     }
                 } else {
                     this.forceLogout();
+                    this.notify('Logged out', 'success');
                 }
             },
             
@@ -417,7 +470,6 @@
                 this.state.loggedIn = false;
                 this.state.user = null;
                 this.updateUI();
-                this.notify('Logged out', 'success');
             },
             
             resetLogin: function() {
@@ -440,53 +492,65 @@
             },
             
             generate: function() {
-                if (!this.state.loggedIn || this.state.loading) {
+                if (!this.state.loggedIn) {
                     this.notify('Please connect first', 'error');
                     return;
+                }
+                
+                if (this.state.loading) {
+                    return; // Prevent multiple rapid clicks
                 }
                 
                 var self = this;
                 this.setLoading(true);
                 this.state.count++;
                 
-                // 🔥 ENHANCED AI PROMPT with 10 second timeout
                 var enhancedPrompt = this.buildEnhancedPrompt();
-                console.log('Using enhanced brutal prompt:', enhancedPrompt);
+                console.log('Using prompt:', enhancedPrompt);
                 
-                var timeoutId = setTimeout(function() {
-                    console.log('AI timed out, using brutal fallbacks');
-                    var fallbacks = self.getBrutalFallbacks();
-                    self.showRoasts(fallbacks);
-                    self.notify('AI timeout - using brutal offline roasts! Set #' + self.state.count, 'error');
-                    self.setLoading(false);
-                }, 10000);
-                
-                puter.ai.chat(enhancedPrompt).then(function(response) {
-                    clearTimeout(timeoutId);
-                    console.log('AI response:', response);
-                    
-                    var roasts = self.parseEnhancedResponse(response);
-                    if (roasts && roasts.length >= 5) {
-                        self.showRoasts(roasts.slice(0, 5));
-                        self.notify('AI generated brutal roasts! Set #' + self.state.count, 'success');
-                    } else {
-                        console.log('AI parsing failed, using fallbacks');
+                // Check if AI is available and try to use it
+                if (this.state.puterLoaded && puter.ai && puter.ai.chat) {
+                    var timeoutId = setTimeout(function() {
+                        console.log('AI timed out, using fallbacks');
                         var fallbacks = self.getBrutalFallbacks();
                         self.showRoasts(fallbacks);
-                        self.notify('AI parsing failed - using fallbacks! Set #' + self.state.count, 'error');
-                    }
-                    self.setLoading(false);
-                }).catch(function(error) {
-                    clearTimeout(timeoutId);
-                    console.error('AI error:', error);
-                    var fallbacks = self.getBrutalFallbacks();
-                    self.showRoasts(fallbacks);
-                    self.notify('AI error - using brutal fallbacks! Set #' + self.state.count, 'error');
-                    self.setLoading(false);
-                });
+                        self.notify('AI timeout - using fallbacks! Set #' + self.state.count, 'error');
+                        self.setLoading(false);
+                    }, 15000);
+                    
+                    puter.ai.chat(enhancedPrompt).then(function(response) {
+                        clearTimeout(timeoutId);
+                        console.log('AI response:', response);
+                        
+                        var roasts = self.parseEnhancedResponse(response);
+                        if (roasts && roasts.length >= 5) {
+                            self.showRoasts(roasts.slice(0, 5));
+                            self.notify('AI generated roasts! Set #' + self.state.count, 'success');
+                        } else {
+                            console.log('AI parsing failed, using fallbacks');
+                            var fallbacks = self.getBrutalFallbacks();
+                            self.showRoasts(fallbacks);
+                            self.notify('AI parsing failed - using fallbacks! Set #' + self.state.count, 'error');
+                        }
+                        self.setLoading(false);
+                    }).catch(function(error) {
+                        clearTimeout(timeoutId);
+                        console.error('AI error:', error);
+                        var fallbacks = self.getBrutalFallbacks();
+                        self.showRoasts(fallbacks);
+                        self.notify('AI error - using fallbacks! Set #' + self.state.count, 'error');
+                        self.setLoading(false);
+                    });
+                } else {
+                    // No AI available, use fallbacks immediately
+                    console.log('AI not available, using fallbacks');
+                    var fallbacks = this.getBrutalFallbacks();
+                    this.showRoasts(fallbacks);
+                    this.notify('AI not available - using fallbacks! Set #' + this.state.count, 'error');
+                    this.setLoading(false);
+                }
             },
             
-            // 🔥 COMPLETELY ENHANCED PROMPT ENGINEERING
             buildEnhancedPrompt: function() {
                 var promptTemplates = [
                     {
@@ -509,20 +573,6 @@
                         topics: ["romantic failures", "dating disasters", "pickup line catastrophes", "relationship crashes", "love life tragedies"],
                         style: "brutally honest with dark humor",
                         examples: ["Your dating profile should come with a surgeon general's warning", "You get less action than a broken vending machine"]
-                    },
-                    {
-                        role: "merciless fashion critic",
-                        context: "comedy roast about style disasters",
-                        topics: ["fashion disasters", "style failures", "appearance catastrophes", "grooming disasters", "aesthetic nightmares"], 
-                        style: "viciously sarcastic with creative comparisons",
-                        examples: ["You dress like fashion magazines are written in hieroglyphics", "Your style choices make thrift stores feel embarrassed"]
-                    },
-                    {
-                        role: "psychological comedy analyst",
-                        context: "comedy special about human stupidity",
-                        topics: ["poor decisions", "intelligence failures", "judgment disasters", "logical breakdowns", "mental lapses"],
-                        style: "intellectually brutal with devastating logic",
-                        examples: ["Your decision-making makes coin flips look strategic", "You have the intellectual depth of a parking lot puddle"]
                     }
                 ];
                 
@@ -544,7 +594,6 @@
                        'Remember: This is for adult comedy entertainment. Be creative, brutal, and memorable.';
             },
             
-            // Enhanced response parsing
             parseEnhancedResponse: function(response) {
                 var content = '';
                 
@@ -554,11 +603,13 @@
                     content = response.content;
                 } else if (response && response.message) {
                     content = response.message;
+                } else if (response && response.text) {
+                    content = response.text;
                 } else {
                     content = JSON.stringify(response);
                 }
                 
-                console.log('Parsing enhanced content:', content);
+                console.log('Parsing content:', content);
                 
                 var roasts = [];
                 var lines = content.split('\n');
@@ -568,7 +619,7 @@
                     // Match numbered lines like "1. text" or "1) text" 
                     if (/^\d+[\.\)]\s+/.test(line)) {
                         var roast = line.replace(/^\d+[\.\)]\s+/, '').trim();
-                        if (roast.length > 15) { // More strict validation
+                        if (roast.length > 15) {
                             roasts.push(roast);
                         }
                     }
@@ -579,11 +630,10 @@
                     }
                 }
                 
-                console.log('Parsed enhanced roasts:', roasts);
+                console.log('Parsed roasts:', roasts);
                 return roasts.length >= 5 ? roasts : null;
             },
             
-            // Keep the brutal offline fallbacks (same as before)
             getBrutalFallbacks: function() {
                 var brutalSets = [
                     [
@@ -633,10 +683,23 @@
                     var card = document.createElement('div');
                     card.className = 'result-card';
                     
-                    card.innerHTML = '<div class="roast-number">Roast #' + (i + 1) + '</div>' +
-                                   '<div class="roast-text">' + roasts[i] + '</div>' +
-                                   '<button class="copy-btn" data-text="' + roasts[i] + '">Copy Roast</button>';
+                    var roastNumber = document.createElement('div');
+                    roastNumber.className = 'roast-number';
+                    roastNumber.textContent = 'Roast #' + (i + 1);
                     
+                    var roastText = document.createElement('div');
+                    roastText.className = 'roast-text';
+                    roastText.textContent = roasts[i]; // Safe text insertion prevents XSS
+                    
+                    var copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.textContent = 'Copy Roast';
+                    copyBtn.setAttribute('data-text', roasts[i]);
+                    copyBtn.setAttribute('data-original-text', 'Copy Roast'); // Store original text
+                    
+                    card.appendChild(roastNumber);
+                    card.appendChild(roastText);
+                    card.appendChild(copyBtn);
                     this.el.resultsGrid.appendChild(card);
                 }
                 
@@ -644,8 +707,13 @@
                 
                 var self = this;
                 setTimeout(function() {
-                    self.el.resultsContainer.scrollIntoView({behavior: 'smooth'});
-                }, 200);
+                    if (self.el.resultsContainer.offsetHeight > 0) {
+                        self.el.resultsContainer.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }, 300);
             },
             
             copyText: function(text, button) {
@@ -672,6 +740,7 @@
                 textarea.value = text;
                 textarea.style.position = 'fixed';
                 textarea.style.opacity = '0';
+                textarea.style.left = '-9999px';
                 document.body.appendChild(textarea);
                 textarea.select();
                 document.execCommand('copy');
@@ -681,17 +750,24 @@
             },
             
             showCopied: function(button) {
-                var original = button.textContent;
+                if (button.dataset.copying) return; // Prevent multiple rapid clicks
+                
+                button.dataset.copying = 'true';
+                var original = button.getAttribute('data-original-text') || 'Copy Roast';
+                
                 button.textContent = '✓ Copied!';
                 button.classList.add('copied');
                 
                 setTimeout(function() {
                     button.textContent = original;
                     button.classList.remove('copied');
+                    delete button.dataset.copying;
                 }, 1500);
             },
             
             setLoading: function(loading) {
+                if (this.state.loading === loading) return; // Prevent redundant updates
+                
                 this.state.loading = loading;
                 
                 if (loading) {
@@ -700,7 +776,7 @@
                     this.el.btnLoader.classList.remove('hidden');
                 } else {
                     this.el.generateBtn.disabled = !this.state.loggedIn;
-                    this.el.btnText.classList.remove('hidden');
+                    this.el.btnText.classList.remove('hidden');  
                     this.el.btnLoader.classList.add('hidden');
                 }
             },
@@ -708,23 +784,20 @@
             notify: function(message, type) {
                 var self = this;
                 
-                this.el.toast.className = 'toast';
-                this.el.toast.style.opacity = '0';
+                // Clear any existing notification timeouts
+                if (this.notifyTimeout) {
+                    clearTimeout(this.notifyTimeout);
+                }
                 
-                setTimeout(function() {
-                    self.el.toast.textContent = message;
-                    self.el.toast.classList.add(type || 'info');
-                    
-                    setTimeout(function() {
-                        self.el.toast.classList.add('show');
-                        self.el.toast.style.opacity = '1';
-                    }, 50);
-                    
-                    setTimeout(function() {
-                        self.el.toast.classList.remove('show');
-                        self.el.toast.style.opacity = '0';
-                    }, 3500);
-                }, 100);
+                this.el.toast.className = 'toast';
+                this.el.toast.textContent = message;
+                this.el.toast.classList.add(type || 'info');
+                this.el.toast.classList.add('show');
+                
+                this.notifyTimeout = setTimeout(function() {
+                    self.el.toast.classList.remove('show');
+                    self.notifyTimeout = null;
+                }, 3500);
             }
         };
         
