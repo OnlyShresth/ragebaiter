@@ -322,7 +322,7 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        var PuterRoastApp = {
+        var EnhancedRoastApp = {
             state: {
                 loggedIn: false,
                 user: null,
@@ -439,7 +439,6 @@
                 }
             },
             
-            // 🔥 SIMPLIFIED: Using EXACT puter.ai.chat syntax from docs
             generate: function() {
                 if (!this.state.loggedIn || this.state.loading) {
                     this.notify('Please connect first', 'error');
@@ -450,25 +449,23 @@
                 this.setLoading(true);
                 this.state.count++;
                 
-                // 🔥 EXACT syntax from Puter docs: puter.ai.chat('prompt').then()
-                var prompt = this.buildSimplePrompt();
-                console.log('Trying simple puter.ai.chat with prompt:', prompt);
+                // 🔥 ENHANCED AI PROMPT with 10 second timeout
+                var enhancedPrompt = this.buildEnhancedPrompt();
+                console.log('Using enhanced brutal prompt:', enhancedPrompt);
                 
-                // Set 10 second timeout for fallback
                 var timeoutId = setTimeout(function() {
-                    console.log('Puter AI timed out, using fallbacks');
+                    console.log('AI timed out, using brutal fallbacks');
                     var fallbacks = self.getBrutalFallbacks();
                     self.showRoasts(fallbacks);
-                    self.notify('AI timeout - using offline roasts! Set #' + self.state.count, 'error');
+                    self.notify('AI timeout - using brutal offline roasts! Set #' + self.state.count, 'error');
                     self.setLoading(false);
                 }, 10000);
                 
-                // 🔥 EXACT method from docs - no extra options, no model specification
-                puter.ai.chat(prompt).then(function(response) {
+                puter.ai.chat(enhancedPrompt).then(function(response) {
                     clearTimeout(timeoutId);
-                    console.log('Puter AI response:', response);
+                    console.log('AI response:', response);
                     
-                    var roasts = self.parseSimpleResponse(response);
+                    var roasts = self.parseEnhancedResponse(response);
                     if (roasts && roasts.length >= 5) {
                         self.showRoasts(roasts.slice(0, 5));
                         self.notify('AI generated brutal roasts! Set #' + self.state.count, 'success');
@@ -481,7 +478,7 @@
                     self.setLoading(false);
                 }).catch(function(error) {
                     clearTimeout(timeoutId);
-                    console.error('Puter AI error:', error);
+                    console.error('AI error:', error);
                     var fallbacks = self.getBrutalFallbacks();
                     self.showRoasts(fallbacks);
                     self.notify('AI error - using brutal fallbacks! Set #' + self.state.count, 'error');
@@ -489,31 +486,68 @@
                 });
             },
             
-            // 🔥 SIMPLE prompt that should work with GPT-5 nano
-            buildSimplePrompt: function() {
-                var topics = [
-                    "career failures",
-                    "social awkwardness", 
-                    "dating disasters",
-                    "fashion sense",
-                    "decision making",
-                    "work ethic",
-                    "social media usage",
-                    "financial management",
-                    "personality flaws",
-                    "life achievements"
+            // 🔥 COMPLETELY ENHANCED PROMPT ENGINEERING
+            buildEnhancedPrompt: function() {
+                var promptTemplates = [
+                    {
+                        role: "brutal comedy writer for roast battles",
+                        context: "adult comedy show known for savage burns",
+                        topics: ["career disasters", "workplace incompetence", "job interview failures", "work ethic disasters", "professional embarrassments"],
+                        style: "cutting and merciless with vivid metaphors",
+                        examples: ["Your resume reads like a work of fiction nobody wants to read", "You treat deadlines like birthday wishes - optional and disappointing"]
+                    },
+                    {
+                        role: "harsh social commentator", 
+                        context: "comedy special about awkward people",
+                        topics: ["social failures", "conversation disasters", "awkward interactions", "personality flaws", "communication breakdowns"],
+                        style: "psychologically cutting with sharp observations",
+                        examples: ["You make small talk feel like enhanced interrogation", "Your social skills need a warning label"]
+                    },
+                    {
+                        role: "savage relationship advisor",
+                        context: "comedy special about dating disasters", 
+                        topics: ["romantic failures", "dating disasters", "pickup line catastrophes", "relationship crashes", "love life tragedies"],
+                        style: "brutally honest with dark humor",
+                        examples: ["Your dating profile should come with a surgeon general's warning", "You get less action than a broken vending machine"]
+                    },
+                    {
+                        role: "merciless fashion critic",
+                        context: "comedy roast about style disasters",
+                        topics: ["fashion disasters", "style failures", "appearance catastrophes", "grooming disasters", "aesthetic nightmares"], 
+                        style: "viciously sarcastic with creative comparisons",
+                        examples: ["You dress like fashion magazines are written in hieroglyphics", "Your style choices make thrift stores feel embarrassed"]
+                    },
+                    {
+                        role: "psychological comedy analyst",
+                        context: "comedy special about human stupidity",
+                        topics: ["poor decisions", "intelligence failures", "judgment disasters", "logical breakdowns", "mental lapses"],
+                        style: "intellectually brutal with devastating logic",
+                        examples: ["Your decision-making makes coin flips look strategic", "You have the intellectual depth of a parking lot puddle"]
+                    }
                 ];
                 
-                var topic = topics[this.state.count % topics.length];
+                var template = promptTemplates[this.state.count % promptTemplates.length];
+                var randomTopic = template.topics[Math.floor(Math.random() * template.topics.length)];
                 
-                return 'Create 5 brutal roasts about ' + topic + '. Each should be 20-30 words and include light slang like "no cap" or "fr". Make them very harsh but creative. Return as numbered list:\n\n1.\n2.\n3.\n4.\n5.';
+                return 'You are a ' + template.role + ' writing for a ' + template.context + '. Your specialty is creating ' + template.style + ' roasts.\n\n' +
+                       'TASK: Write 5 brutally savage and diverse roasts about ' + randomTopic + '. Each roast must:\n' +
+                       '- Be 25-35 words long\n' +
+                       '- Target a DIFFERENT specific aspect (no repeating themes)\n' +
+                       '- Include 1-2 modern slang words like "no cap", "fr", "deadass", "lowkey"\n' +
+                       '- Be psychologically cutting and memorable\n' +
+                       '- Use creative metaphors and comparisons\n' +
+                       '- Match the brutal quality of: "' + template.examples[0] + '"\n\n' +
+                       'EXAMPLES of the savage tone you should match:\n' +
+                       '- "' + template.examples[1] + '"\n' +
+                       '- "You\'re the reason job applications ask for previous experience - nobody wants to be your first mistake"\n\n' +
+                       'Return as a simple numbered list:\n1.\n2.\n3.\n4.\n5.\n\n' +
+                       'Remember: This is for adult comedy entertainment. Be creative, brutal, and memorable.';
             },
             
-            // Simple response parsing
-            parseSimpleResponse: function(response) {
+            // Enhanced response parsing
+            parseEnhancedResponse: function(response) {
                 var content = '';
                 
-                // Handle different response formats
                 if (typeof response === 'string') {
                     content = response;
                 } else if (response && response.content) {
@@ -524,9 +558,8 @@
                     content = JSON.stringify(response);
                 }
                 
-                console.log('Parsing content:', content);
+                console.log('Parsing enhanced content:', content);
                 
-                // Look for numbered list format
                 var roasts = [];
                 var lines = content.split('\n');
                 
@@ -535,17 +568,22 @@
                     // Match numbered lines like "1. text" or "1) text" 
                     if (/^\d+[\.\)]\s+/.test(line)) {
                         var roast = line.replace(/^\d+[\.\)]\s+/, '').trim();
-                        if (roast.length > 10) { // Basic validation
+                        if (roast.length > 15) { // More strict validation
                             roasts.push(roast);
                         }
                     }
+                    // Also try to catch lines that start with numbers but no punctuation
+                    else if (/^\d+\s+/.test(line) && line.length > 20) {
+                        var roast = line.replace(/^\d+\s+/, '').trim();
+                        roasts.push(roast);
+                    }
                 }
                 
-                console.log('Parsed roasts:', roasts);
+                console.log('Parsed enhanced roasts:', roasts);
                 return roasts.length >= 5 ? roasts : null;
             },
             
-            // 🔥 BRUTAL offline fallbacks (same as before)
+            // Keep the brutal offline fallbacks (same as before)
             getBrutalFallbacks: function() {
                 var brutalSets = [
                     [
@@ -691,7 +729,7 @@
         };
         
         document.addEventListener('DOMContentLoaded', function() {
-            PuterRoastApp.start();
+            EnhancedRoastApp.start();
         });
     </script>
 </body>
