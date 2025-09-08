@@ -416,76 +416,6 @@
                 this.initializeElements();
                 this.attachEventListeners();
                 this.checkAutoLogin();
-                
-                // Toxic roast database
-                this.toxicRoasts = [
-                    "You're a complete faggot with zero life skills and everyone knows it.",
-                    "Unemployment suits you perfectly, no one would ever hire your dumb ass anyway.",
-                    "Go back to your mom's basement, you pathetic waste of space loser.",
-                    "Your existence is a burden on everyone around you and society in general.",
-                    "You have the IQ of a brain-dead rock, and that's being generous to rocks.",
-                    "No one takes an unemployed idiot like you seriously, ever.",
-                    "You're the reason Darwin was right about natural selection.",
-                    "Your entire life is a cringe compilation that makes people physically ill.",
-                    "You act tough online but you're just a keyboard warrior faggot.",
-                    "Your opinions are as useless as your non-existent social skills.",
-                    "You're a walking disaster and everyone sees it but pretends not to.",
-                    "Even a potato has more brain cells and personality than you.",
-                    "The only thing you're good at is wasting oxygen and bandwidth.",
-                    "Just accept that you're a certified failure at life, loser.",
-                    "You're an embarrassment to humanity and your bloodline.",
-                    "Stop pretending you matter, literally nobody gives a shit about you.",
-                    "Your social life is non-existent because you repel everyone like a disease.",
-                    "You're mentally and emotionally bankrupt, completely worthless.",
-                    "No amount of therapy will ever fix your broken, pathetic existence.",
-                    "Your comebacks are so bad, they're actually painful to read.",
-                    "You're toxic waste that should be ignored and avoided at all costs.",
-                    "Your stupidity is a natural disaster that affects everyone around you.",
-                    "You bring nothing but misery and disappointment wherever you go.",
-                    "You're a fraud, a joke, and a complete waste of human flesh.",
-                    "Your entire existence is just elaborate troll bait for normal people.",
-                    "The only thing you're genuinely good at is spectacular failure.",
-                    "You're a parasite on society that contributes absolutely nothing.",
-                    "Your brain is as empty as your bank account, you broke loser.",
-                    "You always contribute to problems instead of solutions, useless faggot.",
-                    "Just vanish already, literally no one would miss your pathetic ass.",
-                    "You're mentally defective and somehow proud of your own stupidity.",
-                    "You're the punchline of every joke and don't even realize it.",
-                    "You desperately need to delete all your social media and disappear.",
-                    "No one would touch you with a ten-foot pole, you disgusting creature.",
-                    "Your presence causes actual physical pain to anyone with brain cells.",
-                    "You're a disgrace to your entire family tree and gene pool.",
-                    "You're an insult to human intelligence and basic decency.",
-                    "Your very existence triggers normal people into pure rage.",
-                    "You're a walking cesspool of ignorance and unemployment benefits.",
-                    "Your face should be permanently banned from the entire internet.",
-                    "You're the living embodiment of complete and total failure.",
-                    "You're nothing but a sad, unemployed failure who lives with mommy.",
-                    "Your opinions are irrelevant because your life is a complete joke.",
-                    "Nobody's gonna hire your worthless ass, ever, period.",
-                    "You're a toxic influence disguised as a barely functioning person.",
-                    "You have the personality of a dementor mixed with expired milk.",
-                    "You're a blight on society that needs to be quarantined.",
-                    "Your intelligence is inversely proportional to your massive arrogance.",
-                    "You're a sad parody of what a human being should be.",
-                    "Even advanced technology would refuse to defend your pathetic existence.",
-                    "Your brain is completely full of static and white noise.",
-                    "You peak at mediocrity and somehow still manage to fail spectacularly."
-                    "sybau but you’re actually the biggest bot in gng. Nobody rates you, tuff asf.",
-                    "Get off the timeline and go touch grass. Unemployment hitting different huh? L+ratio’d+no cap.",
-                    "How you still this delulu in 2025? Your whole existence is just mid. NPC behavior.",
-                    "You peak at being a clown every day. ‘Ate’ and left zero crumbs—just everyone else’s IQ.",
-                    "Bro, imagine being so jobless you think this is a flex. Gng, you ate (ass) but left only L’s.",
-                    "Literally no rizz, just cringe energy and a dried-up ego. Go lose again, bum.",
-                    "Big Yikes. You’re proof not everyone deserves WiFi. SYBAU and log off please.",
-                    "Did you really cook this reply? ‘Cause it’s giving brainrot, chief.",
-                    "You run your mouth for free and still can’t get anyone to listen. Embarrassing asf.",
-                    "Main character syndrome with side character energy, ngl.",
-                    "Nobody: you: chronic failure arc, every year. Touch grass, NPC.",
-                    "You’re not the main character, you’re just a footnote. Rizz in the negatives.",
-                    "The way you fell off? Fr, log off. Gng already knew.",
-                    "Bro, your whole personality is ‘L’. Try harder next respawn."
-                ];
             }
 
             initializeElements() {
@@ -623,28 +553,103 @@
                 this.loginBtn.textContent = 'Connect';
             }
 
-            getRandomRoasts(count = 5) {
-                const shuffled = [...this.toxicRoasts].sort(() => Math.random() - 0.5);
-                return shuffled.slice(0, count);
-            }
-
+            // NEW: AI-powered roast generation with heavy Gen Z slang
             async generateRoasts() {
                 this.setLoadingState(true);
 
                 try {
-                    // Simulate processing time
-                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    let roasts = [];
                     
-                    const roasts = this.getRandomRoasts(5);
+                    // Try AI generation first
+                    if (this.puterClient && typeof this.puterClient.ai?.chat === 'function') {
+                        try {
+                            const prompt = `Generate 5 extremely toxic, brutal roasts using heavy Gen Z slang. Use words like: sybau, gng, tuff, asf, delulu, npc, no cap, ratio, sus, vibe check, periodt, bet, drip, CEO of, lowkey, highkey, stan, cancel, shook, yeet, fire, mid, L, W.
+
+Make them absolutely brutal and offensive. Focus on themes like unemployment, being a loser, having no life, no social skills, being cringe, etc.
+
+Format as JSON:
+{
+  "roasts": [
+    "roast 1 text",
+    "roast 2 text", 
+    "roast 3 text",
+    "roast 4 text",
+    "roast 5 text"
+  ]
+}`;
+
+                            const aiResponse = await this.puterClient.ai.chat(prompt);
+                            console.log('AI Response:', aiResponse);
+                            
+                            // Try to parse JSON from response
+                            let parsedResponse;
+                            try {
+                                const jsonMatch = aiResponse.match(/\{[\s\S]*"roasts"[\s\S]*\]/);
+                                if (jsonMatch) {
+                                    parsedResponse = JSON.parse(jsonMatch[0] + '}');
+                                } else {
+                                    parsedResponse = JSON.parse(aiResponse);
+                                }
+                                
+                                if (parsedResponse.roasts && parsedResponse.roasts.length >= 5) {
+                                    roasts = parsedResponse.roasts.slice(0, 5);
+                                } else {
+                                    throw new Error('Invalid AI response format');
+                                }
+                            } catch (parseError) {
+                                console.error('Failed to parse AI response:', parseError);
+                                throw parseError;
+                            }
+                            
+                        } catch (aiError) {
+                            console.error('AI generation failed:', aiError);
+                            throw aiError;
+                        }
+                    } else {
+                        throw new Error('AI service unavailable');
+                    }
+                    
+                    // Fallback roasts with heavy slang if AI fails
+                    if (roasts.length === 0) {
+                        roasts = this.getFallbackRoasts();
+                    }
+                    
                     this.displayResults(roasts);
-                    this.showToast('Toxic roasts generated!', 'success');
+                    this.showToast('Fresh roasts generated gng!', 'success');
                     
                 } catch (error) {
                     console.error('Generation error:', error);
-                    this.showToast('Failed to generate roasts. Try again.', 'error');
+                    // Use fallback roasts with slang
+                    const fallbackRoasts = this.getFallbackRoasts();
+                    this.displayResults(fallbackRoasts);
+                    this.showToast('Generated offline roasts asf', 'success');
                 } finally {
                     this.setLoadingState(false);
                 }
+            }
+
+            getFallbackRoasts() {
+                const slangyRoasts = [
+                    "sybau but you're actually the biggest NPC in existence gng. Nobody rates you, tuff asf and that's no cap.",
+                    "Get off the timeline and go touch grass fr. Unemployment hitting different huh? L + ratio'd + no cap.",
+                    "How you still this delulu in 2025? Your whole existence is just mid. Pure NPC behavior lowkey.",
+                    "You peak at being a clown every single day. 'Ate' and left zero crumbs—just murdered everyone else's IQ.",
+                    "Bro, imagine being so jobless you think this is a flex. Gng, you ate (ass) but left only L's periodt.",
+                    "Literally no rizz, just cringe energy and a dried-up ego. Go lose again, you absolute bum.",
+                    "Big Yikes energy. You're proof not everyone deserves WiFi access. SYBAU and log off please.",
+                    "Did you really cook this reply? 'Cause it's giving major brainrot vibes, no cap chief.",
+                    "Go ratio yourself, you massive L generator. Even Skibidi Toilet has more plot than your sad life.",
+                    "You run your mouth for free and still can't get anyone to listen. Embarrassing asf fr.",
+                    "Main character syndrome with side character energy, ngl. That's not it bestie.",
+                    "Nobody: absolutely nobody: you: chronic failure arc, every single year. Touch grass, NPC.",
+                    "You're not the main character, you're just a footnote. Rizz in the negatives tuff.",
+                    "The way you fell off completely? Fr fr, just log off permanently. Gng already knew this.",
+                    "Bro, your whole personality is just 'L'. Try harder next respawn, this ain't it."
+                ];
+                
+                // Return 5 random ones
+                const shuffled = [...slangyRoasts].sort(() => Math.random() - 0.5);
+                return shuffled.slice(0, 5);
             }
 
             displayResults(roasts) {
