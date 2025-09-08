@@ -18,30 +18,43 @@
             --accent: #f4a259;
             --neutral: #5b8e7d;
             --danger: #bc4b51;
-            --bg: #ffffff;
-            --card-bg: #fafbfc;
+            --bg: linear-gradient(135deg, #8cb369 0%, #f4e285 25%, #f4a259 50%, #5b8e7d 75%, #bc4b51 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
             --text: #2c2c2c;
             --text-light: #666666;
-            --border: #e8ebe8;
-            --hover: #f0f4ec;
+            --border: rgba(140, 179, 105, 0.3);
+            --hover: rgba(244, 226, 133, 0.3);
+            --glass: rgba(255, 255, 255, 0.1);
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             background: var(--bg);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            25% { background-position: 100% 50%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 0 20px;
+            position: relative;
+            z-index: 1;
         }
 
         /* Animated Background Elements */
-        .bg-shapes {
+        .bg-elements {
             position: fixed;
             top: 0;
             left: 0;
@@ -52,48 +65,124 @@
             overflow: hidden;
         }
 
-        .shape {
+        .floating-orb {
             position: absolute;
-            opacity: 0.03;
-            animation: float 20s infinite linear;
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: floatOrb 20s infinite linear;
         }
 
-        .shape-1 {
-            width: 80px;
-            height: 80px;
-            background: var(--primary);
-            border-radius: 50%;
+        .orb-1 {
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, var(--primary), transparent);
             top: 10%;
             left: 10%;
             animation-delay: 0s;
         }
 
-        .shape-2 {
-            width: 60px;
-            height: 60px;
-            background: var(--accent);
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        .orb-2 {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, var(--accent), transparent);
             top: 60%;
             left: 80%;
             animation-delay: -8s;
         }
 
-        .shape-3 {
+        .orb-3 {
             width: 100px;
-            height: 40px;
-            background: var(--neutral);
-            border-radius: 50px;
+            height: 100px;
+            background: radial-gradient(circle, var(--secondary), transparent);
             top: 30%;
             left: 70%;
             animation-delay: -4s;
         }
 
-        @keyframes float {
+        .orb-4 {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, var(--neutral), transparent);
+            top: 80%;
+            left: 20%;
+            animation-delay: -12s;
+        }
+
+        .orb-5 {
+            width: 90px;
+            height: 90px;
+            background: radial-gradient(circle, var(--danger), transparent);
+            top: 40%;
+            left: 5%;
+            animation-delay: -16s;
+        }
+
+        @keyframes floatOrb {
             0% {
-                transform: translateY(0) rotate(0deg);
+                transform: translateY(100vh) translateX(0) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+                transform: translateY(90vh) translateX(20px) rotate(36deg) scale(0.8);
+            }
+            90% {
+                opacity: 0.8;
+                transform: translateY(-10vh) translateX(-20px) rotate(324deg) scale(1.2);
             }
             100% {
-                transform: translateY(-100vh) rotate(360deg);
+                transform: translateY(-20vh) translateX(0) rotate(360deg) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        .geometric-shape {
+            position: absolute;
+            animation: geometricFloat 25s infinite linear;
+        }
+
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 26px solid var(--accent);
+            top: 20%;
+            left: 90%;
+            opacity: 0.4;
+            animation-delay: -5s;
+        }
+
+        .square {
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            top: 70%;
+            left: 85%;
+            opacity: 0.4;
+            animation-delay: -10s;
+            transform: rotate(45deg);
+        }
+
+        .diamond {
+            width: 25px;
+            height: 25px;
+            background: var(--danger);
+            transform: rotate(45deg);
+            top: 50%;
+            left: 5%;
+            opacity: 0.4;
+            animation-delay: -15s;
+        }
+
+        @keyframes geometricFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(-100px) rotate(720deg);
+                opacity: 0;
             }
         }
 
@@ -104,183 +193,322 @@
             align-items: center;
             padding: 3rem 0 2rem;
             position: relative;
-            z-index: 1;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            background: var(--glass);
+            border-radius: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 1rem;
+            padding: 0 2rem;
         }
 
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 10px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: 800;
-            font-size: 1.2rem;
-            animation: pulse 3s ease-in-out infinite;
+            font-weight: 900;
+            font-size: 1.5rem;
+            animation: logoRotate 4s ease-in-out infinite;
+            box-shadow: 0 10px 25px rgba(140, 179, 105, 0.4);
+            position: relative;
+            overflow: hidden;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s ease-in-out infinite;
+        }
+
+        @keyframes logoRotate {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(5deg); }
+            50% { transform: scale(1.05) rotate(0deg); }
+            75% { transform: scale(1.1) rotate(-5deg); }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+            100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
         }
 
         .logo-text {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--text);
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--primary), var(--accent), var(--danger));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textGradient 3s ease-in-out infinite;
             letter-spacing: -0.02em;
         }
 
+        @keyframes textGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
         .logo-subtitle {
-            font-size: 0.75rem;
-            color: var(--text-light);
-            font-weight: 500;
-            margin-top: 0.2rem;
+            font-size: 0.9rem;
+            color: var(--neutral);
+            font-weight: 600;
+            margin-top: 0.3rem;
+            animation: fadeInOut 4s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
         }
 
         .auth-section {
             display: flex;
             align-items: center;
             gap: 1rem;
+            padding: 0 2rem;
         }
 
         .login-btn, .logout-btn {
-            padding: 0.75rem 1.5rem;
+            padding: 1rem 2rem;
             border: 2px solid var(--primary);
-            border-radius: 8px;
-            font-weight: 600;
+            border-radius: 25px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-            background: transparent;
-            color: var(--primary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .login-btn::before, .logout-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .login-btn:hover::before, .logout-btn:hover::before {
+            left: 100%;
         }
 
         .login-btn:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-1px);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(140, 179, 105, 0.4);
         }
 
         .logout-btn {
+            background: linear-gradient(45deg, var(--danger), var(--accent));
             border-color: var(--danger);
-            color: var(--danger);
         }
 
         .logout-btn:hover {
-            background: var(--danger);
-            color: white;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(188, 75, 81, 0.4);
         }
 
         .user-info {
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 0.5rem 1rem;
+            padding: 1rem 1.5rem;
             background: var(--card-bg);
-            border-radius: 25px;
-            border: 1px solid var(--border);
+            border-radius: 30px;
+            border: 2px solid var(--secondary);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 25px rgba(244, 226, 133, 0.3);
+            animation: userInfoPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes userInfoPulse {
+            0%, 100% { box-shadow: 0 8px 25px rgba(244, 226, 133, 0.3); }
+            50% { box-shadow: 0 12px 35px rgba(244, 226, 133, 0.5); }
         }
 
         .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--primary);
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
             border-radius: 50%;
-            animation: blink 2s ease-in-out infinite;
+            animation: statusBeat 2s ease-in-out infinite;
+            box-shadow: 0 0 10px var(--primary);
         }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+        @keyframes statusBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
         }
 
         /* Main Content */
         .main-content {
             position: relative;
-            z-index: 1;
+            z-index: 10;
             margin-bottom: 4rem;
         }
 
         .input-section {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 2rem;
-            border: 1px solid var(--border);
+            border-radius: 25px;
+            padding: 3rem;
+            border: 2px solid var(--secondary);
             margin-bottom: 3rem;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent), var(--neutral), var(--danger));
+            background-size: 200% 100%;
+            animation: borderFlow 3s linear infinite;
+        }
+
+        @keyframes borderFlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
         }
 
         .input-section:hover {
-            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.15);
+            border-color: var(--accent);
         }
 
         .input-label {
             display: block;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--text);
-            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--neutral);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .input-label::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
         }
 
         .context-input {
             width: 100%;
-            padding: 1rem;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-size: 1rem;
+            padding: 1.5rem;
+            border: 3px solid var(--border);
+            border-radius: 20px;
+            font-size: 1.1rem;
             resize: vertical;
-            min-height: 120px;
-            transition: all 0.2s ease;
+            min-height: 140px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-family: inherit;
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
         }
 
         .context-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(140, 179, 105, 0.1);
+            box-shadow: 0 0 0 5px rgba(140, 179, 105, 0.2);
+            transform: scale(1.02);
+            background: white;
         }
 
         .generate-btn {
-            margin-top: 1.5rem;
+            margin-top: 2rem;
             width: 100%;
-            padding: 1rem 2rem;
-            background: var(--primary);
+            padding: 1.5rem 2rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent), var(--secondary));
+            background-size: 200% 200%;
             color: white;
             border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: buttonGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes buttonGlow {
+            0%, 100% { background-position: 0% 50%; box-shadow: 0 8px 30px rgba(140, 179, 105, 0.3); }
+            50% { background-position: 100% 50%; box-shadow: 0 12px 40px rgba(244, 162, 89, 0.4); }
+        }
+
+        .generate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
         }
 
         .generate-btn:not(:disabled):hover {
-            background: #7ca55d;
-            transform: translateY(-1px);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(140, 179, 105, 0.4);
+        }
+
+        .generate-btn:not(:disabled):hover::before {
+            left: 100%;
         }
 
         .generate-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
+            transform: none;
         }
 
         .btn-loader {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top: 2px solid white;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto;
@@ -294,97 +522,185 @@
         /* Response Cards */
         .responses-title {
             text-align: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            color: var(--text);
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent), var(--danger));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titlePulse 3s ease-in-out infinite;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { background-position: 0% 50%; transform: scale(1); }
+            50% { background-position: 100% 50%; transform: scale(1.05); }
         }
 
         .responses-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
         }
 
         .response-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            border: 1px solid var(--border);
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 2rem;
+            border: 3px solid var(--border);
             position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: slideIn 0.5s ease-out;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: cardSlideIn 0.8s ease-out;
             animation-fill-mode: both;
+            backdrop-filter: blur(15px);
+            overflow: hidden;
         }
 
-        .response-card:nth-child(1) { animation-delay: 0.1s; }
-        .response-card:nth-child(2) { animation-delay: 0.2s; }
-        .response-card:nth-child(3) { animation-delay: 0.3s; }
+        .response-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
 
-        @keyframes slideIn {
+        .response-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .response-card:nth-child(1) { 
+            animation-delay: 0.1s; 
+            border-color: var(--primary);
+        }
+        .response-card:nth-child(2) { 
+            animation-delay: 0.3s; 
+            border-color: var(--accent);
+        }
+        .response-card:nth-child(3) { 
+            animation-delay: 0.5s; 
+            border-color: var(--danger);
+        }
+
+        @keyframes cardSlideIn {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(50px) scale(0.8);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
         .response-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-color: var(--primary);
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.15);
         }
 
         .method-badge {
-            background: var(--secondary);
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
             color: var(--text);
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.75rem;
-            margin-bottom: 1rem;
+            padding: 0.8rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            margin-bottom: 1.5rem;
             display: inline-block;
-            border: 1px solid var(--accent);
+            border: 2px solid var(--accent);
+            box-shadow: 0 5px 20px rgba(244, 162, 89, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            animation: badgeFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes badgeFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
         }
 
         .response-content {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
             color: var(--text);
-            background: var(--hover);
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 3px solid var(--accent);
+            background: linear-gradient(135deg, var(--hover), rgba(244, 226, 133, 0.1));
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 5px solid var(--accent);
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .response-content::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-size: 3rem;
+            color: var(--accent);
+            opacity: 0.3;
+            font-family: serif;
         }
 
         .copy-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1rem;
-            background: var(--neutral);
+            gap: 0.8rem;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(45deg, var(--neutral), var(--primary));
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 15px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            font-size: 0.85rem;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1rem;
             width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .copy-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.4s;
         }
 
         .copy-btn:hover {
-            background: #4a7a67;
-            transform: translateY(-1px);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(91, 142, 125, 0.4);
+        }
+
+        .copy-btn:hover::before {
+            left: 100%;
         }
 
         .copy-btn.copied {
-            background: var(--primary);
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            animation: copySuccess 0.6s ease;
+        }
+
+        @keyframes copySuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         /* Toast */
@@ -392,27 +708,36 @@
             position: fixed;
             top: 2rem;
             right: 2rem;
-            background: var(--neutral);
+            background: linear-gradient(45deg, var(--neutral), var(--primary));
             color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             z-index: 1000;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            transform: translateX(100%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 700;
+            transform: translateX(120%);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
         }
 
         .toast.show {
             transform: translateX(0);
+            animation: toastPulse 0.6s ease;
+        }
+
+        @keyframes toastPulse {
+            0% { transform: translateX(0) scale(0.8); }
+            50% { transform: translateX(0) scale(1.05); }
+            100% { transform: translateX(0) scale(1); }
         }
 
         .toast.success {
-            background: var(--primary);
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
         }
 
         .toast.error {
-            background: var(--danger);
+            background: linear-gradient(45deg, var(--danger), var(--accent));
         }
 
         /* Utility Classes */
@@ -428,26 +753,26 @@
             
             .header {
                 flex-direction: column;
-                gap: 1rem;
+                gap: 1.5rem;
                 text-align: center;
-                padding: 2rem 0 1.5rem;
+                padding: 2rem;
             }
             
             .logo-text {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
             
             .input-section {
-                padding: 1.5rem;
+                padding: 2rem;
             }
             
             .responses-grid {
                 grid-template-columns: 1fr;
-                gap: 1rem;
+                gap: 1.5rem;
             }
             
             .response-card {
-                padding: 1.2rem;
+                padding: 1.5rem;
             }
             
             .toast {
@@ -455,24 +780,23 @@
                 right: 1rem;
                 left: 1rem;
             }
-        }
 
-        .error-message {
-            background: #fef2f2;
-            color: var(--danger);
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-            border: 1px solid #fecaca;
-            font-size: 0.9rem;
+            .responses-title {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="bg-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
+    <div class="bg-elements">
+        <div class="floating-orb orb-1"></div>
+        <div class="floating-orb orb-2"></div>
+        <div class="floating-orb orb-3"></div>
+        <div class="floating-orb orb-4"></div>
+        <div class="floating-orb orb-5"></div>
+        <div class="geometric-shape triangle"></div>
+        <div class="geometric-shape square"></div>
+        <div class="geometric-shape diamond"></div>
     </div>
 
     <div class="container">
@@ -593,29 +917,27 @@
                     if (savedAuth) {
                         const authData = JSON.parse(savedAuth);
                         
-                        // Initialize Puter with error handling
-                        try {
-                            this.puterClient = puter.auth.token(authData.token);
-                            const user = await this.puterClient.auth.user();
+                        // Wait for puter to be available
+                        if (typeof puter !== 'undefined') {
+                            this.puterClient = puter;
                             
-                            if (user) {
-                                this.isAuthenticated = true;
-                                this.updateUIForAuthentication(user.username);
-                                this.showToast('Auto-login successful!', 'success');
-                            } else {
-                                throw new Error('Invalid token');
+                            // Try to get current user without token for initial check
+                            try {
+                                const user = await puter.auth.getUser();
+                                if (user) {
+                                    this.isAuthenticated = true;
+                                    this.updateUIForAuthentication(user.username);
+                                    this.showToast('Auto-login successful!', 'success');
+                                    return;
+                                }
+                            } catch (getUserError) {
+                                console.log('No existing session, showing login button');
                             }
-                        } catch (puterError) {
-                            console.error('Puter auth error:', puterError);
-                            localStorage.removeItem('ragebaiter_auth');
-                            this.showLoginButton();
                         }
-                    } else {
-                        this.showLoginButton();
                     }
+                    this.showLoginButton();
                 } catch (error) {
                     console.error('Auto-login failed:', error);
-                    localStorage.removeItem('ragebaiter_auth');
                     this.showLoginButton();
                 }
             }
@@ -630,35 +952,45 @@
                         throw new Error('Puter SDK not loaded');
                     }
 
-                    const authResult = await puter.auth.signIn();
+                    // Use the correct Puter authentication method
+                    const user = await puter.auth.signIn();
                     
-                    if (authResult && authResult.user) {
+                    if (user) {
                         this.isAuthenticated = true;
                         this.puterClient = puter;
                         
+                        // Save basic auth info
                         localStorage.setItem('ragebaiter_auth', JSON.stringify({ 
-                            token: authResult.token || 'demo-token',
-                            username: authResult.user.username 
+                            authenticated: true,
+                            username: user.username 
                         }));
                         
-                        this.updateUIForAuthentication(authResult.user.username);
+                        this.updateUIForAuthentication(user.username);
                         this.showToast('Connected successfully!', 'success');
                     } else {
-                        throw new Error('Authentication failed');
+                        throw new Error('No user returned from sign in');
                     }
                 } catch (error) {
                     console.error('Login error:', error);
                     this.showToast('Connection failed. Using demo mode.', 'error');
                     
-                    // Demo mode fallback
-                    this.isAuthenticated = true;
-                    this.updateUIForAuthentication('Demo User');
+                    // Demo mode fallback with auto-fade
+                    setTimeout(() => {
+                        this.isAuthenticated = true;
+                        this.updateUIForAuthentication('Demo User');
+                        this.showToast('Demo mode activated!', 'success');
+                    }, 5000);
+                    
                     this.resetLoginButton();
                 }
             }
 
             async handleLogout() {
                 try {
+                    if (this.puterClient && typeof this.puterClient.auth?.signOut === 'function') {
+                        await this.puterClient.auth.signOut();
+                    }
+                    
                     localStorage.removeItem('ragebaiter_auth');
                     this.isAuthenticated = false;
                     this.puterClient = null;
@@ -666,7 +998,13 @@
                     this.showToast('Disconnected successfully!', 'success');
                 } catch (error) {
                     console.error('Logout error:', error);
-                    this.showToast('Logout error occurred.', 'error');
+                    this.showToast('Logout completed.', 'success');
+                    
+                    // Force logout even if error
+                    localStorage.removeItem('ragebaiter_auth');
+                    this.isAuthenticated = false;
+                    this.puterClient = null;
+                    this.showLoginButton();
                 }
             }
 
@@ -781,15 +1119,26 @@
                 this.setLoadingState(true);
 
                 try {
-                    // Demo responses for when Puter API fails
                     const analysis = this.analyzeContext(context);
                     const methods = this.selectOptimalMethods(analysis);
                     
-                    // Generate contextual demo responses
-                    const demoResponses = this.generateDemoResponses(context, methods, analysis);
+                    // Try Puter AI first, fallback to demo responses
+                    let responses;
+                    try {
+                        if (this.puterClient && typeof this.puterClient.ai?.chat === 'function') {
+                            const prompt = this.buildEnhancedPrompt(context, methods);
+                            const aiResponse = await this.puterClient.ai.chat(prompt);
+                            responses = this.parseAIResponse(aiResponse, methods);
+                        } else {
+                            throw new Error('AI not available');
+                        }
+                    } catch (aiError) {
+                        console.log('AI generation failed, using enhanced demo responses:', aiError);
+                        responses = this.generateEnhancedDemoResponses(context, methods, analysis);
+                    }
                     
-                    this.displayResponses({ responses: demoResponses });
-                    this.showToast('Responses generated successfully!', 'success');
+                    this.displayResponses({ responses });
+                    this.showToast('Brutal responses generated!', 'success');
                     
                 } catch (error) {
                     console.error('Generation error:', error);
@@ -799,8 +1148,46 @@
                 }
             }
 
-            generateDemoResponses(context, methods, analysis) {
-                const templates = {
+            buildEnhancedPrompt(context, methods) {
+                return `Generate 3 brutally effective ragebait responses to: "${context}"
+
+Use these methods:
+1. ${methods[0]}
+2. ${methods[1]}  
+3. ${methods[2]}
+
+Make each response maximally provocative, toxic, and emotionally triggering. Output as JSON:
+{
+  "responses": [
+    {"method": "${methods[0]}", "response": "[brutal response 1]"},
+    {"method": "${methods[1]}", "response": "[brutal response 2]"},
+    {"method": "${methods[2]}", "response": "[brutal response 3]"}
+  ]
+}`;
+            }
+
+            parseAIResponse(aiResponse, fallbackMethods) {
+                try {
+                    const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        const parsed = JSON.parse(jsonMatch[0]);
+                        if (parsed.responses && parsed.responses.length >= 3) {
+                            return parsed.responses.slice(0, 3);
+                        }
+                    }
+                } catch (e) {
+                    console.error('AI response parsing failed:', e);
+                }
+                
+                // Fallback
+                return fallbackMethods.map(method => ({
+                    method,
+                    response: "Your statement is absolutely ridiculous and shows a complete lack of understanding. Maybe try thinking before you type next time?"
+                }));
+            }
+
+            generateEnhancedDemoResponses(context, methods, analysis) {
+                const responseTemplates = {
                     personal: [
                         "Wow, sounds like a real you problem. Maybe if you weren't so self-absorbed you'd realize nobody actually cares about your personal drama.",
                         "I'm sure that's exactly how it happened in your version of reality. Must be nice living in that fantasy world where you're always the victim.",
@@ -838,7 +1225,7 @@
                     ]
                 };
 
-                const contextTemplates = templates[analysis.type] || templates.general;
+                const contextTemplates = responseTemplates[analysis.type] || responseTemplates.general;
                 
                 return methods.map((method, index) => ({
                     method: method,
@@ -858,7 +1245,7 @@
                     const methodBadge = card.querySelector('.method-name');
                     const responseContent = card.querySelector('.response-content');
 
-                    methodBadge.textContent = responseData.method.substring(0, 40) + '...';
+                    methodBadge.textContent = responseData.method.substring(0, 35) + '...';
                     responseContent.textContent = responseData.response;
                 });
 
@@ -910,9 +1297,10 @@
                 this.toast.textContent = message;
                 this.toast.className = `toast ${type} show`;
 
+                // Auto-fade after 5 seconds
                 setTimeout(() => {
                     this.toast.classList.remove('show');
-                }, 3000);
+                }, 5000);
             }
         }
 
