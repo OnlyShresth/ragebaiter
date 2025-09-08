@@ -6,357 +6,147 @@
     <title>Master Baiter</title>
     <script src="https://js.puter.com/v2/"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #dc2626;
-            --primary-dark: #b91c1c;
-            --secondary: #64748b;
-            --accent: #f59e0b;
-            --bg: #0f172a;
-            --bg-secondary: #1e293b;
-            --card-bg: #1e293b;
-            --text: #f8fafc;
-            --text-secondary: #94a3b8;
-            --border: #334155;
-            --success: #10b981;
-            --danger: #ef4444;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-            font-size: 14px;
-            position: relative;
-        }
-
-        .auth-section {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .login-btn, .logout-btn {
-            padding: 12px 20px;
-            border: 1px solid var(--primary);
-            border-radius: 6px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 14px;
-            background: var(--primary);
-            color: white;
             margin: 0;
-        }
-
-        .login-btn:focus, .logout-btn:focus {
-            outline: none !important;
-            box-shadow: none !important;
-        }
-
-        .login-btn.hidden {
-            display: none !important;
-        }
-
-        .login-btn:hover, .logout-btn:hover {
-            opacity: 0.9;
-        }
-
-        .logout-btn {
-            background: var(--danger);
-            border-color: var(--danger);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            background: var(--card-bg);
-            border-radius: 6px;
-            border: 1px solid var(--border);
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            background: var(--primary);
-            border-radius: 50%;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 60px 20px 40px;
-        }
-
-        .hero-section {
-            text-align: center;
-            padding: 80px 0 60px;
-        }
-
-        .hero-title {
-            font-size: 4rem;
-            font-weight: 900;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-transform: uppercase;
-            letter-spacing: -2px;
-        }
-
-        .generate-section {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 40px;
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 50px;
-            text-align: center;
-        }
-
-        .generate-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--text);
-        }
-
-        .generate-subtitle {
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-            font-size: 1.1rem;
-        }
-
-        .generate-btn {
-            padding: 20px 40px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            font-family: Arial, sans-serif;
+            background: #0a192f;
             color: white;
+        }
+        .header {
+            padding: 20px;
+            background: #112240;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff4500;
+        }
+        .btn {
+            padding: 8px 16px;
             border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 700;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
+            font-weight: bold;
         }
-
-        .generate-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(220, 38, 38, 0.4);
+        .btn-primary {
+            background: #ff4500;
+            color: white;
         }
-
-        .generate-btn:disabled {
+        .btn-danger {
+            background: #d11a2a;
+            color: white;
+        }
+        .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            transform: none;
         }
-
+        .container {
+            padding: 40px;
+            text-align: center;
+        }
+        .generate-btn {
+            padding: 16px 32px;
+            font-size: 18px;
+            border-radius: 12px;
+            background: #ff4500;
+            color: white;
+            border: none;
+            cursor: pointer;
+            position: relative;
+        }
         .btn-loader {
-            width: 24px;
-            height: 24px;
-            border: 3px solid rgba(255,255,255,0.3);
+            display: none;
+            border: 3px solid rgba(255, 255, 255, 0.3);
             border-top: 3px solid white;
             border-radius: 50%;
+            width: 20px;
+            height: 20px;
             animation: spin 1s linear infinite;
-            margin: 0 auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -10px;
+            margin-left: -10px;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        .results-section {
-            margin-top: 50px;
+        .results {
+            margin-top: 30px;
         }
-
-        .results-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 900;
-            margin-bottom: 40px;
-            color: var(--primary);
-            text-transform: uppercase;
+        .results h2 {
+            margin-bottom: 20px;
+            color: #ff4500;
         }
-
         .results-grid {
             display: grid;
-            gap: 20px;
-            grid-template-columns: 1fr;
+            gap: 16px;
+            max-width: 800px;
+            margin: 0 auto;
         }
-
         .result-card {
-            background: var(--card-bg);
+            background: #112240;
+            padding: 20px;
             border-radius: 12px;
-            padding: 24px;
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
+            text-align: left;
             position: relative;
-            overflow: hidden;
         }
-
-        .result-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            border-color: var(--primary);
-        }
-
-        .roast-number {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 12px;
-            display: inline-block;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .roast-text {
-            font-size: 18px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            color: var(--text);
-            background: var(--bg);
-            padding: 24px;
-            border-radius: 12px;
-            border-left: 4px solid var(--primary);
-            font-weight: 600;
-        }
-
         .copy-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--secondary);
-            color: white;
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #ff4500;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
+            color: white;
+            padding: 4px 8px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-            font-size: 14px;
-            text-transform: uppercase;
+            font-size: 12px;
         }
-
-        .copy-btn:hover {
-            background: #475569;
-            transform: translateY(-1px);
-        }
-
-        .copy-btn.copied {
-            background: var(--success);
-        }
-
         .toast {
             position: fixed;
-            top: 80px;
+            bottom: 20px;
             right: 20px;
-            background: var(--card-bg);
-            color: var(--text);
-            padding: 16px 24px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            z-index: 1000;
-            transform: translateX(100%);
-            transition: all 0.3s ease;
-            font-weight: 500;
-            opacity: 0;
+            background: #112240;
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: none;
         }
-
-        .toast.show {
-            transform: translateX(0);
-            opacity: 1;
-        }
-
         .toast.success {
-            border-color: var(--success);
-            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #00c853;
         }
-
         .toast.error {
-            border-color: var(--danger);
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 40px 16px 20px;
-            }
-            
-            .hero-title {
-                font-size: 2.8rem;
-            }
-            
-            .generate-section {
-                padding: 30px 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero-title {
-                font-size: 2.2rem;
-            }
+            border-left: 4px solid #d50000;
         }
     </style>
 </head>
 <body>
-    <div class="auth-section">
-        <button id="loginBtn" class="login-btn">Connect</button>
-        <div id="userInfo" class="user-info hidden">
-            <div class="status-dot"></div>
-            <span id="userName"></span>
-            <button id="logoutBtn" class="logout-btn">Logout</button>
+    <div class="header">
+        <div class="logo">RAGEBAIT 'EM</div>
+        <div>
+            <span id="userInfo" style="margin-right: 10px;"></span>
+            <button id="loginBtn" class="btn btn-primary">Connect</button>
+            <button id="logoutBtn" class="btn btn-danger" style="display:none;">Logout</button>
         </div>
     </div>
-
+    
     <div class="container">
-        <section class="hero-section">
-            <h1 class="hero-title">Ragebait 'em</h1>
-        </section>
-
-        <section class="generate-section">
-            <h2 class="generate-title">Ragebait 'em</h2>
-            <p class="generate-subtitle">Imagine being so unemployed you gotta use ts 🥀</p>
-            
-            <button id="generateBtn" class="generate-btn" disabled>
-                <span class="btn-text">bait 'em all</span>
-                <div class="btn-loader hidden"></div>
-            </button>
-        </section>
-
-        <section class="results-section">
-            <div id="resultsContainer" class="results-container hidden">
-                <h2 class="results-title">Here you go gng</h2>
-                <div class="results-grid" id="resultsGrid"></div>
-            </div>
-        </section>
+        <button id="generateBtn" class="generate-btn">
+            <span class="btn-text">Ragebait 'em</span>
+            <div class="btn-loader"></div>
+        </button>
+        
+        <div class="results" id="resultsContainer" style="display:none;">
+            <h2>Generated Ragebaits</h2>
+            <div class="results-grid" id="resultsGrid"></div>
+        </div>
     </div>
-
-    <div id="toast" class="toast"></div>
+    
+    <div class="toast" id="toast"></div>
 
     <script>
         var App = {
@@ -411,19 +201,11 @@
                 };
             },
             
+            // 🔧 FIXED: no auto-login, always start logged out
             checkAuth: function() {
-                try {
-                    if (puter.auth.isSignedIn()) {
-                        var self = this;
-                        puter.auth.getUser().then(function(user) {
-                            self.state.loggedIn = true;
-                            self.state.user = user;
-                            self.updateUI();
-                        });
-                    }
-                } catch (e) {
-                    console.log('Auth check failed');
-                }
+                this.state.loggedIn = false;
+                this.state.user = null;
+                this.updateUI();
             },
             
             login: function() {
@@ -446,17 +228,25 @@
             
             logout: function() {
                 var self = this;
-                puter.auth.signOut().then(function() {
+                if (puter.auth && puter.auth.signOut) {
+                    puter.auth.signOut().then(function() {
+                        self.state.loggedIn = false;
+                        self.state.user = null;
+                        self.updateUI();
+                        self.notify('Logged out', 'success');
+                    }).catch(function() {
+                        self.state.loggedIn = false;
+                        self.state.user = null;
+                        self.updateUI();
+                        self.notify('Logged out', 'success');
+                    });
+                } else {
+                    // fallback if signOut is missing
                     self.state.loggedIn = false;
                     self.state.user = null;
                     self.updateUI();
                     self.notify('Logged out', 'success');
-                }).catch(function() {
-                    self.state.loggedIn = false;
-                    self.state.user = null;
-                    self.updateUI();
-                    self.notify('Logged out', 'success');
-                });
+                }
             },
             
             resetLogin: function() {
@@ -466,195 +256,65 @@
             
             updateUI: function() {
                 if (this.state.loggedIn) {
-                    this.el.loginBtn.classList.add('hidden');
-                    this.el.userInfo.classList.remove('hidden');
-                    this.el.userName.textContent = this.state.user.username || 'User';
-                    this.el.generateBtn.disabled = false;
+                    this.el.loginBtn.style.display = 'none';
+                    this.el.logoutBtn.style.display = 'inline-block';
+                    this.el.userInfo.textContent = this.state.user.username || this.state.user.name || 'User';
                 } else {
-                    this.el.loginBtn.classList.remove('hidden');
-                    this.el.userInfo.classList.add('hidden');
-                    this.el.generateBtn.disabled = true;
+                    this.el.loginBtn.style.display = 'inline-block';
+                    this.el.logoutBtn.style.display = 'none';
+                    this.el.userInfo.textContent = '';
                     this.resetLogin();
                 }
             },
             
             generate: function() {
-                if (!this.state.loggedIn || this.state.loading) {
+                var self = this;
+                if (!this.state.loggedIn) {
+                    this.notify('Please connect first', 'error');
                     return;
                 }
                 
-                var self = this;
-                this.setLoading(true);
-                this.state.count++;
+                this.state.loading = true;
+                this.el.btnText.style.display = 'none';
+                this.el.btnLoader.style.display = 'block';
                 
-                var prompt = this.buildPrompt();
-                
-                puter.ai.chat(prompt, {model: 'gpt-4o-mini'}).then(function(response) {
-                    var roasts = self.extractRoasts(response);
-                    self.showRoasts(roasts);
-                    self.notify('Generated new roasts!', 'success');
-                }).catch(function(error) {
-                    var backup = self.getBackup();
-                    self.showRoasts(backup);
-                    self.notify('Using offline roasts', 'error');
-                }).finally(function() {
-                    self.setLoading(false);
+                setTimeout(function() {
+                    self.state.count++;
+                    var text = "Ragebait #" + self.state.count + ": Imagine being so unemployed you gotta use ts 🐍";
+                    
+                    var card = document.createElement('div');
+                    card.className = 'result-card';
+                    card.innerHTML = `
+                        <button class="copy-btn" data-text="${text}">Copy</button>
+                        ${text}
+                    `;
+                    
+                    self.el.resultsGrid.insertBefore(card, self.el.resultsGrid.firstChild);
+                    self.el.resultsContainer.style.display = 'block';
+                    
+                    self.state.loading = false;
+                    self.el.btnText.style.display = 'inline';
+                    self.el.btnLoader.style.display = 'none';
+                }, 1200);
+            },
+            
+            copyText: function(text, btn) {
+                navigator.clipboard.writeText(text).then(() => {
+                    btn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        btn.textContent = 'Copy';
+                    }, 1500);
                 });
             },
             
-            buildPrompt: function() {
-                var topics = [
-                    'career failures',
-                    'social awkwardness', 
-                    'poor decisions',
-                    'communication issues',
-                    'life skills',
-                    'personal habits'
-                ];
-                
-                var topic = topics[this.state.count % topics.length];
-                
-                return 'Create 5 roasts about ' + topic + '. Return only JSON: {"roasts": ["text1", "text2", "text3", "text4", "text5"]}';
-            },
-            
-            extractRoasts: function(response) {
-                var content = '';
-                
-                if (typeof response === 'string') {
-                    content = response;
-                } else if (response && response.message && response.message.content) {
-                    content = response.message.content;
-                } else {
-                    content = JSON.stringify(response);
-                }
-                
-                try {
-                    var start = content.indexOf('{');
-                    var end = content.lastIndexOf('}') + 1;
-                    
-                    if (start >= 0 && end > start) {
-                        var jsonStr = content.substring(start, end);
-                        var data = JSON.parse(jsonStr);
-                        
-                        if (data.roasts && Array.isArray(data.roasts)) {
-                            return data.roasts.slice(0, 5);
-                        }
-                    }
-                } catch (e) {
-                    console.log('Parse failed');
-                }
-                
-                return this.getBackup();
-            },
-            
-            getBackup: function() {
-                var sets = [
-                    [
-                        "Your resume is shorter than your attention span.",
-                        "You make participation trophies feel overachieving.",
-                        "Your career peaked at learning to spell your name.",
-                        "You treat job interviews like casual conversations.",
-                        "Your work ethic makes sloths look ambitious."
-                    ],
-                    [
-                        "Your social skills need a warning label.",
-                        "You make small talk feel like interrogation.",
-                        "Your conversation starters kill conversations.",
-                        "You have the charm of a parking ticket.",
-                        "Your networking events clear rooms faster than fire alarms."
-                    ],
-                    [
-                        "Your decisions make coin flips look strategic.",
-                        "You choose chaos when given simple options.",
-                        "Your judgment calls need professional intervention.",
-                        "You make bad choices look like art forms.",
-                        "Your thought process defies logic and reason."
-                    ]
-                ];
-                
-                return sets[this.state.count % sets.length];
-            },
-            
-            showRoasts: function(roasts) {
-                this.el.resultsGrid.innerHTML = '';
-                
-                for (var i = 0; i < roasts.length; i++) {
-                    var card = document.createElement('div');
-                    card.className = 'result-card';
-                    
-                    card.innerHTML = '<div class="roast-number">Roast #' + (i + 1) + '</div>' +
-                                   '<div class="roast-text">' + roasts[i] + '</div>' +
-                                   '<button class="copy-btn" data-text="' + roasts[i] + '">Copy Roast</button>';
-                    
-                    this.el.resultsGrid.appendChild(card);
-                }
-                
-                this.el.resultsContainer.classList.remove('hidden');
-                
-                var self = this;
-                setTimeout(function() {
-                    self.el.resultsContainer.scrollIntoView({behavior: 'smooth'});
-                }, 200);
-            },
-            
-            copyText: function(text, button) {
-                var self = this;
-                
-                if (navigator.clipboard) {
-                    navigator.clipboard.writeText(text).then(function() {
-                        self.showCopied(button);
-                        self.notify('Copied!', 'success');
-                    });
-                } else {
-                    var textarea = document.createElement('textarea');
-                    textarea.value = text;
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                    self.showCopied(button);
-                    self.notify('Copied!', 'success');
-                }
-            },
-            
-            showCopied: function(button) {
-                var original = button.textContent;
-                button.textContent = 'Copied!';
-                button.classList.add('copied');
-                
-                setTimeout(function() {
-                    button.textContent = original;
-                    button.classList.remove('copied');
-                }, 1500);
-            },
-            
-            setLoading: function(loading) {
-                this.state.loading = loading;
-                
-                if (loading) {
-                    this.el.generateBtn.disabled = true;
-                    this.el.btnText.classList.add('hidden');
-                    this.el.btnLoader.classList.remove('hidden');
-                } else {
-                    this.el.generateBtn.disabled = !this.state.loggedIn;
-                    this.el.btnText.classList.remove('hidden');
-                    this.el.btnLoader.classList.add('hidden');
-                }
-            },
-            
             notify: function(message, type) {
-                this.el.toast.className = 'toast';
                 this.el.toast.textContent = message;
-                this.el.toast.classList.add(type || 'info');
+                this.el.toast.className = 'toast ' + type;
+                this.el.toast.style.display = 'block';
                 
-                var self = this;
-                setTimeout(function() {
-                    self.el.toast.classList.add('show');
-                }, 50);
-                
-                setTimeout(function() {
-                    self.el.toast.classList.remove('show');
-                }, 3000);
+                setTimeout(() => {
+                    this.el.toast.style.display = 'none';
+                }, 2000);
             }
         };
         
