@@ -101,7 +101,6 @@
             padding: 60px 20px 40px;
         }
 
-        /* Hero Section */
         .hero-section {
             text-align: center;
             padding: 80px 0 60px;
@@ -119,7 +118,6 @@
             letter-spacing: -2px;
         }
 
-        /* Generate Section */
         .generate-section {
             background: var(--card-bg);
             border-radius: 16px;
@@ -185,7 +183,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Results Section */
         .results-section {
             margin-top: 50px;
         }
@@ -269,7 +266,6 @@
             background: var(--success);
         }
 
-        /* Toast */
         .toast {
             position: fixed;
             top: 80px;
@@ -284,11 +280,12 @@
             transform: translateX(100%);
             transition: all 0.3s ease;
             font-weight: 500;
-            opacity: 1;
+            opacity: 0;
         }
 
         .toast.show {
             transform: translateX(0);
+            opacity: 1;
         }
 
         .toast.success {
@@ -301,12 +298,10 @@
             background: rgba(239, 68, 68, 0.1);
         }
 
-        /* Utility Classes */
         .hidden {
             display: none !important;
         }
 
-        /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .container {
                 padding: 40px 16px 20px;
@@ -328,17 +323,6 @@
             .generate-btn {
                 padding: 16px 30px;
                 font-size: 16px;
-            }
-            
-            .toast {
-                top: 60px;
-                right: 16px;
-                left: 16px;
-                transform: translateY(-100%);
-            }
-            
-            .toast.show {
-                transform: translateY(0);
             }
         }
 
@@ -381,381 +365,490 @@
         <section class="results-section">
             <div id="resultsContainer" class="results-container hidden">
                 <h2 class="results-title">Here you go gng</h2>
-                <div class="results-grid" id="resultsGrid">
-                    <!-- Results will be populated here -->
-                </div>
+                <div class="results-grid" id="resultsGrid"></div>
             </div>
         </section>
     </div>
 
-    <div id="toast" class="toast hidden"></div>
+    <div id="toast" class="toast"></div>
 
     <script>
-        class MasterBaiter {
-            constructor() {
-                this.isAuthenticated = false;
-                this.userName = '';
-                this.sessionId = Date.now();
-                this.generationCount = 0;
+        // Completely rewritten JavaScript with proper error handling
+        (function() {
+            'use strict';
+            
+            // Application state
+            let appState = {
+                isAuthenticated: false,
+                currentUser: null,
+                generationCount: 0,
+                isGenerating: false
+            };
+            
+            // DOM elements - cached for performance
+            const elements = {
+                loginBtn: null,
+                logoutBtn: null,
+                userInfo: null,
+                userName: null,
+                generateBtn: null,
+                btnText: null,
+                btnLoader: null,
+                resultsContainer: null,
+                resultsGrid: null,
+                toast: null
+            };
+            
+            // Initialize DOM elements
+            function initElements() {
+                elements.loginBtn = document.getElementById('loginBtn');
+                elements.logoutBtn = document.getElementById('logoutBtn');
+                elements.userInfo = document.getElementById('userInfo');
+                elements.userName = document.getElementById('userName');
+                elements.generateBtn = document.getElementById('generateBtn');
+                elements.btnText = document.querySelector('.btn-text');
+                elements.btnLoader = document.querySelector('.btn-loader');
+                elements.resultsContainer = document.getElementById('resultsContainer');
+                elements.resultsGrid = document.getElementById('resultsGrid');
+                elements.toast = document.getElementById('toast');
                 
-                this.initializeElements();
-                this.attachEventListeners();
-            }
-
-            initializeElements() {
-                this.loginBtn = document.getElementById('loginBtn');
-                this.logoutBtn = document.getElementById('logoutBtn');
-                this.userInfo = document.getElementById('userInfo');
-                this.userNameElement = document.getElementById('userName');
-                this.generateBtn = document.getElementById('generateBtn');
-                this.resultsContainer = document.getElementById('resultsContainer');
-                this.resultsGrid = document.getElementById('resultsGrid');
-                this.toast = document.getElementById('toast');
-                this.btnText = document.querySelector('.btn-text');
-                this.btnLoader = document.querySelector('.btn-loader');
-            }
-
-            attachEventListeners() {
-                this.loginBtn.addEventListener('click', () => this.handleLogin());
-                this.logoutBtn.addEventListener('click', () => this.handleLogout());
-                this.generateBtn.addEventListener('click', () => this.generateRoasts());
-                
-                document.addEventListener('click', (e) => {
-                    if (e.target.closest('.copy-btn')) {
-                        const roastText = e.target.closest('.result-card').querySelector('.roast-text').textContent;
-                        this.copyRoast(roastText, e.target);
+                // Verify all elements exist
+                for (const [key, element] of Object.entries(elements)) {
+                    if (!element) {
+                        console.error(`Element not found: ${key}`);
                     }
-                });
-            }
-
-            async handleLogin() {
-                try {
-                    this.loginBtn.disabled = true;
-                    this.loginBtn.textContent = 'Connecting...';
-
-                    const user = await puter.auth.signIn();
-                    
-                    if (user) {
-                        this.isAuthenticated = true;
-                        this.updateUIForAuthentication(user.username);
-                        this.showToast('Connected successfully!', 'success');
-                    }
-                } catch (error) {
-                    console.error('Login error:', error);
-                    this.showToast('Connection failed. Please try again.', 'error');
-                    this.resetLoginButton();
                 }
             }
-
-            async handleLogout() {
+            
+            // Toast notification system
+            function showToast(message, type = 'info') {
+                if (!elements.toast) return;
+                
+                // Clear any existing toast
+                elements.toast.classList.remove('show', 'success', 'error');
+                elements.toast.style.opacity = '0';
+                
+                setTimeout(() => {
+                    elements.toast.textContent = message;
+                    elements.toast.classList.add('show', type);
+                    elements.toast.style.opacity = '1';
+                    
+                    // Auto-hide after 4 seconds
+                    setTimeout(() => {
+                        elements.toast.classList.remove('show');
+                        elements.toast.style.opacity = '0';
+                    }, 4000);
+                }, 100);
+            }
+            
+            // Update UI based on authentication state
+            function updateAuthUI() {
+                if (appState.isAuthenticated && appState.currentUser) {
+                    elements.loginBtn.classList.add('hidden');
+                    elements.userInfo.classList.remove('hidden');
+                    elements.userName.textContent = appState.currentUser.username || 'User';
+                    elements.generateBtn.disabled = false;
+                } else {
+                    elements.loginBtn.classList.remove('hidden');
+                    elements.userInfo.classList.add('hidden');
+                    elements.generateBtn.disabled = true;
+                }
+            }
+            
+            // Reset login button state
+            function resetLoginButton() {
+                elements.loginBtn.disabled = false;
+                elements.loginBtn.textContent = 'Connect';
+            }
+            
+            // Handle authentication
+            async function handleLogin() {
+                try {
+                    elements.loginBtn.disabled = true;
+                    elements.loginBtn.textContent = 'Connecting...';
+                    
+                    console.log('Attempting to sign in...');
+                    
+                    // Use Puter.js authentication - this will handle popup automatically
+                    const result = await puter.auth.signIn();
+                    
+                    console.log('Sign in result:', result);
+                    
+                    // Get user info after successful sign in
+                    const userInfo = await puter.auth.getUser();
+                    
+                    console.log('User info:', userInfo);
+                    
+                    appState.isAuthenticated = true;
+                    appState.currentUser = userInfo;
+                    
+                    updateAuthUI();
+                    showToast('Connected successfully!', 'success');
+                    
+                } catch (error) {
+                    console.error('Login failed:', error);
+                    appState.isAuthenticated = false;
+                    appState.currentUser = null;
+                    resetLoginButton();
+                    showToast('Connection failed: ' + (error.message || 'Unknown error'), 'error');
+                }
+            }
+            
+            // Handle logout  
+            async function handleLogout() {
                 try {
                     await puter.auth.signOut();
-                    this.isAuthenticated = false;
-                    this.showLoginButton();
-                    this.showToast('Logged out!', 'success');
+                    appState.isAuthenticated = false;
+                    appState.currentUser = null;
+                    updateAuthUI();
+                    resetLoginButton();
+                    showToast('Logged out successfully', 'success');
                 } catch (error) {
                     console.error('Logout error:', error);
-                    this.isAuthenticated = false;
-                    this.showLoginButton();
-                    this.showToast('Logged out!', 'success');
+                    // Force logout even if API call fails
+                    appState.isAuthenticated = false;
+                    appState.currentUser = null;
+                    updateAuthUI();
+                    resetLoginButton();
+                    showToast('Logged out', 'success');
                 }
             }
-
-            updateUIForAuthentication(username) {
-                this.loginBtn.classList.add('hidden');
-                this.userInfo.classList.remove('hidden');
-                this.userNameElement.textContent = username;
-                this.generateBtn.disabled = false;
+            
+            // Set loading state for generate button
+            function setGeneratingState(isGenerating) {
+                appState.isGenerating = isGenerating;
+                
+                if (isGenerating) {
+                    elements.generateBtn.disabled = true;
+                    elements.btnText.classList.add('hidden');
+                    elements.btnLoader.classList.remove('hidden');
+                } else {
+                    elements.generateBtn.disabled = !appState.isAuthenticated;
+                    elements.btnText.classList.remove('hidden');
+                    elements.btnLoader.classList.add('hidden');
+                }
             }
+            
+            // Create prompt for AI
+            function createPrompt() {
+                appState.generationCount++;
+                
+                const topics = [
+                    'career failures and professional incompetence',
+                    'social awkwardness and relationship disasters',
+                    'poor life decisions and lack of common sense',
+                    'personal hygiene and appearance issues',
+                    'communication skills and intelligence gaps',
+                    'lifestyle choices and personal habits',
+                    'emotional immaturity and social awareness',
+                    'basic life skills and adult responsibilities'
+                ];
+                
+                const currentTopic = topics[appState.generationCount % topics.length];
+                const sessionId = Date.now();
+                
+                return `Create 5 harsh but creative roasts about ${currentTopic}. 
+                
+Generation #${appState.generationCount} - Session ${sessionId}
 
-            showLoginButton() {
-                this.loginBtn.classList.remove('hidden');
-                this.userInfo.classList.add('hidden');
-                this.generateBtn.disabled = true;
-                this.resetLoginButton();
+Requirements:
+- Each roast should be 15-25 words
+- Be cutting and memorable
+- Focus on the topic: ${currentTopic}
+- Make them fresh and unique
+- No violence or threats
+
+Return ONLY a JSON object in this exact format:
+{
+  "roasts": [
+    "roast 1 text here",
+    "roast 2 text here", 
+    "roast 3 text here",
+    "roast 4 text here",
+    "roast 5 text here"
+  ]
+}`;
             }
-
-            resetLoginButton() {
-                this.loginBtn.disabled = false;
-                this.loginBtn.textContent = 'Connect';
-            }
-
-            parseAIResponse(aiResponse) {
-                console.log('AI raw response:', aiResponse);
+            
+            // Parse AI response and extract roasts
+            function parseAIResponse(response) {
+                console.log('Raw AI response:', response);
                 
                 let content = '';
                 
-                // Handle different response formats from Puter AI
-                if (typeof aiResponse === 'string') {
-                    content = aiResponse;
-                } else if (aiResponse && aiResponse.message) {
-                    if (Array.isArray(aiResponse.message.content)) {
-                        // Claude format: [{type: 'text', text: '...'}]
-                        content = aiResponse.message.content[0].text;
+                // Handle different response formats
+                if (typeof response === 'string') {
+                    content = response;
+                } else if (response && typeof response === 'object') {
+                    // Try different possible structures
+                    if (response.message && response.message.content) {
+                        content = response.message.content;
+                    } else if (response.content) {
+                        content = response.content;
+                    } else if (response.text) {
+                        content = response.text;
                     } else {
-                        // OpenAI format: "string content"
-                        content = aiResponse.message.content;
+                        content = JSON.stringify(response);
                     }
-                } else if (aiResponse && aiResponse.content) {
-                    content = aiResponse.content;
-                } else {
-                    content = JSON.stringify(aiResponse);
                 }
                 
                 console.log('Extracted content:', content);
                 
+                // Try to extract JSON from content
                 try {
+                    // Look for JSON in the content
                     let jsonStr = content;
                     
-                    // Remove code block markers if present
-                    const tripleBackticks = String.fromCharCode(96) + String.fromCharCode(96) + String.fromCharCode(96);
-                    const jsonMarker = tripleBackticks + 'json';
-                    
-                    if (content.includes(jsonMarker)) {
-                        const startMarker = content.indexOf(jsonMarker) + jsonMarker.length;
-                        const endMarker = content.lastIndexOf(tripleBackticks);
-                        if (startMarker > jsonMarker.length - 1 && endMarker > startMarker) {
-                            jsonStr = content.substring(startMarker, endMarker).trim();
+                    // Remove markdown code blocks if present
+                    if (content.includes('```
+                        const start = content.indexOf('```json') + 7;
+                        const end = content.lastIndexOf('```
+                        if (start > 6 && end > start) {
+                            jsonStr = content.substring(start, end).trim();
                         }
-                    } else if (content.includes(tripleBackticks)) {
-                        const startMarker = content.indexOf(tripleBackticks) + tripleBackticks.length;
-                        const endMarker = content.lastIndexOf(tripleBackticks);
-                        if (startMarker > tripleBackticks.length - 1 && endMarker > startMarker) {
-                            jsonStr = content.substring(startMarker, endMarker).trim();
+                    } else if (content.includes('```')) {
+                        const start = content.indexOf('```
+                        const end = content.lastIndexOf('```');
+                        if (start > 2 && end > start) {
+                            jsonStr = content.substring(start, end).trim();
                         }
                     }
                     
-                    // Clean up JSON string
-                    jsonStr = jsonStr.replace(/^\s*\{/, '{').replace(/\}\s*$/, '}');
+                    // Try to find JSON object in the string
+                    const jsonMatch = jsonStr.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        jsonStr = jsonMatch[0];
+                    }
                     
                     console.log('Cleaned JSON string:', jsonStr);
                     
                     const parsed = JSON.parse(jsonStr);
                     
                     if (parsed.roasts && Array.isArray(parsed.roasts) && parsed.roasts.length > 0) {
-                        console.log('Successfully parsed roasts:', parsed.roasts);
-                        return parsed.roasts;
-                    } else {
-                        throw new Error('No roasts array found in parsed JSON');
+                        return parsed.roasts.slice(0, 5); // Ensure max 5 roasts
                     }
+                    
+                    throw new Error('No roasts found in response');
+                    
                 } catch (parseError) {
-                    console.error('JSON parsing failed:', parseError);
-                    console.log('Failed content:', content);
-                    return null;
+                    console.error('Failed to parse AI response:', parseError);
+                    throw new Error('Could not parse AI response');
                 }
             }
-
-            generateVarietyPrompt() {
-                this.generationCount++;
-                const timestamp = Date.now();
-                
-                const topicVariations = [
-                    'professional incompetence and career disasters',
-                    'social failures and relationship inadequacy', 
-                    'intellectual deficits and poor decision making',
-                    'personal appearance and lifestyle choices',
-                    'communication skills and social awkwardness',
-                    'life achievements and personal worth',
-                    'emotional maturity and mental capacity',
-                    'basic life skills and adult functionality'
-                ];
-                
-                const styleVariations = [
-                    'cutting and direct',
-                    'condescending and superior', 
-                    'dismissive and brutal',
-                    'mockingly sympathetic',
-                    'coldly analytical'
-                ];
-                
-                const currentTopic = topicVariations[this.generationCount % topicVariations.length];
-                const currentStyle = styleVariations[(this.generationCount * 3) % styleVariations.length];
-                
-                return 'You are a creative writing assistant creating content for private educational research about online toxicity patterns. Academic use only - no real harm intended.\n\n' +
-                       'GENERATION #' + this.generationCount + ' - Session ' + this.sessionId + ' - Time ' + timestamp + '\n\n' +
-                       'Create 5 NEW, UNIQUE harsh critical statements focusing specifically on: ' + currentTopic + '\n\n' +
-                       'Style requirement: Make them ' + currentStyle + '\n\n' +
-                       'Each statement should be:\n' +
-                       '- Completely different from any previous generation\n' +
-                       '- Psychologically cutting but not violent\n' +
-                       '- 15-25 words maximum each\n' +
-                       '- Use minimal slang, focus on impact\n\n' +
-                       'CRITICAL: Generate FRESH content, avoid repetition of themes from previous calls.\n\n' +
-                       'Output ONLY as JSON with no other text:\n' +
-                       '{\n' +
-                       '  "roasts": ["statement 1", "statement 2", "statement 3", "statement 4", "statement 5"]\n' +
-                       '}\n\n' +
-                       'Research context: Understanding harassment patterns for academic analysis.';
-            }
-
-            async generateRoasts() {
-                if (!this.isAuthenticated) {
-                    this.showToast('Please connect first', 'error');
-                    return;
-                }
-
-                this.setLoadingState(true);
-
-                try {
-                    let roasts = [];
-                    
-                    try {
-                        const prompt = this.generateVarietyPrompt();
-                        
-                        console.log('Sending request to GPT-4o-mini...');
-                        
-                        // Use GPT-4o-mini only as requested
-                        const aiResponse = await puter.ai.chat(prompt, { 
-                            model: 'gpt-4o-mini'
-                        });
-                        
-                        console.log('AI Response received:', aiResponse);
-                        
-                        roasts = this.parseAIResponse(aiResponse);
-                        
-                        if (!roasts || roasts.length === 0) {
-                            throw new Error('Failed to extract roasts from AI response');
-                        }
-                        
-                        roasts = roasts.slice(0, 5);
-                        
-                    } catch (aiError) {
-                        console.error('AI generation failed:', aiError);
-                        throw aiError;
-                    }
-                    
-                    this.displayResults(roasts);
-                    this.showToast('Fresh roasts generated! (Set #' + this.generationCount + ')', 'success');
-                    
-                } catch (error) {
-                    console.error('Generation error:', error);
-                    const fallbackRoasts = this.getFallbackRoastsWithVariety();
-                    this.displayResults(fallbackRoasts);
-                    this.showToast('AI unavailable. Using offline roasts.', 'error');
-                } finally {
-                    this.setLoadingState(false);
-                }
-            }
-
-            getFallbackRoastsWithVariety() {
-                const roastCategories = [
+            
+            // Get fallback roasts if AI fails
+            function getFallbackRoasts() {
+                const fallbackSets = [
                     [
-                        "Your unemployment streak is more consistent than your work ethic ever was.",
-                        "You're the human equivalent of a participation trophy nobody wanted to give out.",
-                        "I've seen more intelligence in a broken GPS than in your life decisions.",
-                        "Your career trajectory peaked when you learned to tie your shoes.",
-                        "You're living proof that natural selection sometimes takes a coffee break."
+                        "Your career peaked the day you learned to use a calculator.",
+                        "You're the reason job applications ask about basic computer skills.",
+                        "Your LinkedIn profile is more fiction than your favorite novel.",
+                        "You treat deadlines like suggestions and wonder why nobody takes you seriously.",
+                        "Your work ethic is so poor it makes minimum wage feel overpaid."
                     ],
                     [
-                        "Every conversation with you feels like a masterclass in wasted potential.",
-                        "You have the personality depth of a puddle in the desert.",
-                        "Your social skills are so bad they should come with a warning label.",
-                        "You're the reason job interviews include basic competency tests.",
-                        "Your life reads like a instruction manual for spectacular failure."
+                        "You have the social awareness of a brick wall at a dinner party.",
+                        "Your conversation skills make small talk feel like interrogation.",
+                        "You're the person everyone avoids at networking events.",
+                        "Your dating profile probably lists 'existing' as your main hobby.",
+                        "You make awkward silences feel like blessed relief."
                     ],
                     [
-                        "You contribute to society like a chocolate teapot contributes to afternoon tea.",
-                        "Your decision-making process is a crime against logic and reason.",
-                        "You're what happens when mediocrity aims too high and still misses.",
-                        "Your existence is nature's way of showing us what not to aspire to.",
-                        "You peaked at birth and it's been downhill ever since."
-                    ],
-                    [
-                        "Your life achievements could fit on a Post-it note with room to spare.",
-                        "You're the poster child for why some people shouldn't have internet access.",
-                        "Your communication skills make mime artists look chatty by comparison.",
-                        "You're living proof that participation doesn't always deserve recognition.",
-                        "Your personal growth stopped sometime around kindergarten graduation."
+                        "Your decision-making process involves a magic 8-ball and immediate regret.",
+                        "You consistently choose the worst possible option in any scenario.",
+                        "Your life choices read like a manual on what not to do.",
+                        "You have the judgment skills of a goldfish with amnesia.",
+                        "Your thought process is a masterclass in missing the point entirely."
                     ]
                 ];
                 
-                const categoryIndex = this.generationCount % roastCategories.length;
-                return roastCategories[categoryIndex];
+                return fallbackSets[appState.generationCount % fallbackSets.length];
             }
-
-            displayResults(roasts) {
-                this.resultsGrid.innerHTML = '';
+            
+            // Generate roasts using AI
+            async function generateRoasts() {
+                if (!appState.isAuthenticated) {
+                    showToast('Please connect first', 'error');
+                    return;
+                }
                 
+                if (appState.isGenerating) {
+                    return; // Prevent double clicks
+                }
+                
+                setGeneratingState(true);
+                
+                try {
+                    console.log('Starting AI generation...');
+                    
+                    const prompt = createPrompt();
+                    console.log('Using prompt:', prompt);
+                    
+                    // Call Puter AI with GPT-4o-mini
+                    const response = await puter.ai.chat(prompt, {
+                        model: 'gpt-4o-mini'
+                    });
+                    
+                    console.log('AI response received:', response);
+                    
+                    const roasts = parseAIResponse(response);
+                    
+                    displayRoasts(roasts);
+                    showToast(`Generated ${roasts.length} fresh roasts!`, 'success');
+                    
+                } catch (error) {
+                    console.error('AI generation failed:', error);
+                    
+                    // Use fallback roasts
+                    const fallbackRoasts = getFallbackRoasts();
+                    displayRoasts(fallbackRoasts);
+                    showToast('AI unavailable, using offline roasts', 'error');
+                    
+                } finally {
+                    setGeneratingState(false);
+                }
+            }
+            
+            // Display roasts in the UI
+            function displayRoasts(roasts) {
+                if (!Array.isArray(roasts) || roasts.length === 0) {
+                    console.error('Invalid roasts array:', roasts);
+                    return;
+                }
+                
+                // Clear previous results
+                elements.resultsGrid.innerHTML = '';
+                
+                // Create roast cards
                 roasts.forEach((roast, index) => {
                     const card = document.createElement('div');
                     card.className = 'result-card';
                     card.style.animationDelay = (index * 100) + 'ms';
                     
-                    card.innerHTML = '<div class="roast-number">Roast #' + (index + 1) + '</div>' +
-                                   '<div class="roast-text">' + roast + '</div>' +
-                                   '<button class="copy-btn">Copy Roast</button>';
+                    card.innerHTML = `
+                        <div class="roast-number">Roast #${index + 1}</div>
+                        <div class="roast-text">${roast}</div>
+                        <button class="copy-btn" data-roast="${roast}">Copy Roast</button>
+                    `;
                     
-                    this.resultsGrid.appendChild(card);
+                    elements.resultsGrid.appendChild(card);
                 });
-
-                this.resultsContainer.classList.remove('hidden');
                 
+                // Show results container
+                elements.resultsContainer.classList.remove('hidden');
+                
+                // Scroll to results after a short delay
                 setTimeout(() => {
-                    this.resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 200);
+                    elements.resultsContainer.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 300);
             }
-
-            async copyRoast(text, button) {
+            
+            // Copy roast to clipboard
+            async function copyRoast(text, button) {
                 try {
                     await navigator.clipboard.writeText(text);
+                    
+                    // Update button state
+                    const originalText = button.textContent;
                     button.textContent = '✓ Copied!';
                     button.classList.add('copied');
                     
                     setTimeout(() => {
-                        button.textContent = 'Copy Roast';
+                        button.textContent = originalText;
                         button.classList.remove('copied');
                     }, 2000);
                     
-                    this.showToast('Copied to clipboard!', 'success');
+                    showToast('Copied to clipboard!', 'success');
+                    
                 } catch (error) {
-                    const textArea = document.createElement('textarea');
-                    textArea.value = text;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textArea);
-                    this.showToast('Copied to clipboard!', 'success');
-                }
-            }
-
-            setLoadingState(isLoading) {
-                if (isLoading) {
-                    this.generateBtn.disabled = true;
-                    this.btnText.classList.add('hidden');
-                    this.btnLoader.classList.remove('hidden');
-                } else {
-                    this.generateBtn.disabled = !this.isAuthenticated;
-                    this.btnText.classList.remove('hidden');
-                    this.btnLoader.classList.add('hidden');
-                }
-            }
-
-            showToast(message, type) {
-                // Clear any existing toasts
-                this.toast.classList.remove('show');
-                this.toast.style.opacity = '0';
-                
-                setTimeout(() => {
-                    this.toast.textContent = message;
-                    this.toast.className = 'toast ' + type + ' show';
-                    this.toast.style.display = 'block';
-                    this.toast.style.opacity = '1';
-
-                    setTimeout(() => {
-                        this.toast.classList.remove('show');
-                        this.toast.style.opacity = '0';
+                    console.error('Copy failed:', error);
+                    
+                    // Fallback for older browsers
+                    try {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = text;
+                        textArea.style.position = 'fixed';
+                        textArea.style.opacity = '0';
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
                         
-                        setTimeout(() => {
-                            this.toast.style.display = 'none';
-                        }, 300);
-                    }, 3000);
-                }, 100);
+                        showToast('Copied to clipboard!', 'success');
+                    } catch (fallbackError) {
+                        showToast('Copy failed', 'error');
+                    }
+                }
             }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            new MasterBaiter();
-        });
+            
+            // Event listeners
+            function attachEventListeners() {
+                // Login button
+                elements.loginBtn.addEventListener('click', handleLogin);
+                
+                // Logout button  
+                elements.logoutBtn.addEventListener('click', handleLogout);
+                
+                // Generate button
+                elements.generateBtn.addEventListener('click', generateRoasts);
+                
+                // Copy buttons (using event delegation)
+                document.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('copy-btn')) {
+                        const roastText = e.target.getAttribute('data-roast');
+                        if (roastText) {
+                            copyRoast(roastText, e.target);
+                        }
+                    }
+                });
+            }
+            
+            // Check initial authentication state
+            async function checkInitialAuth() {
+                try {
+                    // Check if user is already signed in
+                    if (puter.auth.isSignedIn()) {
+                        const userInfo = await puter.auth.getUser();
+                        appState.isAuthenticated = true;
+                        appState.currentUser = userInfo;
+                        updateAuthUI();
+                        console.log('User already authenticated:', userInfo);
+                    }
+                } catch (error) {
+                    console.log('No existing authentication:', error);
+                    appState.isAuthenticated = false;
+                    appState.currentUser = null;
+                    updateAuthUI();
+                }
+            }
+            
+            // Initialize the application
+            async function init() {
+                console.log('Initializing Master Baiter app...');
+                
+                // Initialize DOM elements
+                initElements();
+                
+                // Attach event listeners  
+                attachEventListeners();
+                
+                // Check authentication state
+                await checkInitialAuth();
+                
+                console.log('App initialized successfully');
+            }
+            
+            // Start the app when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+            
+        })();
     </script>
 </body>
 </html>
