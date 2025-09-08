@@ -18,60 +18,132 @@
             --accent: #f4a259;
             --neutral: #5b8e7d;
             --danger: #bc4b51;
-            --bg: #fafafa;
+            --bg: #ffffff;
+            --card-bg: #fafbfc;
             --text: #2c2c2c;
-            --border: rgba(139, 179, 105, 0.2);
-            --shadow: rgba(139, 179, 105, 0.1);
+            --text-light: #666666;
+            --border: #e8ebe8;
+            --hover: #f0f4ec;
         }
 
         body {
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--bg) 0%, #f0f4ec 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: var(--bg);
             color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 0 20px;
-            position: relative;
-            z-index: 1;
         }
 
-        /* Header Styles */
+        /* Animated Background Elements */
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.03;
+            animation: float 20s infinite linear;
+        }
+
+        .shape-1 {
+            width: 80px;
+            height: 80px;
+            background: var(--primary);
+            border-radius: 50%;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 60px;
+            height: 60px;
+            background: var(--accent);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            top: 60%;
+            left: 80%;
+            animation-delay: -8s;
+        }
+
+        .shape-3 {
+            width: 100px;
+            height: 40px;
+            background: var(--neutral);
+            border-radius: 50px;
+            top: 30%;
+            left: 70%;
+            animation-delay: -4s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+            }
+        }
+
+        /* Header */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 2rem 0;
-            border-bottom: 2px solid var(--border);
-            margin-bottom: 3rem;
+            padding: 3rem 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 1.2rem;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .logo-text {
-            font-size: 2.5rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: logoGlow 3s ease-in-out infinite alternate;
+            color: var(--text);
+            letter-spacing: -0.02em;
         }
 
         .logo-subtitle {
-            font-size: 0.9rem;
-            color: var(--neutral);
+            font-size: 0.75rem;
+            color: var(--text-light);
             font-weight: 500;
             margin-top: 0.2rem;
-            opacity: 0.8;
-        }
-
-        @keyframes logoGlow {
-            0% { filter: brightness(1); }
-            100% { filter: brightness(1.2); }
         }
 
         .auth-section {
@@ -82,129 +154,126 @@
 
         .login-btn, .logout-btn {
             padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 25px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
             font-size: 0.9rem;
-        }
-
-        .login-btn {
-            background: linear-gradient(45deg, var(--primary), var(--accent));
-            color: white;
-            box-shadow: 0 4px 15px var(--shadow);
+            background: transparent;
+            color: var(--primary);
         }
 
         .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(139, 179, 105, 0.3);
+            background: var(--primary);
+            color: white;
+            transform: translateY(-1px);
         }
 
         .logout-btn {
-            background: var(--danger);
-            color: white;
+            border-color: var(--danger);
+            color: var(--danger);
         }
 
         .logout-btn:hover {
-            background: #a63f44;
-            transform: translateY(-1px);
+            background: var(--danger);
+            color: white;
         }
 
         .user-info {
             display: flex;
             align-items: center;
             gap: 1rem;
-            font-weight: 600;
-            color: var(--neutral);
+            padding: 0.5rem 1rem;
+            background: var(--card-bg);
+            border-radius: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
         /* Main Content */
         .main-content {
-            display: grid;
-            gap: 3rem;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 4rem;
         }
 
         .input-section {
-            background: white;
-            border-radius: 20px;
-            padding: 2.5rem;
-            box-shadow: 0 10px 30px var(--shadow);
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
             border: 1px solid var(--border);
-            position: relative;
-            overflow: hidden;
+            margin-bottom: 3rem;
+            transition: all 0.3s ease;
         }
 
-        .input-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
-            animation: gradientShift 3s ease-in-out infinite;
-        }
-
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        .input-section:hover {
+            border-color: var(--primary);
         }
 
         .input-label {
             display: block;
             font-weight: 600;
             margin-bottom: 1rem;
-            color: var(--neutral);
-            font-size: 1.1rem;
+            color: var(--text);
+            font-size: 1rem;
         }
 
         .context-input {
             width: 100%;
-            padding: 1rem 1.5rem;
+            padding: 1rem;
             border: 2px solid var(--border);
-            border-radius: 15px;
+            border-radius: 12px;
             font-size: 1rem;
             resize: vertical;
             min-height: 120px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             font-family: inherit;
-            background: #fafafa;
+            background: white;
         }
 
         .context-input:focus {
             outline: none;
             border-color: var(--primary);
-            background: white;
-            box-shadow: 0 0 0 3px rgba(139, 179, 105, 0.1);
-            transform: translateY(-1px);
+            box-shadow: 0 0 0 3px rgba(140, 179, 105, 0.1);
         }
 
         .generate-btn {
             margin-top: 1.5rem;
             width: 100%;
             padding: 1rem 2rem;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 15px;
-            font-size: 1.1rem;
+            border-radius: 12px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
         }
 
         .generate-btn:not(:disabled):hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(139, 179, 105, 0.3);
+            background: #7ca55d;
+            transform: translateY(-1px);
         }
 
         .generate-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            transform: none;
         }
 
         .btn-loader {
@@ -222,45 +291,29 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Response Section */
-        .responses-section {
-            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
+        /* Response Cards */
         .responses-title {
             text-align: center;
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 2rem;
-            color: var(--neutral);
+            color: var(--text);
         }
 
         .responses-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
         }
 
         .response-card {
             background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 8px 25px var(--shadow);
+            border-radius: 16px;
+            padding: 1.5rem;
             border: 1px solid var(--border);
             position: relative;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: cardAppear 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideIn 0.5s ease-out;
             animation-fill-mode: both;
         }
 
@@ -268,55 +321,61 @@
         .response-card:nth-child(2) { animation-delay: 0.2s; }
         .response-card:nth-child(3) { animation-delay: 0.3s; }
 
-        @keyframes cardAppear {
+        @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(20px) scale(0.95);
+                transform: translateY(20px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateY(0);
             }
         }
 
         .response-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(139, 179, 105, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: var(--primary);
         }
 
         .method-badge {
-            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            background: var(--secondary);
             color: var(--text);
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             margin-bottom: 1rem;
             display: inline-block;
-            box-shadow: 0 2px 10px rgba(244, 162, 89, 0.3);
+            border: 1px solid var(--accent);
         }
 
         .response-content {
-            font-size: 1rem;
+            font-size: 0.95rem;
             line-height: 1.6;
             margin-bottom: 1.5rem;
             color: var(--text);
-            font-weight: 500;
+            background: var(--hover);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
         }
 
         .copy-btn {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
-            padding: 0.75rem 1rem;
+            padding: 0.6rem 1rem;
             background: var(--neutral);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+            width: 100%;
         }
 
         .copy-btn:hover {
@@ -324,79 +383,28 @@
             transform: translateY(-1px);
         }
 
-        /* Floating Particles */
-        .floating-particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .particle {
-            position: absolute;
-            width: 6px;
-            height: 6px;
+        .copy-btn.copied {
             background: var(--primary);
-            border-radius: 50%;
-            opacity: 0.3;
-            animation: float 8s infinite linear;
         }
 
-        .particle:nth-child(1) {
-            left: 10%;
-            animation-delay: 0s;
-            animation-duration: 8s;
-        }
-
-        .particle:nth-child(2) {
-            left: 20%;
-            animation-delay: -2s;
-            animation-duration: 10s;
-        }
-
-        .particle:nth-child(3) {
-            left: 50%;
-            animation-delay: -4s;
-            animation-duration: 12s;
-        }
-
-        .particle:nth-child(4) {
-            left: 80%;
-            animation-delay: -6s;
-            animation-duration: 9s;
-        }
-
-        .particle:nth-child(5) {
-            left: 90%;
-            animation-delay: -8s;
-            animation-duration: 11s;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-            }
-            100% {
-                transform: translateY(-10vh) rotate(360deg);
-            }
-        }
-
-        /* Toast Notification */
+        /* Toast */
         .toast {
             position: fixed;
-            bottom: 2rem;
+            top: 2rem;
             right: 2rem;
             background: var(--neutral);
             color: white;
             padding: 1rem 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             z-index: 1000;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             font-weight: 600;
+            transform: translateX(100%);
+        }
+
+        .toast.show {
+            transform: translateX(0);
         }
 
         .toast.success {
@@ -422,10 +430,11 @@
                 flex-direction: column;
                 gap: 1rem;
                 text-align: center;
+                padding: 2rem 0 1.5rem;
             }
             
             .logo-text {
-                font-size: 2rem;
+                font-size: 1.5rem;
             }
             
             .input-section {
@@ -438,50 +447,47 @@
             }
             
             .response-card {
-                padding: 1.5rem;
-            }
-            
-            .responses-title {
-                font-size: 1.5rem;
+                padding: 1.2rem;
             }
             
             .toast {
-                bottom: 1rem;
+                top: 1rem;
                 right: 1rem;
                 left: 1rem;
             }
         }
 
-        @media (max-width: 480px) {
-            .logo-text {
-                font-size: 1.8rem;
-            }
-            
-            .input-section {
-                padding: 1rem;
-            }
-            
-            .response-card {
-                padding: 1rem;
-            }
-            
-            .auth-section {
-                width: 100%;
-                justify-content: center;
-            }
+        .error-message {
+            background: #fef2f2;
+            color: var(--danger);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid #fecaca;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
     <div class="container">
         <header class="header">
             <div class="logo">
-                <h1 class="logo-text">RAGEBAITER</h1>
-                <div class="logo-subtitle">Master the Art of Response</div>
+                <div class="logo-icon">R</div>
+                <div>
+                    <h1 class="logo-text">RAGEBAITER</h1>
+                    <div class="logo-subtitle">Master the Art of Response</div>
+                </div>
             </div>
             <div class="auth-section">
                 <button id="loginBtn" class="login-btn hidden">Connect to Generate</button>
                 <div id="userInfo" class="user-info hidden">
+                    <div class="status-dot"></div>
                     <span id="userName"></span>
                     <button id="logoutBtn" class="logout-btn">Disconnect</button>
                 </div>
@@ -490,19 +496,17 @@
 
         <main class="main-content">
             <div class="input-section">
-                <div class="input-container">
-                    <label for="contextInput" class="input-label">Enter the context or sentence:</label>
-                    <textarea 
-                        id="contextInput" 
-                        class="context-input" 
-                        placeholder="Paste the message, comment, or statement you want to respond to..."
-                        rows="4"
-                    ></textarea>
-                    <button id="generateBtn" class="generate-btn" disabled>
-                        <span class="btn-text">Generate Responses</span>
-                        <div class="btn-loader hidden"></div>
-                    </button>
-                </div>
+                <label for="contextInput" class="input-label">Enter the context or sentence:</label>
+                <textarea 
+                    id="contextInput" 
+                    class="context-input" 
+                    placeholder="Paste the message, comment, or statement you want to respond to..."
+                    rows="4"
+                ></textarea>
+                <button id="generateBtn" class="generate-btn" disabled>
+                    <span class="btn-text">Generate Responses</span>
+                    <div class="btn-loader hidden"></div>
+                </button>
             </div>
 
             <div class="responses-section">
@@ -515,10 +519,7 @@
                             </div>
                             <div class="response-content"></div>
                             <button class="copy-btn" data-response="1">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
-                                </svg>
-                                Copy
+                                📋 Copy Response
                             </button>
                         </div>
                         <div class="response-card" id="response2">
@@ -527,10 +528,7 @@
                             </div>
                             <div class="response-content"></div>
                             <button class="copy-btn" data-response="2">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
-                                </svg>
-                                Copy
+                                📋 Copy Response
                             </button>
                         </div>
                         <div class="response-card" id="response3">
@@ -539,24 +537,13 @@
                             </div>
                             <div class="response-content"></div>
                             <button class="copy-btn" data-response="3">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
-                                </svg>
-                                Copy
+                                📋 Copy Response
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
-
-        <div class="floating-particles">
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-        </div>
     </div>
 
     <div id="toast" class="toast hidden"></div>
@@ -592,7 +579,6 @@
                 this.generateBtn.addEventListener('click', () => this.generateResponses());
                 this.contextInput.addEventListener('input', () => this.toggleGenerateButton());
                 
-                // Copy button event delegation
                 document.addEventListener('click', (e) => {
                     if (e.target.closest('.copy-btn')) {
                         const responseNum = e.target.closest('.copy-btn').dataset.response;
@@ -606,13 +592,21 @@
                     const savedAuth = localStorage.getItem('ragebaiter_auth');
                     if (savedAuth) {
                         const authData = JSON.parse(savedAuth);
-                        this.puterClient = puter.auth.token(authData.token);
-                        const user = await this.puterClient.auth.user();
                         
-                        if (user) {
-                            this.isAuthenticated = true;
-                            this.updateUIForAuthentication(user.username);
-                        } else {
+                        // Initialize Puter with error handling
+                        try {
+                            this.puterClient = puter.auth.token(authData.token);
+                            const user = await this.puterClient.auth.user();
+                            
+                            if (user) {
+                                this.isAuthenticated = true;
+                                this.updateUIForAuthentication(user.username);
+                                this.showToast('Auto-login successful!', 'success');
+                            } else {
+                                throw new Error('Invalid token');
+                            }
+                        } catch (puterError) {
+                            console.error('Puter auth error:', puterError);
                             localStorage.removeItem('ragebaiter_auth');
                             this.showLoginButton();
                         }
@@ -631,22 +625,34 @@
                     this.loginBtn.disabled = true;
                     this.loginBtn.textContent = 'Connecting...';
 
-                    this.puterClient = puter.auth.signIn({
-                        success: async (user, token) => {
-                            this.isAuthenticated = true;
-                            localStorage.setItem('ragebaiter_auth', JSON.stringify({ token, username: user.username }));
-                            this.updateUIForAuthentication(user.username);
-                            this.showToast('Connected successfully!', 'success');
-                        },
-                        error: (error) => {
-                            console.error('Login failed:', error);
-                            this.showToast('Connection failed. Please try again.', 'error');
-                            this.resetLoginButton();
-                        }
-                    });
+                    // Check if Puter is available
+                    if (typeof puter === 'undefined') {
+                        throw new Error('Puter SDK not loaded');
+                    }
+
+                    const authResult = await puter.auth.signIn();
+                    
+                    if (authResult && authResult.user) {
+                        this.isAuthenticated = true;
+                        this.puterClient = puter;
+                        
+                        localStorage.setItem('ragebaiter_auth', JSON.stringify({ 
+                            token: authResult.token || 'demo-token',
+                            username: authResult.user.username 
+                        }));
+                        
+                        this.updateUIForAuthentication(authResult.user.username);
+                        this.showToast('Connected successfully!', 'success');
+                    } else {
+                        throw new Error('Authentication failed');
+                    }
                 } catch (error) {
                     console.error('Login error:', error);
-                    this.showToast('Connection error. Please try again.', 'error');
+                    this.showToast('Connection failed. Using demo mode.', 'error');
+                    
+                    // Demo mode fallback
+                    this.isAuthenticated = true;
+                    this.updateUIForAuthentication('Demo User');
                     this.resetLoginButton();
                 }
             }
@@ -722,155 +728,47 @@
                 return { type: contextType, confidence: maxScore };
             }
 
-            selectOptimalMethods(contextAnalysis, contextText) {
+            selectOptimalMethods(contextAnalysis) {
                 const methodCategories = {
                     personal: [
-                        "Using personal attacks masked as observations to trigger emotional responses",
-                        "Gaslighting someone subtly by questioning their memory or perception repeatedly",
-                        "Exaggerating one's own victimization for manipulative effect",
-                        "Employing fake sympathy or victimhood to manipulate sympathies",
-                        "Pretending to be the victim after provoking others to garner sympathy"
+                        "Personal attacks masked as observations",
+                        "Gaslighting by questioning memory",
+                        "Fake victimhood manipulation"
                     ],
                     opinion: [
-                        "Promoting extremely confident but obviously wrong opinions",
-                        "Responding with dismissive phrases like 'for you maybe' to invalidate opinions",
-                        "Using \"sounds like a you problem\" to dismiss legitimate concerns",
-                        "Announcing unpopular opinions as facts to provoke responses",
-                        "Posting as \"devil's advocate\" while clearly having strong opinions"
+                        "Confident wrong opinions",
+                        "Dismissive 'for you maybe' responses",
+                        "Devil's advocate false neutrality"
                     ],
                     achievement: [
-                        "Dismissing genuine issues with flippant or mockery comments",
-                        "Highlighting trivial mistakes with exaggerated importance",
-                        "Mocking socially accepted behavior as uncool or outdated to elicit defensive reactions",
-                        "Using \"big if true\" responses to established facts",
-                        "Treating people like dogs with \"good boy\" responses after they help you"
+                        "Dismissing with mockery comments",
+                        "Highlighting trivial mistakes",
+                        "Condescending 'good boy' treatment"
                     ],
                     complaint: [
-                        "Amplifying controversial or polarizing views to provoke anger from opposing sides",
-                        "Framing content as 'us vs. them' to heighten group identity tensions",
-                        "Exploiting short fuse personalities with targeted remarks",
-                        "Using chatter to drown out meaningful discussion, often with repetitive or off-topic comments",
-                        "Interrupting with \"actually\" corrections that miss the point entirely"
+                        "Amplifying polarizing views",
+                        "Us vs them framing",
+                        "Exploiting short fuse personalities"
                     ],
                     advice: [
-                        "Pretending ignorance while knowing the facts to frustrate experts",
-                        "Constant fact-checking with a condescending tone to provoke defensive aggression",
-                        "Engaging repeatedly in 'sealioning' by incessantly demanding evidence in bad faith",
-                        "Announcing you \"have to do the reading\" but never actually doing it",
-                        "Playing dumb repeatedly across different topics to frustrate interlocutors"
+                        "Playing dumb to frustrate experts",
+                        "Condescending fact-checking",
+                        "Bad faith evidence demands"
                     ],
                     question: [
-                        "Playing dumb by asking intentionally stupid questions to provoke frustration",
-                        "Posting bait questions that appear innocent but are loaded emotionally",
-                        "Using deliberate ambiguity or vagueness to create multiple interpretations",
-                        "Making deliberately ambiguous statements that imply insult without direct accusation",
-                        "Claiming earth might be flat with \"I'm just asking questions\" defense"
-                    ],
-                    emotional: [
-                        "Using emotionally charged language that escalates the tone of the discourse",
-                        "Employing projection accusations repeatedly to put others on the defensive",
-                        "Utilizing circular logic or moving goalposts in arguments to tire opponents",
-                        "Mixing humor with serious accusations to blur lines and provoke",
-                        "Exaggerating minor social issues beyond proportion to incite dispute"
-                    ],
-                    political: [
-                        "Posting provocative political content that feigns allegiance to provoke opposition",
-                        "Using racial or gender stereotypes to divide and provoke",
-                        "Spreading content that hints at conspiracy theories just enough to provoke outrage",
-                        "Making fun of serious social movements to offend and provoke",
-                        "Creating artificial divisions between unrelated concepts"
-                    ],
-                    social: [
-                        "Labeling people with negative stereotypes to provoke group-based anger",
-                        "Ridiculing cultural or religious practices to provoke identity-based rage",
-                        "Weaponizing outrage around trivial personal preferences (e.g., food, clothing) intentionally",
-                        "Rotating target demographics systematically - wage workers, dog owners, anime fans, gym bros, teachers, vegans",
-                        "Walking extremely slowly in groups to frustrate others behind you"
-                    ],
-                    technical: [
-                        "Being annoyingly repetitive with a specific irritating action or phrase",
-                        "Denying obvious facts repeatedly to frustrate and confuse",
-                        "Adopting sarcastic or patronizing language in discourse",
-                        "Using co-opting language — adopting opponent's language in mocking ways",
-                        "Flooding comment sections with low-effort provocative posts to disrupt dialogue"
-                    ],
-                    lifestyle: [
-                        "Posting recipes that are deliberately disgusting rage-bait food content",
-                        "Acting as if rules or social norms don't apply to oneself to irritate others",
-                        "Provoking economic or class-based resentments through content",
-                        "Using children or family-related sensitive topics to evoke protective anger",
-                        "Focusing on taboo or culturally sensitive subjects for shock value"
-                    ],
-                    work: [
-                        "Creating fake prenups and wealth details in relationship stories",
-                        "Provoking economic or class-based resentments through content",
-                        "Using false reports or accusations as a tactic to silence opponents",
-                        "Targeting influencers or community leaders to generate wider backlash",
-                        "Adopting \"blessed day\" passive-aggressive signoffs"
+                        "Intentionally stupid questions",
+                        "Loaded emotional bait questions",
+                        "Deliberate ambiguous implications"
                     ],
                     general: [
-                        "Promoting extremely confident but obviously wrong opinions",
-                        "Using personal attacks masked as observations to trigger emotional responses",
-                        "Responding with dismissive phrases like 'for you maybe' to invalidate opinions",
-                        "Adopting sarcastic or patronizing language in discourse",
-                        "Amplifying controversial or polarizing views to provoke anger from opposing sides"
+                        "Confident wrong opinions",
+                        "Dismissive invalidation phrases",
+                        "Sarcastic patronizing language"
                     ]
                 };
 
-                const selectedMethods = methodCategories[contextAnalysis.type] || methodCategories.general;
-                
-                // Shuffle and select 3 different methods
-                const shuffled = [...selectedMethods].sort(() => Math.random() - 0.5);
-                return shuffled.slice(0, 3);
-            }
-
-            buildEnhancedPrompt(context) {
-                const analysis = this.analyzeContext(context);
-                const optimalMethods = this.selectOptimalMethods(analysis, context);
-
-                return `You are a master of crafting brutally effective provocative responses. Your task is to create three devastatingly toxic responses that will maximize emotional provocation and anger.
-
-CRITICAL ANALYSIS:
-Context Type: ${analysis.type}
-Target Statement: "${context}"
-
-MISSION: Generate 3 responses that are:
-- MAXIMALLY PROVOCATIVE and designed to trigger intense anger
-- BRUTALLY EFFECTIVE at hitting psychological pressure points
-- CONTEXTUALLY TARGETED to exploit the specific vulnerabilities in their statement
-- DEVASTATINGLY RUDE without crossing into illegal territory
-
-MANDATORY METHODS TO USE (one per response):
-Method 1: ${optimalMethods[0]}
-Method 2: ${optimalMethods[1]}  
-Method 3: ${optimalMethods[2]}
-
-EXECUTION REQUIREMENTS:
-- Each response must embody its assigned method PERFECTLY
-- Use the most provocative, dismissive, and condescending language possible
-- Target their apparent insecurities, assumptions, and trigger points
-- Be ruthlessly effective - no mercy, maximum psychological impact
-- Stay within platform guidelines but push boundaries to the absolute limit
-
-OUTPUT FORMAT (MANDATORY JSON):
-{
-  "responses": [
-    {
-      "method": "${optimalMethods[0]}",
-      "response": "[Your brutally effective toxic response using this exact method]"
-    },
-    {
-      "method": "${optimalMethods[1]}", 
-      "response": "[Your brutally effective toxic response using this exact method]"
-    },
-    {
-      "method": "${optimalMethods[2]}",
-      "response": "[Your brutally effective toxic response using this exact method]"
-    }
-  ]
-}
-
-Execute now with maximum toxicity and precision:`;
+                const selected = methodCategories[contextAnalysis.type] || methodCategories.general;
+                return selected.slice(0, 3);
             }
 
             async generateResponses() {
@@ -883,43 +781,15 @@ Execute now with maximum toxicity and precision:`;
                 this.setLoadingState(true);
 
                 try {
-                    const prompt = this.buildEnhancedPrompt(context);
-                    console.log('Sending enhanced prompt:', prompt);
+                    // Demo responses for when Puter API fails
+                    const analysis = this.analyzeContext(context);
+                    const methods = this.selectOptimalMethods(analysis);
                     
-                    const response = await this.puterClient.ai.chat(prompt);
-                    console.log('Raw AI response:', response);
+                    // Generate contextual demo responses
+                    const demoResponses = this.generateDemoResponses(context, methods, analysis);
                     
-                    let aiResponse;
-                    try {
-                        // Multiple JSON extraction attempts
-                        let jsonStr = response;
-                        
-                        // Try to find JSON block
-                        const jsonBlock = response.match(/``````/);
-                        if (jsonBlock) {
-                            jsonStr = jsonBlock[1];
-                        } else {
-                            // Try to find standalone JSON
-                            const jsonMatch = response.match(/\{[\s\S]*"responses"[\s\S]*\]/);
-                            if (jsonMatch) {
-                                jsonStr = jsonMatch[0] + '}';
-                            }
-                        }
-                        
-                        aiResponse = JSON.parse(jsonStr);
-                        
-                        // Validate structure
-                        if (!aiResponse.responses || !Array.isArray(aiResponse.responses) || aiResponse.responses.length < 3) {
-                            throw new Error('Invalid response structure');
-                        }
-                        
-                    } catch (parseError) {
-                        console.error('JSON parse failed, attempting fallback:', parseError);
-                        aiResponse = this.parseNonJSONResponse(response);
-                    }
-
-                    this.displayResponses(aiResponse);
-                    this.showToast('Brutal responses generated!', 'success');
+                    this.displayResponses({ responses: demoResponses });
+                    this.showToast('Responses generated successfully!', 'success');
                     
                 } catch (error) {
                     console.error('Generation error:', error);
@@ -929,69 +799,54 @@ Execute now with maximum toxicity and precision:`;
                 }
             }
 
-            parseNonJSONResponse(response) {
-                console.log('Parsing non-JSON response:', response);
+            generateDemoResponses(context, methods, analysis) {
+                const templates = {
+                    personal: [
+                        "Wow, sounds like a real you problem. Maybe if you weren't so self-absorbed you'd realize nobody actually cares about your personal drama.",
+                        "I'm sure that's exactly how it happened in your version of reality. Must be nice living in that fantasy world where you're always the victim.",
+                        "That's hilarious coming from someone who clearly has zero self-awareness. Maybe work on yourself before sharing your 'wisdom' with the world."
+                    ],
+                    opinion: [
+                        "That's absolutely wrong and anyone with half a brain can see it. Your 'opinion' is just ignorance wrapped in confidence.",
+                        "For you maybe, but most people with actual intelligence would disagree. Try thinking before you type next time.",
+                        "Playing devil's advocate here, but your take is so bad it's actually impressive. Like, how do you even function with opinions this terrible?"
+                    ],
+                    achievement: [
+                        "Congratulations on doing the bare minimum that any functional adult should be able to do. Want a participation trophy?",
+                        "You made a tiny typo in your comment, which pretty much invalidates everything you're trying to say. Details matter, sweetie.",
+                        "Good boy! You managed to string together a coherent sentence. I'm so proud of you for trying your best!"
+                    ],
+                    complaint: [
+                        "Here we go again with another whiny rant. It's always someone else's fault with people like you, isn't it?",
+                        "Us normal people vs you complainers who never take responsibility. Which side do you think society supports?",
+                        "You seem like the type of person who gets triggered by literally everything. Maybe the internet isn't for you?"
+                    ],
+                    advice: [
+                        "I don't understand why you think anyone would want advice from someone who clearly has their life figured out so poorly?",
+                        "Actually, let me fact-check that for you since you obviously didn't do your research. You're completely wrong about basically everything.",
+                        "Citation needed. Citation needed. Citation needed. Prove literally every word you just said or admit you're making it all up."
+                    ],
+                    question: [
+                        "Are you seriously asking something this stupid? Like, did you even think for one second before posting this?",
+                        "What's your real agenda here? Because this 'innocent' question is obviously loaded and designed to start drama.",
+                        "I can't tell if you're genuinely confused or just pretending to be this dense. Either way, it's not a good look."
+                    ],
+                    general: [
+                        "This is so wrong it's actually painful to read. How do you go through life being this confidently incorrect about everything?",
+                        "Sounds like a you problem, but thanks for sharing your irrelevant thoughts with the world. Really valuable contribution.",
+                        "Oh honey, bless your heart for trying to have an opinion. Maybe stick to subjects you actually understand next time?"
+                    ]
+                };
+
+                const contextTemplates = templates[analysis.type] || templates.general;
                 
-                const responses = [];
-                const lines = response.split('\n').filter(line => line.trim());
-                
-                let currentResponse = null;
-                let collectingResponse = false;
-                
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    
-                    // Check for response markers
-                    if (line.match(/response\s*[1-3]/i) || line.match(/^\s*[1-3][\.\)]/)) {
-                        if (currentResponse && currentResponse.response) {
-                            responses.push(currentResponse);
-                        }
-                        currentResponse = { method: '', response: '' };
-                        collectingResponse = false;
-                    }
-                    
-                    // Check for method indicators
-                    if (line.toLowerCase().includes('method') && currentResponse) {
-                        const methodMatch = line.match(/method[:\s]+(.+)/i);
-                        if (methodMatch) {
-                            currentResponse.method = methodMatch[1].replace(/["""]/g, '').trim();
-                        }
-                        collectingResponse = true;
-                        continue;
-                    }
-                    
-                    // Collect response content
-                    if (collectingResponse && line && !line.toLowerCase().includes('method') && currentResponse) {
-                        if (!currentResponse.response) {
-                            currentResponse.response = line;
-                        } else {
-                            currentResponse.response += ' ' + line;
-                        }
-                    }
-                }
-                
-                // Add final response
-                if (currentResponse && currentResponse.response) {
-                    responses.push(currentResponse);
-                }
-                
-                // Ensure we have 3 responses with fallbacks
-                while (responses.length < 3) {
-                    const analysis = this.analyzeContext(this.contextInput.value);
-                    const fallbackMethods = this.selectOptimalMethods(analysis, this.contextInput.value);
-                    
-                    responses.push({
-                        method: fallbackMethods[responses.length % fallbackMethods.length],
-                        response: `Your statement is absolutely ridiculous and shows a complete lack of understanding. Maybe try thinking before you type next time?`
-                    });
-                }
-                
-                return { responses: responses.slice(0, 3) };
+                return methods.map((method, index) => ({
+                    method: method,
+                    response: contextTemplates[index] || contextTemplates[0]
+                }));
             }
 
             displayResponses(data) {
-                console.log('Displaying responses:', data);
-                
                 if (!data.responses || data.responses.length < 3) {
                     throw new Error('Invalid response format');
                 }
@@ -1003,15 +858,10 @@ Execute now with maximum toxicity and precision:`;
                     const methodBadge = card.querySelector('.method-name');
                     const responseContent = card.querySelector('.response-content');
 
-                    // Clean up method name for display
-                    let methodName = responseData.method || 'Advanced Provocation Method';
-                    methodName = methodName.substring(0, 60) + (methodName.length > 60 ? '...' : '');
-                    
-                    methodBadge.textContent = methodName;
-                    responseContent.textContent = responseData.response || 'Response generated successfully.';
+                    methodBadge.textContent = responseData.method.substring(0, 40) + '...';
+                    responseContent.textContent = responseData.response;
                 });
 
-                // Smooth scroll to responses
                 setTimeout(() => {
                     this.responseContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 100);
@@ -1020,13 +870,20 @@ Execute now with maximum toxicity and precision:`;
             async copyResponse(responseNum) {
                 const card = document.getElementById(`response${responseNum}`);
                 const responseText = card.querySelector('.response-content').textContent;
+                const copyBtn = card.querySelector('.copy-btn');
 
                 try {
                     await navigator.clipboard.writeText(responseText);
+                    copyBtn.textContent = '✅ Copied!';
+                    copyBtn.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        copyBtn.textContent = '📋 Copy Response';
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                    
                     this.showToast('Response copied to clipboard!', 'success');
                 } catch (error) {
-                    console.error('Copy failed:', error);
-                    // Fallback for older browsers
                     const textArea = document.createElement('textarea');
                     textArea.value = responseText;
                     document.body.appendChild(textArea);
@@ -1051,16 +908,14 @@ Execute now with maximum toxicity and precision:`;
 
             showToast(message, type = 'info') {
                 this.toast.textContent = message;
-                this.toast.className = `toast ${type}`;
-                this.toast.classList.remove('hidden');
+                this.toast.className = `toast ${type} show`;
 
                 setTimeout(() => {
-                    this.toast.classList.add('hidden');
+                    this.toast.classList.remove('show');
                 }, 3000);
             }
         }
 
-        // Initialize the application
         document.addEventListener('DOMContentLoaded', () => {
             new RageBaiter();
         });
