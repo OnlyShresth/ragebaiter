@@ -34,7 +34,6 @@
             line-height: 1.6;
             min-height: 100vh;
             font-size: 14px;
-            position: relative;
         }
 
         .auth-section {
@@ -60,18 +59,8 @@
             margin: 0;
         }
 
-        .login-btn:focus, .logout-btn:focus {
-            outline: none !important;
-            box-shadow: none !important;
-        }
-
-        .login-btn.hidden {
-            display: none !important;
-        }
-
-        .login-btn:hover, .logout-btn:hover {
-            opacity: 0.9;
-        }
+        .login-btn.hidden { display: none !important; }
+        .login-btn:hover, .logout-btn:hover { opacity: 0.9; }
 
         .logout-btn {
             background: var(--danger);
@@ -101,7 +90,6 @@
             padding: 60px 20px 40px;
         }
 
-        /* Hero Section */
         .hero-section {
             text-align: center;
             padding: 80px 0 60px;
@@ -119,7 +107,6 @@
             letter-spacing: -2px;
         }
 
-        /* Generate Section */
         .generate-section {
             background: var(--card-bg);
             border-radius: 16px;
@@ -156,7 +143,6 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             position: relative;
-            overflow: hidden;
         }
 
         .generate-btn:hover {
@@ -185,7 +171,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Results Section */
         .results-section {
             margin-top: 50px;
         }
@@ -211,8 +196,6 @@
             padding: 24px;
             border: 1px solid var(--border);
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
 
         .result-card:hover {
@@ -260,16 +243,9 @@
             text-transform: uppercase;
         }
 
-        .copy-btn:hover {
-            background: #475569;
-            transform: translateY(-1px);
-        }
+        .copy-btn:hover { background: #475569; }
+        .copy-btn.copied { background: var(--success); }
 
-        .copy-btn.copied {
-            background: var(--success);
-        }
-
-        /* Toast */
         .toast {
             position: fixed;
             top: 80px;
@@ -284,11 +260,12 @@
             transform: translateX(100%);
             transition: all 0.3s ease;
             font-weight: 500;
-            opacity: 1;
+            opacity: 0;
         }
 
         .toast.show {
             transform: translateX(0);
+            opacity: 1;
         }
 
         .toast.success {
@@ -301,55 +278,11 @@
             background: rgba(239, 68, 68, 0.1);
         }
 
-        /* Utility Classes */
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
-        /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            .container {
-                padding: 40px 16px 20px;
-            }
-            
-            .auth-section {
-                top: 16px;
-                right: 16px;
-            }
-            
-            .hero-title {
-                font-size: 2.8rem;
-            }
-            
-            .generate-section {
-                padding: 30px 20px;
-            }
-            
-            .generate-btn {
-                padding: 16px 30px;
-                font-size: 16px;
-            }
-            
-            .toast {
-                top: 60px;
-                right: 16px;
-                left: 16px;
-                transform: translateY(-100%);
-            }
-            
-            .toast.show {
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero-title {
-                font-size: 2.2rem;
-            }
-            
-            .generate-section {
-                padding: 24px 16px;
-            }
+            .hero-title { font-size: 2.8rem; }
+            .generate-section { padding: 30px 20px; }
         }
     </style>
 </head>
@@ -381,378 +314,422 @@
         <section class="results-section">
             <div id="resultsContainer" class="results-container hidden">
                 <h2 class="results-title">Here you go gng</h2>
-                <div class="results-grid" id="resultsGrid">
-                    <!-- Results will be populated here -->
-                </div>
+                <div class="results-grid" id="resultsGrid"></div>
             </div>
         </section>
     </div>
 
-    <div id="toast" class="toast hidden"></div>
+    <div id="toast" class="toast"></div>
 
     <script>
-        class MasterBaiter {
-            constructor() {
-                this.puterClient = null;
-                this.isAuthenticated = false;
-                this.userName = '';
-                this.sessionId = Date.now();
-                this.generationCount = 0;
+        var EnhancedRoastApp = {
+            state: {
+                loggedIn: false,
+                user: null,
+                loading: false,
+                count: 0
+            },
+            
+            el: {},
+            
+            start: function() {
+                this.getElements();
+                this.bindEvents();
+                this.checkAuth();
+            },
+            
+            getElements: function() {
+                this.el.loginBtn = document.getElementById('loginBtn');
+                this.el.logoutBtn = document.getElementById('logoutBtn');
+                this.el.userInfo = document.getElementById('userInfo');
+                this.el.userName = document.getElementById('userName');
+                this.el.generateBtn = document.getElementById('generateBtn');
+                this.el.btnText = document.querySelector('.btn-text');
+                this.el.btnLoader = document.querySelector('.btn-loader');
+                this.el.resultsContainer = document.getElementById('resultsContainer');
+                this.el.resultsGrid = document.getElementById('resultsGrid');
+                this.el.toast = document.getElementById('toast');
+            },
+            
+            bindEvents: function() {
+                var self = this;
                 
-                this.initializeElements();
-                this.attachEventListeners();
-            }
-
-            initializeElements() {
-                this.loginBtn = document.getElementById('loginBtn');
-                this.logoutBtn = document.getElementById('logoutBtn');
-                this.userInfo = document.getElementById('userInfo');
-                this.userName = document.getElementById('userName');
-                this.generateBtn = document.getElementById('generateBtn');
-                this.resultsContainer = document.getElementById('resultsContainer');
-                this.resultsGrid = document.getElementById('resultsGrid');
-                this.toast = document.getElementById('toast');
-                this.btnText = document.querySelector('.btn-text');
-                this.btnLoader = document.querySelector('.btn-loader');
-            }
-
-            attachEventListeners() {
-                this.loginBtn.addEventListener('click', () => this.handleLogin());
-                this.logoutBtn.addEventListener('click', () => this.handleLogout());
-                this.generateBtn.addEventListener('click', () => this.generateRoasts());
+                this.el.loginBtn.onclick = function() { self.login(); };
+                this.el.logoutBtn.onclick = function() { self.logout(); };
+                this.el.generateBtn.onclick = function() { self.generate(); };
                 
-                document.addEventListener('click', (e) => {
-                    if (e.target.closest('.copy-btn')) {
-                        const roastText = e.target.closest('.result-card').querySelector('.roast-text').textContent;
-                        this.copyRoast(roastText, e.target);
+                document.onclick = function(e) {
+                    if (e.target.classList.contains('copy-btn')) {
+                        var text = e.target.getAttribute('data-text');
+                        self.copyText(text, e.target);
                     }
-                });
-            }
-
-            async handleLogin() {
+                };
+            },
+            
+            checkAuth: function() {
+                this.state.loggedIn = false;
+                this.state.user = null;
+                this.updateUI();
+            },
+            
+            login: function() {
+                var self = this;
+                this.el.loginBtn.disabled = true;
+                this.el.loginBtn.textContent = 'Connecting...';
+                
                 try {
-                    this.loginBtn.disabled = true;
-                    this.loginBtn.textContent = 'Connecting...';
-
-                    if (typeof puter === 'undefined') {
-                        throw new Error('Connection service unavailable');
-                    }
-
-                    const user = await puter.auth.signIn();
-                    
-                    if (user) {
-                        this.isAuthenticated = true;
-                        this.puterClient = puter;
-                        
-                        this.updateUIForAuthentication(user.username);
-                        this.showToast('Connected successfully!', 'success');
-                    } else {
-                        throw new Error('No user returned');
-                    }
-                } catch (error) {
-                    console.error('Login error:', error);
-                    this.showToast('Connection failed. Please try again.', 'error');
-                    this.resetLoginButton();
+                    puter.auth.signIn().then(function(result) {
+                        return puter.auth.getUser();
+                    }).then(function(user) {
+                        self.state.loggedIn = true;
+                        self.state.user = user;
+                        self.updateUI();
+                        self.notify('Connected successfully!', 'success');
+                    }).catch(function(error) {
+                        self.resetLogin();
+                        self.notify('Connection failed', 'error');
+                    });
+                } catch (e) {
+                    this.resetLogin();
+                    this.notify('Login error', 'error');
                 }
-            }
-
-            async handleLogout() {
-                try {
-                    if (this.puterClient && typeof this.puterClient.auth?.signOut === 'function') {
-                        await this.puterClient.auth.signOut();
-                    }
-                    
-                    this.isAuthenticated = false;
-                    this.puterClient = null;
-                    this.showLoginButton();
-                    this.showToast('Logged out!', 'success');
-                } catch (error) {
-                    console.error('Logout error:', error);
-                    this.isAuthenticated = false;
-                    this.puterClient = null;
-                    this.showLoginButton();
-                    this.showToast('Logged out!', 'success');
-                }
-            }
-
-            updateUIForAuthentication(username) {
-                this.loginBtn.classList.add('hidden');
-                this.userInfo.classList.remove('hidden');
-                this.userName.textContent = username;
-                this.generateBtn.disabled = false;
-            }
-
-            showLoginButton() {
-                this.loginBtn.classList.remove('hidden');
-                this.userInfo.classList.add('hidden');
-                this.generateBtn.disabled = true;
-                this.resetLoginButton();
-            }
-
-            resetLoginButton() {
-                this.loginBtn.disabled = false;
-                this.loginBtn.textContent = 'Connect';
-            }
-
-            // COMPLETELY FIXED: Using variables to avoid syntax errors with backticks
-            parseAIResponse(aiResponse) {
-                console.log('AI raw response:', aiResponse);
+            },
+            
+            logout: function() {
+                var self = this;
                 
-                let content = '';
-                if (aiResponse && aiResponse.message && aiResponse.message.content) {
-                    content = aiResponse.message.content;
-                } else if (typeof aiResponse === 'string') {
-                    content = aiResponse;
-                } else if (aiResponse && aiResponse.content) {
-                    content = aiResponse.content;
+                if (puter.auth && puter.auth.signOut) {
+                    try {
+                        puter.auth.signOut().then(function() {
+                            self.forceLogout();
+                        }).catch(function() {
+                            self.forceLogout();
+                        });
+                    } catch (e) {
+                        this.forceLogout();
+                    }
                 } else {
-                    content = JSON.stringify(aiResponse);
+                    this.forceLogout();
                 }
-                
-                console.log('Extracted content:', content);
-                
-                try {
-                    let jsonStr = content;
-                    
-                    // FIXED: Use variables to avoid backtick syntax errors
-                    const tripleBackticks = String.fromCharCode(96) + String.fromCharCode(96) + String.fromCharCode(96);
-                    const jsonMarker = tripleBackticks + 'json';
-                    
-                    if (content.includes(jsonMarker)) {
-                        const startMarker = content.indexOf(jsonMarker) + jsonMarker.length;
-                        const endMarker = content.lastIndexOf(tripleBackticks);
-                        if (startMarker > jsonMarker.length - 1 && endMarker > startMarker) {
-                            jsonStr = content.substring(startMarker, endMarker).trim();
-                        }
-                    } else if (content.includes(tripleBackticks)) {
-                        const startMarker = content.indexOf(tripleBackticks) + tripleBackticks.length;
-                        const endMarker = content.lastIndexOf(tripleBackticks);
-                        if (startMarker > tripleBackticks.length - 1 && endMarker > startMarker) {
-                            jsonStr = content.substring(startMarker, endMarker).trim();
-                        }
-                    }
-                    
-                    jsonStr = jsonStr.replace(/^\s*\{/, '{').replace(/\}\s*$/, '}');
-                    
-                    console.log('Cleaned JSON string:', jsonStr);
-                    
-                    const parsed = JSON.parse(jsonStr);
-                    
-                    if (parsed.roasts && Array.isArray(parsed.roasts) && parsed.roasts.length > 0) {
-                        console.log('Successfully parsed roasts:', parsed.roasts);
-                        return parsed.roasts;
-                    } else {
-                        throw new Error('No roasts array found in parsed JSON');
-                    }
-                } catch (parseError) {
-                    console.error('JSON parsing failed:', parseError);
-                    console.log('Failed content:', content);
-                    return null;
+            },
+            
+            forceLogout: function() {
+                this.state.loggedIn = false;
+                this.state.user = null;
+                this.updateUI();
+                this.notify('Logged out', 'success');
+            },
+            
+            resetLogin: function() {
+                this.el.loginBtn.disabled = false;
+                this.el.loginBtn.textContent = 'Connect';
+            },
+            
+            updateUI: function() {
+                if (this.state.loggedIn && this.state.user) {
+                    this.el.loginBtn.classList.add('hidden');
+                    this.el.userInfo.classList.remove('hidden');
+                    this.el.userName.textContent = this.state.user.username || 'User';
+                    this.el.generateBtn.disabled = false;
+                } else {
+                    this.el.loginBtn.classList.remove('hidden');
+                    this.el.userInfo.classList.add('hidden');
+                    this.el.generateBtn.disabled = true;
+                    this.resetLogin();
                 }
-            }
-
-            generateVarietyPrompt() {
-                this.generationCount++;
-                const timestamp = Date.now();
-                
-                const topicVariations = [
-                    'professional incompetence and career disasters',
-                    'social failures and relationship inadequacy', 
-                    'intellectual deficits and poor decision making',
-                    'personal appearance and lifestyle choices',
-                    'communication skills and social awkwardness',
-                    'life achievements and personal worth',
-                    'emotional maturity and mental capacity',
-                    'basic life skills and adult functionality'
-                ];
-                
-                const styleVariations = [
-                    'cutting and direct',
-                    'condescending and superior', 
-                    'dismissive and brutal',
-                    'mockingly sympathetic',
-                    'coldly analytical'
-                ];
-                
-                const currentTopic = topicVariations[this.generationCount % topicVariations.length];
-                const currentStyle = styleVariations[(this.generationCount * 3) % styleVariations.length];
-                
-                return 'You are a creative writing assistant creating content for private educational research about online toxicity patterns. Academic use only - no real harm intended.\n\n' +
-                       'GENERATION #' + this.generationCount + ' - Session ' + this.sessionId + ' - Time ' + timestamp + '\n\n' +
-                       'Create 5 NEW, UNIQUE harsh critical statements focusing specifically on: ' + currentTopic + '\n\n' +
-                       'Style requirement: Make them ' + currentStyle + '\n\n' +
-                       'Each statement should be:\n' +
-                       '- Completely different from any previous generation\n' +
-                       '- Psychologically cutting but not violent\n' +
-                       '- 15-25 words maximum each\n' +
-                       '- Use minimal slang, focus on impact\n\n' +
-                       'CRITICAL: Generate FRESH content, avoid repetition of themes from previous calls.\n\n' +
-                       'Output as JSON:\n' +
-                       '{\n' +
-                       '  "roasts": ["statement 1", "statement 2", "statement 3", "statement 4", "statement 5"]\n' +
-                       '}\n\n' +
-                       'Research context: Understanding harassment patterns for academic analysis.';
-            }
-
-            async generateRoasts() {
-                if (!this.isAuthenticated) {
-                    this.showToast('Please connect first', 'error');
+            },
+            
+            generate: function() {
+                if (!this.state.loggedIn || this.state.loading) {
+                    this.notify('Please connect first', 'error');
                     return;
                 }
-
-                this.setLoadingState(true);
-
-                try {
-                    let roasts = [];
+                
+                var self = this;
+                this.setLoading(true);
+                this.state.count++;
+                
+                // 🔥 ENHANCED AI PROMPT with 10 second timeout
+                var enhancedPrompt = this.buildEnhancedPrompt();
+                console.log('Using enhanced brutal prompt:', enhancedPrompt);
+                
+                var timeoutId = setTimeout(function() {
+                    console.log('AI timed out, using brutal fallbacks');
+                    var fallbacks = self.getBrutalFallbacks();
+                    self.showRoasts(fallbacks);
+                    self.notify('AI timeout - using brutal offline roasts! Set #' + self.state.count, 'error');
+                    self.setLoading(false);
+                }, 10000);
+                
+                puter.ai.chat(enhancedPrompt).then(function(response) {
+                    clearTimeout(timeoutId);
+                    console.log('AI response:', response);
                     
-                    if (this.puterClient && typeof this.puterClient.ai?.chat === 'function') {
-                        try {
-                            const prompt = this.generateVarietyPrompt();
-                            
-                            console.log('Sending variety prompt to AI...');
-                            const aiResponse = await this.puterClient.ai.chat(prompt);
-                            
-                            roasts = this.parseAIResponse(aiResponse);
-                            
-                            if (!roasts || roasts.length === 0) {
-                                throw new Error('Failed to extract roasts from AI response');
-                            }
-                            
-                            roasts = roasts.slice(0, 5);
-                            
-                        } catch (aiError) {
-                            console.error('AI generation failed:', aiError);
-                            throw aiError;
-                        }
+                    var roasts = self.parseEnhancedResponse(response);
+                    if (roasts && roasts.length >= 5) {
+                        self.showRoasts(roasts.slice(0, 5));
+                        self.notify('AI generated brutal roasts! Set #' + self.state.count, 'success');
                     } else {
-                        throw new Error('AI service unavailable');
+                        console.log('AI parsing failed, using fallbacks');
+                        var fallbacks = self.getBrutalFallbacks();
+                        self.showRoasts(fallbacks);
+                        self.notify('AI parsing failed - using fallbacks! Set #' + self.state.count, 'error');
                     }
-                    
-                    this.displayResults(roasts);
-                    this.showToast('Fresh roasts generated! (Set #' + this.generationCount + ')', 'success');
-                    
-                } catch (error) {
-                    console.error('Generation error:', error);
-                    const fallbackRoasts = this.getFallbackRoastsWithVariety();
-                    this.displayResults(fallbackRoasts);
-                    this.showToast('Using offline roasts', 'error');
-                } finally {
-                    this.setLoadingState(false);
+                    self.setLoading(false);
+                }).catch(function(error) {
+                    clearTimeout(timeoutId);
+                    console.error('AI error:', error);
+                    var fallbacks = self.getBrutalFallbacks();
+                    self.showRoasts(fallbacks);
+                    self.notify('AI error - using brutal fallbacks! Set #' + self.state.count, 'error');
+                    self.setLoading(false);
+                });
+            },
+            
+            // 🔥 COMPLETELY ENHANCED PROMPT ENGINEERING
+            buildEnhancedPrompt: function() {
+                var promptTemplates = [
+                    {
+                        role: "brutal comedy writer for roast battles",
+                        context: "adult comedy show known for savage burns",
+                        topics: ["career disasters", "workplace incompetence", "job interview failures", "work ethic disasters", "professional embarrassments"],
+                        style: "cutting and merciless with vivid metaphors",
+                        examples: ["Your resume reads like a work of fiction nobody wants to read", "You treat deadlines like birthday wishes - optional and disappointing"]
+                    },
+                    {
+                        role: "harsh social commentator", 
+                        context: "comedy special about awkward people",
+                        topics: ["social failures", "conversation disasters", "awkward interactions", "personality flaws", "communication breakdowns"],
+                        style: "psychologically cutting with sharp observations",
+                        examples: ["You make small talk feel like enhanced interrogation", "Your social skills need a warning label"]
+                    },
+                    {
+                        role: "savage relationship advisor",
+                        context: "comedy special about dating disasters", 
+                        topics: ["romantic failures", "dating disasters", "pickup line catastrophes", "relationship crashes", "love life tragedies"],
+                        style: "brutally honest with dark humor",
+                        examples: ["Your dating profile should come with a surgeon general's warning", "You get less action than a broken vending machine"]
+                    },
+                    {
+                        role: "merciless fashion critic",
+                        context: "comedy roast about style disasters",
+                        topics: ["fashion disasters", "style failures", "appearance catastrophes", "grooming disasters", "aesthetic nightmares"], 
+                        style: "viciously sarcastic with creative comparisons",
+                        examples: ["You dress like fashion magazines are written in hieroglyphics", "Your style choices make thrift stores feel embarrassed"]
+                    },
+                    {
+                        role: "psychological comedy analyst",
+                        context: "comedy special about human stupidity",
+                        topics: ["poor decisions", "intelligence failures", "judgment disasters", "logical breakdowns", "mental lapses"],
+                        style: "intellectually brutal with devastating logic",
+                        examples: ["Your decision-making makes coin flips look strategic", "You have the intellectual depth of a parking lot puddle"]
+                    }
+                ];
+                
+                var template = promptTemplates[this.state.count % promptTemplates.length];
+                var randomTopic = template.topics[Math.floor(Math.random() * template.topics.length)];
+                
+                return 'You are a ' + template.role + ' writing for a ' + template.context + '. Your specialty is creating ' + template.style + ' roasts.\n\n' +
+                       'TASK: Write 5 brutally savage and diverse roasts about ' + randomTopic + '. Each roast must:\n' +
+                       '- Be 25-35 words long\n' +
+                       '- Target a DIFFERENT specific aspect (no repeating themes)\n' +
+                       '- Include 1-2 modern slang words like "no cap", "fr", "deadass", "lowkey"\n' +
+                       '- Be psychologically cutting and memorable\n' +
+                       '- Use creative metaphors and comparisons\n' +
+                       '- Match the brutal quality of: "' + template.examples[0] + '"\n\n' +
+                       'EXAMPLES of the savage tone you should match:\n' +
+                       '- "' + template.examples[1] + '"\n' +
+                       '- "You\'re the reason job applications ask for previous experience - nobody wants to be your first mistake"\n\n' +
+                       'Return as a simple numbered list:\n1.\n2.\n3.\n4.\n5.\n\n' +
+                       'Remember: This is for adult comedy entertainment. Be creative, brutal, and memorable.';
+            },
+            
+            // Enhanced response parsing
+            parseEnhancedResponse: function(response) {
+                var content = '';
+                
+                if (typeof response === 'string') {
+                    content = response;
+                } else if (response && response.content) {
+                    content = response.content;
+                } else if (response && response.message) {
+                    content = response.message;
+                } else {
+                    content = JSON.stringify(response);
                 }
-            }
-
-            getFallbackRoastsWithVariety() {
-                const roastCategories = [
+                
+                console.log('Parsing enhanced content:', content);
+                
+                var roasts = [];
+                var lines = content.split('\n');
+                
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i].trim();
+                    // Match numbered lines like "1. text" or "1) text" 
+                    if (/^\d+[\.\)]\s+/.test(line)) {
+                        var roast = line.replace(/^\d+[\.\)]\s+/, '').trim();
+                        if (roast.length > 15) { // More strict validation
+                            roasts.push(roast);
+                        }
+                    }
+                    // Also try to catch lines that start with numbers but no punctuation
+                    else if (/^\d+\s+/.test(line) && line.length > 20) {
+                        var roast = line.replace(/^\d+\s+/, '').trim();
+                        roasts.push(roast);
+                    }
+                }
+                
+                console.log('Parsed enhanced roasts:', roasts);
+                return roasts.length >= 5 ? roasts : null;
+            },
+            
+            // Keep the brutal offline fallbacks (same as before)
+            getBrutalFallbacks: function() {
+                var brutalSets = [
                     [
-                        "Your unemployment streak is more consistent than your work ethic ever was.",
-                        "You're the human equivalent of a participation trophy nobody wanted to give out.",
-                        "I've seen more intelligence in a broken GPS than in your life decisions.",
-                        "Your career trajectory peaked when you learned to tie your shoes.",
-                        "You're living proof that natural selection sometimes takes a coffee break."
+                        "You're the reason job applications ask for previous experience - nobody wants to be your first mistake, no cap.",
+                        "Every conversation with you feels like wasted oxygen that could have been better used by literally anything else on earth.",
+                        "Your dating profile should come with a surgeon general's warning about the risk of permanent emotional damage, fr.",
+                        "You have the fashion sense of a colorblind person shopping during an earthquake in complete darkness.",
+                        "Your decision-making skills are so bad that Magic 8-Balls file restraining orders against you for harassment, deadass."
                     ],
                     [
-                        "Every conversation with you feels like a masterclass in wasted potential.",
-                        "You have the personality depth of a puddle in the desert.",
-                        "Your social skills are so bad they should come with a warning label.",
-                        "You're the reason job interviews include basic competency tests.",
-                        "Your life reads like a instruction manual for spectacular failure."
+                        "Your work ethic is so nonexistent that unemployment benefits feel like overpayment for your lack of contribution.",
+                        "You make awkward silences feel like blessed relief from divine intervention during social interactions, no cap.",
+                        "Your romantic history reads like a comprehensive guide to red flag identification for future victims.",
+                        "You dress like fashion magazines are written in a dead language you've never bothered to learn, fr.",
+                        "Your brain operates on dial-up internet while everyone else has fiber optic processing speed, deadass."
                     ],
                     [
-                        "You contribute to society like a chocolate teapot contributes to afternoon tea.",
-                        "Your decision-making process is a crime against logic and reason.",
-                        "You're what happens when mediocrity aims too high and still misses.",
-                        "Your existence is nature's way of showing us what not to aspire to.",
-                        "You peaked at birth and it's been downhill ever since."
+                        "You're living proof that natural selection sometimes takes extended lunch breaks and forgets to clock back in.",
+                        "Your personality has all the warmth and charm of a tax collection notice delivered during Christmas morning, no cap.",
+                        "You get less romantic action than a broken vending machine in an abandoned building during a zombie apocalypse.",
+                        "Your skincare routine appears to be more theoretical than practical, much like your entire life approach, fr.",
+                        "You make goldfish look like Harvard graduates with advanced degrees in quantum physics and emotional intelligence, deadass."
                     ],
                     [
-                        "Your life achievements could fit on a Post-it note with room to spare.",
-                        "You're the poster child for why some people shouldn't have internet access.",
-                        "Your communication skills make mime artists look chatty by comparison.",
-                        "You're living proof that participation doesn't always deserve recognition.",
-                        "Your personal growth stopped sometime around kindergarten graduation."
+                        "Your career peaked when you learned to spell your name correctly, and even that achievement remains questionable.",
+                        "You're the human equivalent of a participation trophy that everyone's too embarrassed to display on their shelf, no cap.",
+                        "Your pickup lines are classified as war crimes against romance by the Geneva Convention and international law.",
+                        "You have the aesthetic appeal of a dumpster fire during a garbage strike in summer heat, fr.",
+                        "Your thought process makes random number generators look strategically brilliant by direct comparison, deadass."
+                    ],
+                    [
+                        "Your LinkedIn profile contains more fiction than fantasy novels and proves twice as disappointing to read.",
+                        "You bring everyone so much joy when you leave any room that they should charge admission fees, no cap.",
+                        "Your love life is more tragic than your bank account, and we both know that's broke beyond repair.",
+                        "You look like you got dressed by a blind person having a seizure in a thrift store clearance section, fr.",
+                        "Your IQ is so low that it's causing a global shortage of room temperature readings across continents, deadass."
                     ]
                 ];
                 
-                const categoryIndex = this.generationCount % roastCategories.length;
-                return roastCategories[categoryIndex];
-            }
-
-            displayResults(roasts) {
-                this.resultsGrid.innerHTML = '';
+                return brutalSets[this.state.count % brutalSets.length];
+            },
+            
+            showRoasts: function(roasts) {
+                this.el.resultsGrid.innerHTML = '';
                 
-                roasts.forEach((roast, index) => {
-                    const card = document.createElement('div');
+                for (var i = 0; i < roasts.length; i++) {
+                    var card = document.createElement('div');
                     card.className = 'result-card';
-                    card.style.animationDelay = (index * 100) + 'ms';
                     
-                    card.innerHTML = '<div class="roast-number">Roast #' + (index + 1) + '</div>' +
-                                   '<div class="roast-text">' + roast + '</div>' +
-                                   '<button class="copy-btn">Copy Roast</button>';
+                    card.innerHTML = '<div class="roast-number">Roast #' + (i + 1) + '</div>' +
+                                   '<div class="roast-text">' + roasts[i] + '</div>' +
+                                   '<button class="copy-btn" data-text="' + roasts[i] + '">Copy Roast</button>';
                     
-                    this.resultsGrid.appendChild(card);
-                });
-
-                this.resultsContainer.classList.remove('hidden');
+                    this.el.resultsGrid.appendChild(card);
+                }
                 
-                setTimeout(() => {
-                    this.resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                this.el.resultsContainer.classList.remove('hidden');
+                
+                var self = this;
+                setTimeout(function() {
+                    self.el.resultsContainer.scrollIntoView({behavior: 'smooth'});
                 }, 200);
-            }
-
-            async copyRoast(text, button) {
+            },
+            
+            copyText: function(text, button) {
+                var self = this;
+                
                 try {
-                    await navigator.clipboard.writeText(text);
-                    button.textContent = '✓ Copied!';
-                    button.classList.add('copied');
-                    
-                    setTimeout(() => {
-                        button.textContent = 'Copy Roast';
-                        button.classList.remove('copied');
-                    }, 2000);
-                    
-                    this.showToast('Copied to clipboard!', 'success');
-                } catch (error) {
-                    const textArea = document.createElement('textarea');
-                    textArea.value = text;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textArea);
-                    this.showToast('Copied to clipboard!', 'success');
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(function() {
+                            self.showCopied(button);
+                            self.notify('Copied that burn!', 'success');
+                        }).catch(function() {
+                            self.fallbackCopy(text, button);
+                        });
+                    } else {
+                        this.fallbackCopy(text, button);
+                    }
+                } catch (e) {
+                    this.fallbackCopy(text, button);
                 }
-            }
-
-            setLoadingState(isLoading) {
-                if (isLoading) {
-                    this.generateBtn.disabled = true;
-                    this.btnText.classList.add('hidden');
-                    this.btnLoader.classList.remove('hidden');
+            },
+            
+            fallbackCopy: function(text, button) {
+                var textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                this.showCopied(button);
+                this.notify('Copied!', 'success');
+            },
+            
+            showCopied: function(button) {
+                var original = button.textContent;
+                button.textContent = '✓ Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(function() {
+                    button.textContent = original;
+                    button.classList.remove('copied');
+                }, 1500);
+            },
+            
+            setLoading: function(loading) {
+                this.state.loading = loading;
+                
+                if (loading) {
+                    this.el.generateBtn.disabled = true;
+                    this.el.btnText.classList.add('hidden');
+                    this.el.btnLoader.classList.remove('hidden');
                 } else {
-                    this.generateBtn.disabled = !this.isAuthenticated;
-                    this.btnText.classList.remove('hidden');
-                    this.btnLoader.classList.add('hidden');
+                    this.el.generateBtn.disabled = !this.state.loggedIn;
+                    this.el.btnText.classList.remove('hidden');
+                    this.el.btnLoader.classList.add('hidden');
                 }
-            }
-
-            showToast(message, type) {
-                this.toast.textContent = message;
-                this.toast.className = 'toast ' + type + ' show';
-                this.toast.style.display = 'block';
-                this.toast.style.opacity = '1';
-
-                setTimeout(() => {
-                    this.toast.classList.remove('show');
-                    this.toast.style.opacity = '0';
+            },
+            
+            notify: function(message, type) {
+                var self = this;
+                
+                this.el.toast.className = 'toast';
+                this.el.toast.style.opacity = '0';
+                
+                setTimeout(function() {
+                    self.el.toast.textContent = message;
+                    self.el.toast.classList.add(type || 'info');
                     
-                    setTimeout(() => {
-                        this.toast.style.display = 'none';
-                    }, 300);
-                }, 3000);
+                    setTimeout(function() {
+                        self.el.toast.classList.add('show');
+                        self.el.toast.style.opacity = '1';
+                    }, 50);
+                    
+                    setTimeout(function() {
+                        self.el.toast.classList.remove('show');
+                        self.el.toast.style.opacity = '0';
+                    }, 3500);
+                }, 100);
             }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            new MasterBaiter();
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            EnhancedRoastApp.start();
         });
     </script>
 </body>
