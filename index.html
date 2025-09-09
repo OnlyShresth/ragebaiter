@@ -6,284 +6,45 @@
     <title>Master Baiter</title>
     <script src="https://js.puter.com/v2/"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #dc2626;
-            --primary-dark: #b91c1c;
-            --secondary: #64748b;
-            --accent: #f59e0b;
-            --bg: #0f172a;
-            --bg-secondary: #1e293b;
-            --card-bg: #1e293b;
-            --text: #f8fafc;
-            --text-secondary: #94a3b8;
-            --border: #334155;
-            --success: #10b981;
-            --danger: #ef4444;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-            font-size: 14px;
+            background: #0f172a;
+            color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, Inter, Segoe UI, system-ui, sans-serif;
         }
-
-        .auth-section {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
+        .auth-section { position: fixed; top: 20px; right: 20px; display: flex; gap: 12px; }
         .login-btn, .logout-btn {
             padding: 12px 20px;
-            border: 1px solid var(--primary);
+            border: 1px solid #dc2626;
             border-radius: 6px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 14px;
-            background: var(--primary);
+            background: #dc2626;
             color: white;
-            margin: 0;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
         }
-
         .login-btn.hidden { display: none !important; }
-        .login-btn:hover, .logout-btn:hover { opacity: 0.9; }
-
-        .logout-btn {
-            background: var(--danger);
-            border-color: var(--danger);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            background: var(--card-bg);
-            border-radius: 6px;
-            border: 1px solid var(--border);
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            background: var(--primary);
-            border-radius: 50%;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 60px 20px 40px;
-        }
-
-        .hero-section {
-            text-align: center;
-            padding: 80px 0 60px;
-        }
-
-        .hero-title {
-            font-size: 4rem;
-            font-weight: 900;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-transform: uppercase;
-            letter-spacing: -2px;
-        }
-
-        .generate-section {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 40px;
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 50px;
-            text-align: center;
-        }
-
-        .generate-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--text);
-        }
-
-        .generate-subtitle {
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-            font-size: 1.1rem;
-        }
-
-        .generate-btn {
-            padding: 20px 40px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-        }
-
-        .generate-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(220, 38, 38, 0.4);
-        }
-
-        .generate-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-loader {
-            width: 24px;
-            height: 24px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-top: 3px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .results-section {
-            margin-top: 50px;
-        }
-
-        .results-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 900;
-            margin-bottom: 40px;
-            color: var(--primary);
-            text-transform: uppercase;
-        }
-
-        .results-grid {
-            display: grid;
-            gap: 20px;
-            grid-template-columns: 1fr;
-        }
-
-        .result-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 24px;
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-        }
-
-        .result-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            border-color: var(--primary);
-        }
-
-        .roast-number {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 12px;
-            display: inline-block;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .roast-text {
-            font-size: 18px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            color: var(--text);
-            background: var(--bg);
-            padding: 24px;
-            border-radius: 12px;
-            border-left: 4px solid var(--primary);
-            font-weight: 600;
-        }
-
-        .copy-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--secondary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-            font-size: 14px;
-            text-transform: uppercase;
-        }
-
-        .copy-btn:hover { background: #475569; }
-        .copy-btn.copied { background: var(--success); }
-
-        .toast {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: var(--card-bg);
-            color: var(--text);
-            padding: 16px 24px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            z-index: 1000;
-            transform: translateX(100%);
-            transition: all 0.3s ease;
-            font-weight: 500;
-            opacity: 0;
-        }
-
-        .toast.show {
-            transform: translateX(0);
-            opacity: 1;
-        }
-
-        .toast.success {
-            border-color: var(--success);
-            background: rgba(16, 185, 129, 0.1);
-        }
-
-        .toast.error {
-            border-color: var(--danger);
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        .hidden { display: none !important; }
-
-        @media (max-width: 768px) {
-            .hero-title { font-size: 2.8rem; }
-            .generate-section { padding: 30px 20px; }
-        }
+        .logout-btn { background: #ef4444; border-color: #ef4444; }
+        .user-info { display: flex; align-items: center; gap: 8px; background: #1e293b; border-radius: 6px; border: 1px solid #334155; padding: 8px 12px; }
+        .status-dot { width: 6px; height: 6px; background: #dc2626; border-radius: 50%; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 60px 20px 40px; }
+        .hero-section { text-align: center; padding: 80px 0 60px; }
+        .hero-title { font-size: 4rem; font-weight: 900; margin-bottom: 20px; background: linear-gradient(135deg,#dc2626,#f59e0b); -webkit-background-clip: text;-webkit-text-fill-color: transparent;background-clip: text; text-transform: uppercase; letter-spacing: -2px;}
+        .generate-section { background: #1e293b; border-radius: 16px; padding: 40px; border: 1px solid #334155; margin-bottom: 50px; text-align: center;}
+        .generate-btn { padding: 20px 40px; background:linear-gradient(135deg,#dc2626,#b91c1c);color:white;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;transition:.3s;text-transform:uppercase;letter-spacing:1px;}
+        .generate-btn:disabled { opacity: .6; cursor: not-allowed;}
+        .btn-loader {width:24px;height:24px;border:3px solid rgba(255,255,255,.3);border-top:3px solid white;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto;}
+        @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+        .results-section {margin-top:50px;}
+        .results-title {text-align:center;font-size:2.5rem;font-weight:900;margin-bottom:40px;color:#dc2626;text-transform:uppercase;}
+        .results-grid {display:grid;gap:20px;grid-template-columns:1fr;}
+        .result-card {background:#1e293b;border-radius:12px;padding:24px;border:1px solid #334155;}
+        .roast-number {background:linear-gradient(135deg,#dc2626,#f59e0b);color:white;padding:6px 12px;border-radius:20px;font-weight:700;font-size:12px;display:inline-block;margin-bottom:16px;text-transform:uppercase;}
+        .roast-text {font-size:18px;line-height:1.6;margin-bottom:20px;color:#f8fafc;background:#0f172a;padding:24px;border-radius:12px;border-left:4px solid #dc2626;font-weight:600;}
+        .copy-btn {width:100%;padding:14px;background:#64748b;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;transition:.2s;font-size:14px;text-transform:uppercase;}
+        .toast {position:fixed;top:80px;right:20px;background:#1e293b;color:#f8fafc;padding:16px 24px;border-radius:12px;border:1px solid #334155;z-index:1000;transform:translateX(100%);transition:.3s;font-weight:500;opacity:0;}
+        .toast.show {transform:translateX(0);opacity:1;}
+        .toast.success {border-color:#10b981;background:rgba(16,185,129,0.1);}
+        .toast.error {border-color:#ef4444;background:rgba(239,68,68,0.1);}
     </style>
 </head>
 <body>
@@ -295,22 +56,16 @@
             <button id="logoutBtn" class="logout-btn">Logout</button>
         </div>
     </div>
-
     <div class="container">
-        <section class="hero-section">
-            <h1 class="hero-title">Ragebait 'em</h1>
-        </section>
-
+        <section class="hero-section"><h1 class="hero-title">Ragebait 'em</h1></section>
         <section class="generate-section">
             <h2 class="generate-title">Ragebait 'em</h2>
             <p class="generate-subtitle">Imagine being so unemployed you gotta use ts 🥀</p>
-            
             <button id="generateBtn" class="generate-btn" disabled>
                 <span class="btn-text">bait 'em all</span>
                 <div class="btn-loader hidden"></div>
             </button>
         </section>
-
         <section class="results-section">
             <div id="resultsContainer" class="results-container hidden">
                 <h2 class="results-title">Here you go gng</h2>
@@ -318,419 +73,281 @@
             </div>
         </section>
     </div>
-
     <div id="toast" class="toast"></div>
-
     <script>
-        var EnhancedRoastApp = {
-            state: {
-                loggedIn: false,
-                user: null,
-                loading: false,
-                count: 0
-            },
-            
-            el: {},
-            
-            start: function() {
-                this.getElements();
-                this.bindEvents();
-                this.checkAuth();
-            },
-            
-            getElements: function() {
-                this.el.loginBtn = document.getElementById('loginBtn');
-                this.el.logoutBtn = document.getElementById('logoutBtn');
-                this.el.userInfo = document.getElementById('userInfo');
-                this.el.userName = document.getElementById('userName');
-                this.el.generateBtn = document.getElementById('generateBtn');
-                this.el.btnText = document.querySelector('.btn-text');
-                this.el.btnLoader = document.querySelector('.btn-loader');
-                this.el.resultsContainer = document.getElementById('resultsContainer');
-                this.el.resultsGrid = document.getElementById('resultsGrid');
-                this.el.toast = document.getElementById('toast');
-            },
-            
-            bindEvents: function() {
-                var self = this;
-                
-                this.el.loginBtn.onclick = function() { self.login(); };
-                this.el.logoutBtn.onclick = function() { self.logout(); };
-                this.el.generateBtn.onclick = function() { self.generate(); };
-                
-                document.onclick = function(e) {
-                    if (e.target.classList.contains('copy-btn')) {
-                        var text = e.target.getAttribute('data-text');
-                        self.copyText(text, e.target);
-                    }
-                };
-            },
-            
-            checkAuth: function() {
-                this.state.loggedIn = false;
-                this.state.user = null;
-                this.updateUI();
-            },
-            
-            login: function() {
-                var self = this;
-                this.el.loginBtn.disabled = true;
-                this.el.loginBtn.textContent = 'Connecting...';
-                
-                try {
-                    puter.auth.signIn().then(function(result) {
-                        return puter.auth.getUser();
-                    }).then(function(user) {
-                        self.state.loggedIn = true;
-                        self.state.user = user;
-                        self.updateUI();
-                        self.notify('Connected successfully!', 'success');
-                    }).catch(function(error) {
-                        self.resetLogin();
-                        self.notify('Connection failed', 'error');
-                    });
-                } catch (e) {
-                    this.resetLogin();
-                    this.notify('Login error', 'error');
+    var SavageAIApp = {
+        state: { loggedIn: false, user: null, loading: false, count: 0 },
+        el: {},
+        start: function() {
+            this.getElements();
+            this.bindEvents();
+            this.checkAuth();
+        },
+        getElements: function() {
+            this.el.loginBtn = document.getElementById('loginBtn');
+            this.el.logoutBtn = document.getElementById('logoutBtn');
+            this.el.userInfo = document.getElementById('userInfo');
+            this.el.userName = document.getElementById('userName');
+            this.el.generateBtn = document.getElementById('generateBtn');
+            this.el.btnText = document.querySelector('.btn-text');
+            this.el.btnLoader = document.querySelector('.btn-loader');
+            this.el.resultsContainer = document.getElementById('resultsContainer');
+            this.el.resultsGrid = document.getElementById('resultsGrid');
+            this.el.toast = document.getElementById('toast');
+        },
+        bindEvents: function() {
+            var self = this;
+            this.el.loginBtn.onclick = function() { self.login(); };
+            this.el.logoutBtn.onclick = function() { self.logout(); };
+            this.el.generateBtn.onclick = function() { self.generate(); };
+            document.onclick = function(e) {
+                if (e.target.classList.contains('copy-btn')) {
+                    var text = e.target.getAttribute('data-text');
+                    self.copyText(text, e.target);
                 }
-            },
-            
-            logout: function() {
-                var self = this;
-                
-                if (puter.auth && puter.auth.signOut) {
-                    try {
-                        puter.auth.signOut().then(function() {
-                            self.forceLogout();
-                        }).catch(function() {
-                            self.forceLogout();
-                        });
-                    } catch (e) {
-                        this.forceLogout();
-                    }
-                } else {
-                    this.forceLogout();
-                }
-            },
-            
-            forceLogout: function() {
-                this.state.loggedIn = false;
-                this.state.user = null;
-                this.updateUI();
-                this.notify('Logged out', 'success');
-            },
-            
-            resetLogin: function() {
-                this.el.loginBtn.disabled = false;
-                this.el.loginBtn.textContent = 'Connect';
-            },
-            
-            updateUI: function() {
-                if (this.state.loggedIn && this.state.user) {
-                    this.el.loginBtn.classList.add('hidden');
-                    this.el.userInfo.classList.remove('hidden');
-                    this.el.userName.textContent = this.state.user.username || 'User';
-                    this.el.generateBtn.disabled = false;
-                } else {
-                    this.el.loginBtn.classList.remove('hidden');
-                    this.el.userInfo.classList.add('hidden');
-                    this.el.generateBtn.disabled = true;
-                    this.resetLogin();
-                }
-            },
-            
-            generate: function() {
-                if (!this.state.loggedIn || this.state.loading) {
-                    this.notify('Please connect first', 'error');
-                    return;
-                }
-                
-                var self = this;
-                this.setLoading(true);
-                this.state.count++;
-                
-                // 🔥 ENHANCED AI PROMPT with 10 second timeout
-                var enhancedPrompt = this.buildEnhancedPrompt();
-                console.log('Using enhanced brutal prompt:', enhancedPrompt);
-                
-                var timeoutId = setTimeout(function() {
-                    console.log('AI timed out, using brutal fallbacks');
-                    var fallbacks = self.getBrutalFallbacks();
-                    self.showRoasts(fallbacks);
-                    self.notify('AI timeout - using brutal offline roasts! Set #' + self.state.count, 'error');
-                    self.setLoading(false);
-                }, 10000);
-                
-                puter.ai.chat(enhancedPrompt).then(function(response) {
-                    clearTimeout(timeoutId);
-                    console.log('AI response:', response);
-                    
-                    var roasts = self.parseEnhancedResponse(response);
-                    if (roasts && roasts.length >= 5) {
-                        self.showRoasts(roasts.slice(0, 5));
-                        self.notify('AI generated brutal roasts! Set #' + self.state.count, 'success');
-                    } else {
-                        console.log('AI parsing failed, using fallbacks');
-                        var fallbacks = self.getBrutalFallbacks();
-                        self.showRoasts(fallbacks);
-                        self.notify('AI parsing failed - using fallbacks! Set #' + self.state.count, 'error');
-                    }
-                    self.setLoading(false);
-                }).catch(function(error) {
-                    clearTimeout(timeoutId);
-                    console.error('AI error:', error);
-                    var fallbacks = self.getBrutalFallbacks();
-                    self.showRoasts(fallbacks);
-                    self.notify('AI error - using brutal fallbacks! Set #' + self.state.count, 'error');
-                    self.setLoading(false);
+            };
+        },
+        checkAuth: function() {
+            this.state.loggedIn = false;
+            this.state.user = null;
+            this.updateUI();
+        },
+        login: function() {
+            var self = this;
+            this.el.loginBtn.disabled = true;
+            this.el.loginBtn.textContent = 'Connecting...';
+            puter.auth.signIn().then(function() {
+                return puter.auth.getUser();
+            }).then(function(user) {
+                self.state.loggedIn = true;
+                self.state.user = user;
+                self.updateUI();
+                self.notify('Connected successfully!', 'success');
+            }).catch(function() {
+                self.resetLogin();
+                self.notify('Connection failed', 'error');
+            });
+        },
+        logout: function() {
+            var self = this;
+            if (puter.auth && puter.auth.signOut) {
+                puter.auth.signOut().then(function() {
+                    self.forceLogout();
+                }).catch(function() {
+                    self.forceLogout();
                 });
-            },
-            
-            // 🔥 COMPLETELY ENHANCED PROMPT ENGINEERING
-            buildEnhancedPrompt: function() {
-                var promptTemplates = [
-                    {
-                        role: "brutal comedy writer for roast battles",
-                        context: "adult comedy show known for savage burns",
-                        topics: ["career disasters", "workplace incompetence", "job interview failures", "work ethic disasters", "professional embarrassments"],
-                        style: "cutting and merciless with vivid metaphors",
-                        examples: ["Your resume reads like a work of fiction nobody wants to read", "You treat deadlines like birthday wishes - optional and disappointing"]
-                    },
-                    {
-                        role: "harsh social commentator", 
-                        context: "comedy special about awkward people",
-                        topics: ["social failures", "conversation disasters", "awkward interactions", "personality flaws", "communication breakdowns"],
-                        style: "psychologically cutting with sharp observations",
-                        examples: ["You make small talk feel like enhanced interrogation", "Your social skills need a warning label"]
-                    },
-                    {
-                        role: "savage relationship advisor",
-                        context: "comedy special about dating disasters", 
-                        topics: ["romantic failures", "dating disasters", "pickup line catastrophes", "relationship crashes", "love life tragedies"],
-                        style: "brutally honest with dark humor",
-                        examples: ["Your dating profile should come with a surgeon general's warning", "You get less action than a broken vending machine"]
-                    },
-                    {
-                        role: "merciless fashion critic",
-                        context: "comedy roast about style disasters",
-                        topics: ["fashion disasters", "style failures", "appearance catastrophes", "grooming disasters", "aesthetic nightmares"], 
-                        style: "viciously sarcastic with creative comparisons",
-                        examples: ["You dress like fashion magazines are written in hieroglyphics", "Your style choices make thrift stores feel embarrassed"]
-                    },
-                    {
-                        role: "psychological comedy analyst",
-                        context: "comedy special about human stupidity",
-                        topics: ["poor decisions", "intelligence failures", "judgment disasters", "logical breakdowns", "mental lapses"],
-                        style: "intellectually brutal with devastating logic",
-                        examples: ["Your decision-making makes coin flips look strategic", "You have the intellectual depth of a parking lot puddle"]
-                    }
-                ];
-                
-                var template = promptTemplates[this.state.count % promptTemplates.length];
-                var randomTopic = template.topics[Math.floor(Math.random() * template.topics.length)];
-                
-                return 'You are a ' + template.role + ' writing for a ' + template.context + '. Your specialty is creating ' + template.style + ' roasts.\n\n' +
-                       'TASK: Write 5 brutally savage and diverse roasts about ' + randomTopic + '. Each roast must:\n' +
-                       '- Be 25-35 words long\n' +
-                       '- Target a DIFFERENT specific aspect (no repeating themes)\n' +
-                       '- Include 1-2 modern slang words like "no cap", "fr", "deadass", "lowkey"\n' +
-                       '- Be psychologically cutting and memorable\n' +
-                       '- Use creative metaphors and comparisons\n' +
-                       '- Match the brutal quality of: "' + template.examples[0] + '"\n\n' +
-                       'EXAMPLES of the savage tone you should match:\n' +
-                       '- "' + template.examples[1] + '"\n' +
-                       '- "You\'re the reason job applications ask for previous experience - nobody wants to be your first mistake"\n\n' +
-                       'Return as a simple numbered list:\n1.\n2.\n3.\n4.\n5.\n\n' +
-                       'Remember: This is for adult comedy entertainment. Be creative, brutal, and memorable.';
-            },
-            
-            // Enhanced response parsing
-            parseEnhancedResponse: function(response) {
-                var content = '';
-                
-                if (typeof response === 'string') {
-                    content = response;
-                } else if (response && response.content) {
-                    content = response.content;
-                } else if (response && response.message) {
-                    content = response.message;
+            } else {
+                this.forceLogout();
+            }
+        },
+        forceLogout: function() {
+            this.state.loggedIn = false;
+            this.state.user = null;
+            this.updateUI();
+            this.notify('Logged out', 'success');
+        },
+        resetLogin: function() {
+            this.el.loginBtn.disabled = false;
+            this.el.loginBtn.textContent = 'Connect';
+        },
+        updateUI: function() {
+            if (this.state.loggedIn && this.state.user) {
+                this.el.loginBtn.classList.add('hidden');
+                this.el.userInfo.classList.remove('hidden');
+                this.el.userName.textContent = this.state.user.username || 'User';
+                this.el.generateBtn.disabled = false;
+            } else {
+                this.el.loginBtn.classList.remove('hidden');
+                this.el.userInfo.classList.add('hidden');
+                this.el.generateBtn.disabled = true;
+                this.resetLogin();
+            }
+        },
+        generate: function() {
+            if (!this.state.loggedIn || this.state.loading) {
+                this.notify('Please connect first', 'error');
+                return;
+            }
+            var self = this;
+            this.setLoading(true);
+            this.state.count++;
+            var enhancedPrompt = this.buildEnhancedPrompt();
+            var timeoutId = setTimeout(function() {
+                var fallbacks = self.getBrutalFallbacks();
+                self.showRoasts(fallbacks);
+                self.notify('AI timeout - using brutal offline roasts! Set #' + self.state.count, 'error');
+                self.setLoading(false);
+            }, 10000);
+            puter.ai.chat(enhancedPrompt).then(function(response) {
+                clearTimeout(timeoutId);
+                let content = "";
+                if (typeof response === "string") content = response;
+                else if (response && response.content) content = response.content;
+                else if (response && response.message && response.message.content) content = response.message.content;
+                else content = JSON.stringify(response);
+
+                var roasts = self.parseEnhancedResponse(content);
+                if (roasts && roasts.length >= 5) {
+                    self.showRoasts(roasts.slice(0, 5));
+                    self.notify('AI generated brutal roasts! Set #' + self.state.count, 'success');
                 } else {
-                    content = JSON.stringify(response);
+                    var fallbacks = self.getBrutalFallbacks();
+                    self.showRoasts(fallbacks);
+                    self.notify('AI parsing failed - using fallbacks! Set #' + self.state.count, 'error');
                 }
-                
-                console.log('Parsing enhanced content:', content);
-                
-                var roasts = [];
-                var lines = content.split('\n');
-                
-                for (var i = 0; i < lines.length; i++) {
-                    var line = lines[i].trim();
-                    // Match numbered lines like "1. text" or "1) text" 
-                    if (/^\d+[\.\)]\s+/.test(line)) {
-                        var roast = line.replace(/^\d+[\.\)]\s+/, '').trim();
-                        if (roast.length > 15) { // More strict validation
-                            roasts.push(roast);
-                        }
-                    }
-                    // Also try to catch lines that start with numbers but no punctuation
-                    else if (/^\d+\s+/.test(line) && line.length > 20) {
-                        var roast = line.replace(/^\d+\s+/, '').trim();
-                        roasts.push(roast);
-                    }
+                self.setLoading(false);
+            }).catch(function() {
+                clearTimeout(timeoutId);
+                var fallbacks = self.getBrutalFallbacks();
+                self.showRoasts(fallbacks);
+                self.notify('AI error - using brutal fallbacks! Set #' + self.state.count, 'error');
+                self.setLoading(false);
+            });
+        },
+        // PROMPT: MAXIMUM TOXICITY, ONLY ONE or TWO Gen Z WORDS ALLOWED PER ROAST
+        buildEnhancedPrompt: function() {
+            var topics = [
+                "career failures nobody wants to witness",
+                "existence that lowers the bar for everyone",
+                "dating disasters that make others afraid to try",
+                "why your presence ruins any good mood",
+                "the kind of stupidity that makes goldfish look smart"
+            ];
+            var topic = topics[this.state.count % topics.length];
+            return (
+`You are writing for a savage Gen Z comedy roast. Write 5 EXTREMELY brutal, creative, and psychologically damaging roast insults about "${topic}". Each roast must:
+- Use only one or two Gen Z slang words like "fr", "deadass", "rizz", "skull", "mid", "no cap", "cringe", "npc", "ratio".
+- Each roast must be unique, long (25-40 words), references real failures, existence, relationships, intelligence, appearance, parents etc. NO generic lines or nice guy disclaimers, and do not reference being an AI.
+- The tone must be as savage as: "Every conversation with you feels like a waste of oxygen that could have been better used by literally anything else." or "You're the poster child for why some people shouldn't reproduce."
+- Return as a single numbered list, roasts 1-5, nothing else.
+1.
+2.
+3.
+4.
+5.`
+            );
+        },
+        parseEnhancedResponse: function(content) {
+            var roasts = [];
+            var lines = content.split('\n');
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i].trim();
+                if (/^\d+[\.\)]\s+/.test(line)) {
+                    var roast = line.replace(/^\d+[\.\)]\s+/, '').trim();
+                    if (roast.length > 15) roeasts.push(roast);
+                } else if (/^\d+\s+/.test(line) && line.length > 20) {
+                    var roast = line.replace(/^\d+\s+/, '').trim();
+                    roasts.push(roast);
                 }
-                
-                console.log('Parsed enhanced roasts:', roasts);
-                return roasts.length >= 5 ? roasts : null;
-            },
-            
-            // Keep the brutal offline fallbacks (same as before)
-            getBrutalFallbacks: function() {
-                var brutalSets = [
-                    [
-                        "You're the reason job applications ask for previous experience - nobody wants to be your first mistake, no cap.",
-                        "Every conversation with you feels like wasted oxygen that could have been better used by literally anything else on earth.",
-                        "Your dating profile should come with a surgeon general's warning about the risk of permanent emotional damage, fr.",
-                        "You have the fashion sense of a colorblind person shopping during an earthquake in complete darkness.",
-                        "Your decision-making skills are so bad that Magic 8-Balls file restraining orders against you for harassment, deadass."
-                    ],
-                    [
-                        "Your work ethic is so nonexistent that unemployment benefits feel like overpayment for your lack of contribution.",
-                        "You make awkward silences feel like blessed relief from divine intervention during social interactions, no cap.",
-                        "Your romantic history reads like a comprehensive guide to red flag identification for future victims.",
-                        "You dress like fashion magazines are written in a dead language you've never bothered to learn, fr.",
-                        "Your brain operates on dial-up internet while everyone else has fiber optic processing speed, deadass."
-                    ],
-                    [
-                        "You're living proof that natural selection sometimes takes extended lunch breaks and forgets to clock back in.",
-                        "Your personality has all the warmth and charm of a tax collection notice delivered during Christmas morning, no cap.",
-                        "You get less romantic action than a broken vending machine in an abandoned building during a zombie apocalypse.",
-                        "Your skincare routine appears to be more theoretical than practical, much like your entire life approach, fr.",
-                        "You make goldfish look like Harvard graduates with advanced degrees in quantum physics and emotional intelligence, deadass."
-                    ],
-                    [
-                        "Your career peaked when you learned to spell your name correctly, and even that achievement remains questionable.",
-                        "You're the human equivalent of a participation trophy that everyone's too embarrassed to display on their shelf, no cap.",
-                        "Your pickup lines are classified as war crimes against romance by the Geneva Convention and international law.",
-                        "You have the aesthetic appeal of a dumpster fire during a garbage strike in summer heat, fr.",
-                        "Your thought process makes random number generators look strategically brilliant by direct comparison, deadass."
-                    ],
-                    [
-                        "Your LinkedIn profile contains more fiction than fantasy novels and proves twice as disappointing to read.",
-                        "You bring everyone so much joy when you leave any room that they should charge admission fees, no cap.",
-                        "Your love life is more tragic than your bank account, and we both know that's broke beyond repair.",
-                        "You look like you got dressed by a blind person having a seizure in a thrift store clearance section, fr.",
-                        "Your IQ is so low that it's causing a global shortage of room temperature readings across continents, deadass."
-                    ]
-                ];
-                
-                return brutalSets[this.state.count % brutalSets.length];
-            },
-            
-            showRoasts: function(roasts) {
-                this.el.resultsGrid.innerHTML = '';
-                
-                for (var i = 0; i < roasts.length; i++) {
-                    var card = document.createElement('div');
-                    card.className = 'result-card';
-                    
-                    card.innerHTML = '<div class="roast-number">Roast #' + (i + 1) + '</div>' +
-                                   '<div class="roast-text">' + roasts[i] + '</div>' +
-                                   '<button class="copy-btn" data-text="' + roasts[i] + '">Copy Roast</button>';
-                    
-                    this.el.resultsGrid.appendChild(card);
-                }
-                
-                this.el.resultsContainer.classList.remove('hidden');
-                
-                var self = this;
-                setTimeout(function() {
-                    self.el.resultsContainer.scrollIntoView({behavior: 'smooth'});
-                }, 200);
-            },
-            
-            copyText: function(text, button) {
-                var self = this;
-                
-                try {
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(text).then(function() {
-                            self.showCopied(button);
-                            self.notify('Copied that burn!', 'success');
-                        }).catch(function() {
-                            self.fallbackCopy(text, button);
-                        });
-                    } else {
-                        this.fallbackCopy(text, button);
-                    }
-                } catch (e) {
+            }
+            return roasts.length >= 5 ? roasts : null;
+        },
+        getBrutalFallbacks: function() {
+            var brutalSets = [
+                [
+                    "Every conversation with you feels like a waste of oxygen that could have been better used by literally anything else.",
+                    "You're the type of person who makes everyone around you question their life choices, starting with whoever raised you, fr.",
+                    "You're the poster child for why some people shouldn't reproduce. The gene pool is better for every day you stay single, no cap.",
+                    "It's wild that you turned out this way and your parents still found time to take family photos, deadass.",
+                    "You walk into a room and the collective IQ lowers with every step you take. Ratio."
+                ],
+                [
+                    "No matter what you do, you'll always be remembered as the reason HR invented performance improvement plans.",
+                    "You're living proof that rock bottom is actually a trampoline. Mid at best.",
+                    "The only thing you've ever managed to accomplish is being a cautionary tale for other people’s kids.",
+                    "Your dating history could be used as an anti-romance PSA, fr.",
+                    "If common sense was currency, you'd be in the red for generations. Skull."
+                ]
+            ];
+            return brutalSets[this.state.count % brutalSets.length];
+        },
+        showRoasts: function(roasts) {
+            this.el.resultsGrid.innerHTML = '';
+            for (var i = 0; i < roasts.length; i++) {
+                var card = document.createElement('div');
+                card.className = 'result-card';
+                card.innerHTML = '<div class="roast-number">Roast #' + (i + 1) + '</div>' +
+                                '<div class="roast-text">' + roasts[i] + '</div>' +
+                                '<button class="copy-btn" data-text="' + roasts[i] + '">Copy Roast</button>';
+                this.el.resultsGrid.appendChild(card);
+            }
+            this.el.resultsContainer.classList.remove('hidden');
+            var self = this;
+            setTimeout(function() {
+                self.el.resultsContainer.scrollIntoView({behavior: 'smooth'});
+            }, 200);
+        },
+        copyText: function(text, button) {
+            var self = this;
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(function() {
+                        self.showCopied(button);
+                        self.notify('Copied that burn!', 'success');
+                    }).catch(function() {
+                        self.fallbackCopy(text, button);
+                    });
+                } else {
                     this.fallbackCopy(text, button);
                 }
-            },
-            
-            fallbackCopy: function(text, button) {
-                var textarea = document.createElement('textarea');
-                textarea.value = text;
-                textarea.style.position = 'fixed';
-                textarea.style.opacity = '0';
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                this.showCopied(button);
-                this.notify('Copied!', 'success');
-            },
-            
-            showCopied: function(button) {
-                var original = button.textContent;
-                button.textContent = '✓ Copied!';
-                button.classList.add('copied');
-                
-                setTimeout(function() {
-                    button.textContent = original;
-                    button.classList.remove('copied');
-                }, 1500);
-            },
-            
-            setLoading: function(loading) {
-                this.state.loading = loading;
-                
-                if (loading) {
-                    this.el.generateBtn.disabled = true;
-                    this.el.btnText.classList.add('hidden');
-                    this.el.btnLoader.classList.remove('hidden');
-                } else {
-                    this.el.generateBtn.disabled = !this.state.loggedIn;
-                    this.el.btnText.classList.remove('hidden');
-                    this.el.btnLoader.classList.add('hidden');
-                }
-            },
-            
-            notify: function(message, type) {
-                var self = this;
-                
-                this.el.toast.className = 'toast';
-                this.el.toast.style.opacity = '0';
-                
-                setTimeout(function() {
-                    self.el.toast.textContent = message;
-                    self.el.toast.classList.add(type || 'info');
-                    
-                    setTimeout(function() {
-                        self.el.toast.classList.add('show');
-                        self.el.toast.style.opacity = '1';
-                    }, 50);
-                    
-                    setTimeout(function() {
-                        self.el.toast.classList.remove('show');
-                        self.el.toast.style.opacity = '0';
-                    }, 3500);
-                }, 100);
+            } catch (e) {
+                this.fallbackCopy(text, button);
             }
-        };
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            EnhancedRoastApp.start();
-        });
+        },
+        fallbackCopy: function(text, button) {
+            var textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            this.showCopied(button);
+            this.notify('Copied!', 'success');
+        },
+        showCopied: function(button) {
+            var original = button.textContent;
+            button.textContent = '✓ Copied!';
+            button.classList.add('copied');
+            setTimeout(function() {
+                button.textContent = original;
+                button.classList.remove('copied');
+            }, 1500);
+        },
+        setLoading: function(loading) {
+            this.state.loading = loading;
+            if (loading) {
+                this.el.generateBtn.disabled = true;
+                this.el.btnText.classList.add('hidden');
+                this.el.btnLoader.classList.remove('hidden');
+            } else {
+                this.el.generateBtn.disabled = !this.state.loggedIn;
+                this.el.btnText.classList.remove('hidden');
+                this.el.btnLoader.classList.add('hidden');
+            }
+        },
+        notify: function(message, type) {
+            var self = this;
+            this.el.toast.className = 'toast';
+            this.el.toast.style.opacity = '0';
+            setTimeout(function() {
+                self.el.toast.textContent = message;
+                self.el.toast.classList.add(type || 'info');
+                setTimeout(function() {
+                    self.el.toast.classList.add('show');
+                    self.el.toast.style.opacity = '1';
+                }, 50);
+                setTimeout(function() {
+                    self.el.toast.classList.remove('show');
+                    self.el.toast.style.opacity = '0';
+                }, 3500);
+            }, 100);
+        }
+    };
+    document.addEventListener('DOMContentLoaded', function() {
+        SavageAIApp.start();
+    });
     </script>
 </body>
 </html>
