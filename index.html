@@ -471,7 +471,7 @@
                     var roasts = self.parseDeepSeekJSON(response);
                     if (roasts && roasts.length >= 3) {
                         self.showRoasts(roasts.slice(0, 5));
-                        self.notify('DeepSeek generated 5 diverse ULTRA-BRUTAL roasts! Set #' + self.state.count, 'success');
+                        self.notify('Here you go gng! Fresh batch ready! Set #' + self.state.count, 'success');
                     } else {
                         console.log('DeepSeek JSON parsing failed, using fallbacks');
                         var fallbacks = self.getBrutalFallbacks();
