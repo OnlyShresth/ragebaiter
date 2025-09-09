@@ -439,7 +439,6 @@
                 }
             },
             
-            // 🔥 FIXED DEEPSEEK INTEGRATION WITH CORRECT PARSING
             generate: function() {
                 if (!this.state.loggedIn || this.state.loading) {
                     this.notify('Please connect first', 'error');
@@ -454,7 +453,7 @@
                 console.log('Using DeepSeek model:', deepseekPrompt);
                 
                 var timeoutId = setTimeout(function() {
-                    console.log('DeepSeek timed out after 30 seconds, using brutal fallbacks');
+                    console.log('DeepSeek timed out, using brutal fallbacks');
                     var fallbacks = self.getBrutalFallbacks();
                     self.showRoasts(fallbacks);
                     self.notify('DeepSeek timeout - using brutal fallbacks! Set #' + self.state.count, 'error');
@@ -467,9 +466,9 @@
                     clearTimeout(timeoutId);
                     console.log('DeepSeek response:', response);
                     
-                    // 🔥 FIXED: CORRECT DEEPSEEK RESPONSE PARSING
+                    // 🔥 FIXED: CORRECT PARSING FOR \n\n SEPARATORS
                     var roasts = self.parseDeepSeekResponse(response);
-                    if (roasts && roasts.length >= 5) {
+                    if (roasts && roasts.length >= 3) {
                         self.showRoasts(roasts.slice(0, 5));
                         self.notify('DeepSeek generated ULTRA-BRUTAL roasts! Set #' + self.state.count, 'success');
                     } else {
@@ -489,14 +488,14 @@
                 });
             },
             
-            // 🔥 COMPLETELY FIXED PARSING FUNCTION
+            // 🔥 FIXED PARSING: USES \n\n TO SPLIT ITEMS
             parseDeepSeekResponse: function(response) {
                 console.log('Parsing DeepSeek response:', response);
                 
-                // Extract content from DeepSeek response structure
+                // Extract content from messages[0].content
                 var content = '';
-                if (response && response.messages && response.messages.length > 0 && response.messages[0].content) {
-                    content = response.messages[0].content;
+                if (response && response.messages && response.messages.length > 0) {
+                    content = response.messages[0].content || '';
                 } else {
                     console.log('Invalid DeepSeek response structure');
                     return null;
@@ -504,28 +503,25 @@
                 
                 console.log('DeepSeek content:', content);
                 
-                // Parse numbered list format (DeepSeek returns plain text, not JSON)
+                // 🔥 FIXED: Split by double newlines (\n\n) not single newlines
+                var items = content.split('\n\n');
                 var roasts = [];
-                var lines = content.split('\n');
                 
-                for (var i = 0; i < lines.length; i++) {
-                    var line = lines[i].trim();
-                    
-                    // Match numbered patterns: "1. text", "2) text", "3 - text", etc.
-                    var numberMatch = line.match(/^\d+[\.\)\-\s]+(.+)$/);
-                    if (numberMatch && numberMatch[1]) {
-                        var roast = numberMatch[1].trim();
-                        if (roast.length > 10 && roast.length < 500) { // Valid roast length
-                            roasts.push(roast);
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i].trim();
+                    if (item) {
+                        // Remove leading numbers and punctuation (1. 2) etc.)
+                        var cleanItem = item.replace(/^\d+[\.\)\-\s]+/, '').trim();
+                        if (cleanItem.length > 10 && cleanItem.length < 500) {
+                            roasts.push(cleanItem);
                         }
                     }
                 }
                 
                 console.log('Final parsed roasts:', roasts);
-                return roasts.length >= 3 ? roasts : null; // Return if at least 3 roasts found
+                return roasts.length >= 3 ? roasts : null;
             },
             
-            // 🔥 ULTRA-BRUTAL DEEPSEEK PROMPTS
             buildDeepSeekPrompt: function() {
                 var brutalTopics = [
                     "being a complete failure at basic human existence",
@@ -552,7 +548,6 @@
                        'Format as numbered list:\n1. You...\n2. You...\n3. You...\n4. You...\n5. You...';
             },
             
-            // 🔥 ULTRA-BRUTAL OFFLINE FALLBACKS
             getBrutalFallbacks: function() {
                 var ultraBrutalSets = [
                     [
