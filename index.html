@@ -487,7 +487,7 @@
                 });
             },
             
-            // 🔥 PROPER JSON PARSING FOR DEEPSEEK RESPONSE
+            // 🔥 FIXED: PROPER PARSING FOR SINGLE NEWLINES WITH UNICODE CLEANING
             parseDeepSeekResponse: function(response) {
                 console.log('Parsing DeepSeek response:', response);
                 
@@ -501,15 +501,18 @@
                 
                 console.log('DeepSeek content:', content);
                 
-                // Split by double newlines (\n\n) to separate each roast
-                var items = content.split('\n\n');
+                // Clean unicode characters and normalize
+                content = this.cleanString(content);
+                
+                // 🔥 FIXED: Split by SINGLE newlines (\n) not double
+                var lines = content.split('\n');
                 var roasts = [];
                 
-                for (var i = 0; i < items.length; i++) {
-                    var item = items[i].trim();
-                    if (item) {
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i].trim();
+                    if (line) {
                         // Remove leading numbers and punctuation (1. 2) etc.)
-                        var cleanItem = item.replace(/^\s*\d+[\.\)\-\s]+/, '').trim();
+                        var cleanItem = line.replace(/^\s*\d+[\.\)\-\s]+/, '').trim();
                         if (cleanItem.length > 10 && cleanItem.length < 500) {
                             roasts.push(cleanItem);
                         }
@@ -520,7 +523,18 @@
                 return roasts.length >= 3 ? roasts : null;
             },
             
-            // 🔥 UPDATED: SELECTS 5 DIFFERENT TOPICS AT ONCE FOR MAXIMUM VARIETY
+            // 🔥 UNICODE CLEANING FUNCTION
+            cleanString: function(str) {
+                return str
+                    .replace(/[\u2018\u2019]/g, "'")  // smart single quotes to regular quotes
+                    .replace(/[\u201C\u201D]/g, '"')  // smart double quotes to regular quotes
+                    .replace(/[\u00A0]/g, ' ')        // non-breaking space to regular space
+                    .replace(/[\u2013\u2014]/g, '-')  // em dash to regular dash
+                    .replace(/\s+/g, ' ')             // collapse multiple spaces
+                    .trim();
+            },
+            
+            // 🔥 SELECTS 5 DIFFERENT TOPICS AT ONCE FOR MAXIMUM VARIETY
             buildDeepSeekPrompt: function() {
                 var ultraBrutalTopics = [
                     "being a complete waste of human potential and oxygen on this planet",
@@ -560,7 +574,7 @@
                     "leaving a trail of broken dreams, failed promises, and shattered expectations wherever they go"
                 ];
                 
-                // 🔥 SHUFFLE AND SELECT 5 DIFFERENT TOPICS AT ONCE
+                // Shuffle and select 5 different topics at once
                 var shuffled = ultraBrutalTopics
                     .map(function(topic) { return {topic: topic, random: Math.random()}; })
                     .sort(function(a, b) { return a.random - b.random; })
