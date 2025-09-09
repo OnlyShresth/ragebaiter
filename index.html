@@ -490,7 +490,7 @@
             // 🔥 FIXED: PROPER PARSING FOR SINGLE NEWLINES WITH UNICODE CLEANING
             parseDeepSeekResponse: function(response) {
                 console.log('Parsing DeepSeek response:', response);
-                
+            
                 var content = '';
                 if (response && response.message && response.message.content) {
                     content = response.message.content;
@@ -498,31 +498,39 @@
                     console.log('Invalid DeepSeek response structure');
                     return null;
                 }
-                
                 console.log('DeepSeek content:', content);
-                
-                // Clean unicode characters and normalize
+            
+                // Clean smart unicode quotes, NBSPs, em-dashes, etc.
                 content = this.cleanString(content);
-                
-                // 🔥 FIXED: Split by SINGLE newlines (\n) not double
-                var lines = content.split('\n');
+            
+                // Split on both single and double newlines (robust regardless of formatting)
+                var lines = content.split(/\n{1,2}/);
                 var roasts = [];
-                
                 for (var i = 0; i < lines.length; i++) {
                     var line = lines[i].trim();
-                    if (line) {
-                        // Remove leading numbers and punctuation (1. 2) etc.)
-                        var cleanItem = line.replace(/^\s*\d+[\.\)\-\s]+/, '').trim();
-                        if (cleanItem.length > 10 && cleanItem.length < 500) {
-                            roasts.push(cleanItem);
-                        }
+                    if (!line) continue;
+                    // Remove leading numbering and delimiter (1. 2) etc.)
+                    var cleanItem = line.replace(/^\s*\d+[\.\)\-\s]+/, '').trim();
+                    if (cleanItem.length > 10 && cleanItem.length < 500) {
+                        roasts.push(cleanItem);
                     }
                 }
-                
+                // Most outputs are exactly 5, but sometimes whitespace makes >5, so only slice first 5
                 console.log('Final parsed roasts:', roasts);
-                return roasts.length >= 3 ? roasts : null;
+                return roasts.length >= 3 ? roasts.slice(0, 5) : null;
             },
             
+            // Add or update the cleanString function from previous steps:
+            cleanString: function(str) {
+                return str
+                    .replace(/[\u2018\u2019]/g, "'")  // smart single quotes to regular quotes
+                    .replace(/[\u201C\u201D]/g, '"')  // smart double quotes to regular quotes
+                    .replace(/[\u00A0]/g, ' ')        // non-breaking space to regular space
+                    .replace(/[\u2013\u2014]/g, '-')  // em dash to regular dash
+                    .replace(/\s+/g, ' ')             // collapse multiple spaces
+                    .trim();
+            },
+           
             // 🔥 UNICODE CLEANING FUNCTION
             cleanString: function(str) {
                 return str
