@@ -466,7 +466,7 @@
                     clearTimeout(timeoutId);
                     console.log('DeepSeek response:', response);
                     
-                    // 🔥 FIXED: CORRECT PARSING FOR \n\n SEPARATORS
+                    // 🔥 FIXED: CORRECT PARSING WITH RIGHT RESPONSE STRUCTURE
                     var roasts = self.parseDeepSeekResponse(response);
                     if (roasts && roasts.length >= 3) {
                         self.showRoasts(roasts.slice(0, 5));
@@ -488,14 +488,14 @@
                 });
             },
             
-            // 🔥 FIXED PARSING: USES \n\n TO SPLIT ITEMS
+            // 🔥 COMPLETELY FIXED PARSING WITH CORRECT RESPONSE STRUCTURE
             parseDeepSeekResponse: function(response) {
                 console.log('Parsing DeepSeek response:', response);
                 
-                // Extract content from messages[0].content
+                // 🔥 FIXED: DeepSeek uses response.message.content, NOT response.messages[0].content
                 var content = '';
-                if (response && response.messages && response.messages.length > 0) {
-                    content = response.messages[0].content || '';
+                if (response && response.message && response.message.content) {
+                    content = response.message.content;
                 } else {
                     console.log('Invalid DeepSeek response structure');
                     return null;
@@ -503,7 +503,7 @@
                 
                 console.log('DeepSeek content:', content);
                 
-                // 🔥 FIXED: Split by double newlines (\n\n) not single newlines
+                // Split by double newlines (\n\n)
                 var items = content.split('\n\n');
                 var roasts = [];
                 
@@ -511,7 +511,7 @@
                     var item = items[i].trim();
                     if (item) {
                         // Remove leading numbers and punctuation (1. 2) etc.)
-                        var cleanItem = item.replace(/^\d+[\.\)\-\s]+/, '').trim();
+                        var cleanItem = item.replace(/^\s*\d+[\.\)\-\s]+/, '').trim();
                         if (cleanItem.length > 10 && cleanItem.length < 500) {
                             roasts.push(cleanItem);
                         }
