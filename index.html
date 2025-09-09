@@ -6,12 +6,12 @@
     <title>Master Baiter</title>
     <script src="https://js.puter.com/v2/"></script>
     <style>
-        /* [Keep all your existing CSS - same as before] */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         :root {
             --primary: #dc2626;
             --primary-dark: #b91c1c;
@@ -26,6 +26,7 @@
             --success: #10b981;
             --danger: #ef4444;
         }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
             background: var(--bg);
@@ -33,7 +34,9 @@
             line-height: 1.6;
             min-height: 100vh;
             font-size: 14px;
+            position: relative;
         }
+
         .auth-section {
             position: fixed;
             top: 20px;
@@ -43,6 +46,7 @@
             align-items: center;
             gap: 12px;
         }
+
         .login-btn, .logout-btn {
             padding: 12px 20px;
             border: 1px solid var(--primary);
@@ -55,12 +59,25 @@
             color: white;
             margin: 0;
         }
-        .login-btn.hidden { display: none !important; }
-        .login-btn:hover, .logout-btn:hover { opacity: 0.9; }
+
+        .login-btn:focus, .logout-btn:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .login-btn.hidden {
+            display: none !important;
+        }
+
+        .login-btn:hover, .logout-btn:hover {
+            opacity: 0.9;
+        }
+
         .logout-btn {
             background: var(--danger);
             border-color: var(--danger);
         }
+
         .user-info {
             display: flex;
             align-items: center;
@@ -70,21 +87,26 @@
             border-radius: 6px;
             border: 1px solid var(--border);
         }
+
         .status-dot {
             width: 6px;
             height: 6px;
             background: var(--primary);
             border-radius: 50%;
         }
+
         .container {
             max-width: 1000px;
             margin: 0 auto;
             padding: 60px 20px 40px;
         }
+
+        /* Hero Section */
         .hero-section {
             text-align: center;
             padding: 80px 0 60px;
         }
+
         .hero-title {
             font-size: 4rem;
             font-weight: 900;
@@ -96,6 +118,8 @@
             text-transform: uppercase;
             letter-spacing: -2px;
         }
+
+        /* Generate Section */
         .generate-section {
             background: var(--card-bg);
             border-radius: 16px;
@@ -105,17 +129,20 @@
             margin-bottom: 50px;
             text-align: center;
         }
+
         .generate-title {
             font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 20px;
             color: var(--text);
         }
+
         .generate-subtitle {
             color: var(--text-secondary);
             margin-bottom: 30px;
             font-size: 1.1rem;
         }
+
         .generate-btn {
             padding: 20px 40px;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -129,17 +156,20 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             position: relative;
-            will-change: transform;
+            overflow: hidden;
         }
+
         .generate-btn:hover {
-            transform: translate3d(0, -3px, 0);
+            transform: translateY(-3px);
             box-shadow: 0 15px 35px rgba(220, 38, 38, 0.4);
         }
+
         .generate-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
+
         .btn-loader {
             width: 24px;
             height: 24px;
@@ -149,13 +179,17 @@
             animation: spin 1s linear infinite;
             margin: 0 auto;
         }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Results Section */
         .results-section {
             margin-top: 50px;
         }
+
         .results-title {
             text-align: center;
             font-size: 2.5rem;
@@ -164,24 +198,29 @@
             color: var(--primary);
             text-transform: uppercase;
         }
+
         .results-grid {
             display: grid;
             gap: 20px;
             grid-template-columns: 1fr;
         }
+
         .result-card {
             background: var(--card-bg);
             border-radius: 12px;
             padding: 24px;
             border: 1px solid var(--border);
             transition: all 0.3s ease;
-            will-change: transform;
+            position: relative;
+            overflow: hidden;
         }
+
         .result-card:hover {
-            transform: translate3d(0, -4px, 0);
+            transform: translateY(-4px);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
             border-color: var(--primary);
         }
+
         .roast-number {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
@@ -194,6 +233,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
         .roast-text {
             font-size: 18px;
             line-height: 1.6;
@@ -205,6 +245,7 @@
             border-left: 4px solid var(--primary);
             font-weight: 600;
         }
+
         .copy-btn {
             width: 100%;
             padding: 14px;
@@ -218,8 +259,17 @@
             font-size: 14px;
             text-transform: uppercase;
         }
-        .copy-btn:hover { background: #475569; }
-        .copy-btn.copied { background: var(--success); }
+
+        .copy-btn:hover {
+            background: #475569;
+            transform: translateY(-1px);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+        }
+
+        /* Toast */
         .toast {
             position: fixed;
             top: 80px;
@@ -234,24 +284,72 @@
             transform: translateX(100%);
             transition: all 0.3s ease;
             font-weight: 500;
-            opacity: 0;
-        }
-        .toast.show {
-            transform: translateX(0);
             opacity: 1;
         }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
         .toast.success {
             border-color: var(--success);
             background: rgba(16, 185, 129, 0.1);
         }
+
         .toast.error {
             border-color: var(--danger);
             background: rgba(239, 68, 68, 0.1);
         }
-        .hidden { display: none !important; }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            .hero-title { font-size: 2.8rem; }
-            .generate-section { padding: 30px 20px; }
+            .container {
+                padding: 40px 16px 20px;
+            }
+            
+            .auth-section {
+                top: 16px;
+                right: 16px;
+            }
+            
+            .hero-title {
+                font-size: 2.8rem;
+            }
+            
+            .generate-section {
+                padding: 30px 20px;
+            }
+            
+            .generate-btn {
+                padding: 16px 30px;
+                font-size: 16px;
+            }
+            
+            .toast {
+                top: 60px;
+                right: 16px;
+                left: 16px;
+                transform: translateY(-100%);
+            }
+            
+            .toast.show {
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .generate-section {
+                padding: 24px 16px;
+            }
         }
     </style>
 </head>
@@ -264,10 +362,12 @@
             <button id="logoutBtn" class="logout-btn">Logout</button>
         </div>
     </div>
+
     <div class="container">
         <section class="hero-section">
             <h1 class="hero-title">Ragebait 'em</h1>
         </section>
+
         <section class="generate-section">
             <h2 class="generate-title">Ragebait 'em</h2>
             <p class="generate-subtitle">Imagine being so unemployed you gotta use ts 🥀</p>
@@ -277,566 +377,382 @@
                 <div class="btn-loader hidden"></div>
             </button>
         </section>
+
         <section class="results-section">
             <div id="resultsContainer" class="results-container hidden">
                 <h2 class="results-title">Here you go gng</h2>
-                <div class="results-grid" id="resultsGrid"></div>
+                <div class="results-grid" id="resultsGrid">
+                    <!-- Results will be populated here -->
+                </div>
             </div>
         </section>
     </div>
-    <div id="toast" class="toast"></div>
+
+    <div id="toast" class="toast hidden"></div>
+
     <script>
-        var EnhancedRoastApp = {
-            state: {
-                loggedIn: false,
-                user: null,
-                loading: false,
-                count: 0,
-                puterLoaded: false,
-                retryCount: 0
-            },
-            
-            el: {},
-            notifyTimeout: null,
-            
-            start: function() {
-                var self = this;
+        class MasterBaiter {
+            constructor() {
+                this.puterClient = null;
+                this.isAuthenticated = false;
+                this.userName = '';
+                this.sessionId = Date.now();
+                this.generationCount = 0;
                 
-                this.waitForPuter().then(function() {
-                    self.initializePuter();
-                }).catch(function() {
-                    console.error('PuterJS failed to load');
-                    self.initializeOffline();
+                this.initializeElements();
+                this.attachEventListeners();
+            }
+
+            initializeElements() {
+                this.loginBtn = document.getElementById('loginBtn');
+                this.logoutBtn = document.getElementById('logoutBtn');
+                this.userInfo = document.getElementById('userInfo');
+                this.userName = document.getElementById('userName');
+                this.generateBtn = document.getElementById('generateBtn');
+                this.resultsContainer = document.getElementById('resultsContainer');
+                this.resultsGrid = document.getElementById('resultsGrid');
+                this.toast = document.getElementById('toast');
+                this.btnText = document.querySelector('.btn-text');
+                this.btnLoader = document.querySelector('.btn-loader');
+            }
+
+            attachEventListeners() {
+                this.loginBtn.addEventListener('click', () => this.handleLogin());
+                this.logoutBtn.addEventListener('click', () => this.handleLogout());
+                this.generateBtn.addEventListener('click', () => this.generateRoasts());
+                
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.copy-btn')) {
+                        const roastText = e.target.closest('.result-card').querySelector('.roast-text').textContent;
+                        this.copyRoast(roastText, e.target);
+                    }
                 });
-            },
-            
-            waitForPuter: function() {
-                return new Promise(function(resolve, reject) {
-                    var attempts = 0;
-                    var maxAttempts = 100;
+            }
+
+            async handleLogin() {
+                try {
+                    this.loginBtn.disabled = true;
+                    this.loginBtn.textContent = 'Connecting...';
+
+                    if (typeof puter === 'undefined') {
+                        throw new Error('Connection service unavailable');
+                    }
+
+                    const user = await puter.auth.signIn();
                     
-                    var checkPuter = function() {
-                        if (typeof puter !== 'undefined' && puter.ai && puter.auth) {
-                            resolve();
-                            return;
-                        }
+                    if (user) {
+                        this.isAuthenticated = true;
+                        this.puterClient = puter;
                         
-                        attempts++;
-                        if (attempts >= maxAttempts) {
-                            reject(new Error('PuterJS timeout'));
-                            return;
+                        this.updateUIForAuthentication(user.username);
+                        this.showToast('Connected successfully!', 'success');
+                    } else {
+                        throw new Error('No user returned');
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    this.showToast('Connection failed. Please try again.', 'error');
+                    this.resetLoginButton();
+                }
+            }
+
+            async handleLogout() {
+                try {
+                    if (this.puterClient && typeof this.puterClient.auth?.signOut === 'function') {
+                        await this.puterClient.auth.signOut();
+                    }
+                    
+                    this.isAuthenticated = false;
+                    this.puterClient = null;
+                    this.showLoginButton();
+                    this.showToast('Logged out!', 'success');
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    this.isAuthenticated = false;
+                    this.puterClient = null;
+                    this.showLoginButton();
+                    this.showToast('Logged out!', 'success');
+                }
+            }
+
+            updateUIForAuthentication(username) {
+                this.loginBtn.classList.add('hidden');
+                this.userInfo.classList.remove('hidden');
+                this.userName.textContent = username;
+                this.generateBtn.disabled = false;
+            }
+
+            showLoginButton() {
+                this.loginBtn.classList.remove('hidden');
+                this.userInfo.classList.add('hidden');
+                this.generateBtn.disabled = true;
+                this.resetLoginButton();
+            }
+
+            resetLoginButton() {
+                this.loginBtn.disabled = false;
+                this.loginBtn.textContent = 'Connect';
+            }
+
+            // COMPLETELY FIXED: Using variables to avoid syntax errors with backticks
+            parseAIResponse(aiResponse) {
+                console.log('AI raw response:', aiResponse);
+                
+                let content = '';
+                if (aiResponse && aiResponse.message && aiResponse.message.content) {
+                    content = aiResponse.message.content;
+                } else if (typeof aiResponse === 'string') {
+                    content = aiResponse;
+                } else if (aiResponse && aiResponse.content) {
+                    content = aiResponse.content;
+                } else {
+                    content = JSON.stringify(aiResponse);
+                }
+                
+                console.log('Extracted content:', content);
+                
+                try {
+                    let jsonStr = content;
+                    
+                    // FIXED: Use variables to avoid backtick syntax errors
+                    const tripleBackticks = String.fromCharCode(96) + String.fromCharCode(96) + String.fromCharCode(96);
+                    const jsonMarker = tripleBackticks + 'json';
+                    
+                    if (content.includes(jsonMarker)) {
+                        const startMarker = content.indexOf(jsonMarker) + jsonMarker.length;
+                        const endMarker = content.lastIndexOf(tripleBackticks);
+                        if (startMarker > jsonMarker.length - 1 && endMarker > startMarker) {
+                            jsonStr = content.substring(startMarker, endMarker).trim();
                         }
-                        
-                        setTimeout(checkPuter, 100);
-                    };
-                    
-                    checkPuter();
-                });
-            },
-            
-            initializePuter: function() {
-                try {
-                    this.state.puterLoaded = true;
-                    this.getElements();
-                    this.bindEvents();
-                    this.checkAuth();
-                    this.notify('PuterJS loaded successfully!', 'success');
-                    console.log('PuterJS initialized successfully');
-                } catch (e) {
-                    console.error('PuterJS initialization error:', e);
-                    this.initializeOffline();
-                }
-            },
-            
-            initializeOffline: function() {
-                this.state.puterLoaded = false;
-                this.getElements();
-                this.bindEvents();
-                this.updateUI();
-                this.notify('Running in offline mode', 'error');
-            },
-            
-            getElements: function() {
-                this.el.loginBtn = document.getElementById('loginBtn');
-                this.el.logoutBtn = document.getElementById('logoutBtn');
-                this.el.userInfo = document.getElementById('userInfo');
-                this.el.userName = document.getElementById('userName');
-                this.el.generateBtn = document.getElementById('generateBtn');
-                this.el.btnText = document.querySelector('.btn-text');
-                this.el.btnLoader = document.querySelector('.btn-loader');
-                this.el.resultsContainer = document.getElementById('resultsContainer');
-                this.el.resultsGrid = document.getElementById('resultsGrid');
-                this.el.toast = document.getElementById('toast');
-            },
-            
-            bindEvents: function() {
-                var self = this;
-                
-                this.el.loginBtn.onclick = function() { self.login(); };
-                this.el.logoutBtn.onclick = function() { self.logout(); };
-                this.el.generateBtn.onclick = function() { self.generate(); };
-                
-                this.el.resultsGrid.onclick = function(e) {
-                    if (e.target.classList.contains('copy-btn')) {
-                        var text = e.target.getAttribute('data-text');
-                        self.copyText(text, e.target);
-                    }
-                };
-            },
-            
-            checkAuth: function() {
-                if (!this.state.puterLoaded) {
-                    this.state.loggedIn = false;
-                    this.state.user = null;
-                    this.updateUI();
-                    return;
-                }
-                
-                var self = this;
-                try {
-                    if (puter.auth && puter.auth.getUser) {
-                        puter.auth.getUser().then(function(user) {
-                            if (user && user.username) {
-                                self.state.loggedIn = true;
-                                self.state.user = user;
-                                console.log('User already authenticated:', user.username);
-                            } else {
-                                self.state.loggedIn = false;
-                                self.state.user = null;
-                            }
-                            self.updateUI();
-                        }).catch(function(error) {
-                            console.log('No existing auth session');
-                            self.state.loggedIn = false;
-                            self.state.user = null;
-                            self.updateUI();
-                        });
-                    } else {
-                        this.state.loggedIn = false;
-                        this.state.user = null;
-                        this.updateUI();
-                    }
-                } catch (e) {
-                    console.error('Auth check error:', e);
-                    this.state.loggedIn = false;
-                    this.state.user = null;
-                    this.updateUI();
-                }
-            },
-            
-            login: function() {
-                if (!this.state.puterLoaded) {
-                    this.notify('PuterJS not available - enabling offline mode', 'error');
-                    this.state.loggedIn = true;
-                    this.state.user = { username: 'Offline User' };
-                    this.updateUI();
-                    return;
-                }
-                
-                var self = this;
-                this.el.loginBtn.disabled = true;
-                this.el.loginBtn.textContent = 'Connecting...';
-                
-                try {
-                    puter.auth.signIn().then(function(user) {
-                        console.log('Sign in successful:', user);
-                        self.state.loggedIn = true;
-                        self.state.user = user;
-                        self.updateUI();
-                        self.notify('Connected successfully!', 'success');
-                    }).catch(function(error) {
-                        console.error('Auth error:', error);
-                        self.resetLogin();
-                        self.notify('Connection failed: ' + (error.message || 'Please try again'), 'error');
-                    });
-                } catch (e) {
-                    console.error('Login exception:', e);
-                    this.resetLogin();
-                    this.notify('Login error: ' + e.message, 'error');
-                }
-            },
-            
-            logout: function() {
-                var self = this;
-                
-                if (this.state.puterLoaded && puter.auth && puter.auth.signOut) {
-                    try {
-                        puter.auth.signOut().then(function() {
-                            self.forceLogout();
-                            self.notify('Logged out successfully', 'success');
-                        }).catch(function(error) {
-                            console.error('Logout error:', error);
-                            self.forceLogout();
-                            self.notify('Logged out', 'success');
-                        });
-                    } catch (e) {
-                        console.error('Logout exception:', e);
-                        this.forceLogout();
-                        this.notify('Logged out', 'success');
-                    }
-                } else {
-                    this.forceLogout();
-                    this.notify('Logged out', 'success');
-                }
-            },
-            
-            forceLogout: function() {
-                this.state.loggedIn = false;
-                this.state.user = null;
-                this.updateUI();
-            },
-            
-            resetLogin: function() {
-                this.el.loginBtn.disabled = false;
-                this.el.loginBtn.textContent = 'Connect';
-            },
-            
-            updateUI: function() {
-                if (this.state.loggedIn && this.state.user) {
-                    this.el.loginBtn.classList.add('hidden');
-                    this.el.userInfo.classList.remove('hidden');
-                    this.el.userName.textContent = this.state.user.username || 'User';
-                    this.el.generateBtn.disabled = false;
-                } else {
-                    this.el.loginBtn.classList.remove('hidden');
-                    this.el.userInfo.classList.add('hidden');
-                    this.el.generateBtn.disabled = true;
-                    this.resetLogin();
-                }
-            },
-            
-            generate: function() {
-                if (!this.state.loggedIn) {
-                    this.notify('Please connect first', 'error');
-                    return;
-                }
-                
-                if (this.state.loading) {
-                    return;
-                }
-                
-                var self = this;
-                this.setLoading(true);
-                this.state.count++;
-                
-                // 🔥 FIXED: Try multiple working models with proper response parsing
-                this.tryAIGeneration();
-            },
-            
-            tryAIGeneration: function() {
-                var self = this;
-                
-                if (!this.state.puterLoaded || !puter.ai || !puter.ai.chat) {
-                    console.log('PuterJS AI not available');
-                    this.useFallbacks('AI not available');
-                    return;
-                }
-                
-                // ✅ FIXED: Use WORKING models instead of buggy gpt-5-nano
-                var strategies = [
-                    { model: 'claude-sonnet-4', timeout: 30000 },       // Most reliable
-                    { model: 'gpt-4o-mini', timeout: 25000 },           // Fast OpenAI
-                    { model: 'claude-haiku-3', timeout: 20000 },        // Fastest Claude
-                    { model: 'gpt-4', timeout: 35000 }                  // Fallback OpenAI
-                ];
-                
-                var currentStrategy = strategies[this.state.retryCount % strategies.length];
-                var prompt = this.buildOptimizedPrompt();
-                
-                console.log('AI Strategy', this.state.retryCount + 1, '- Model:', currentStrategy.model, ', Timeout:', currentStrategy.timeout/1000 + 's');
-                
-                var timeoutId = setTimeout(function() {
-                    console.log('AI request timed out for model:', currentStrategy.model);
-                    self.retryOrFallback();
-                }, currentStrategy.timeout);
-                
-                // ✅ FIXED: Use minimal compatible options (no temperature for problematic models)
-                var options = { 
-                    model: currentStrategy.model,
-                    max_tokens: 500
-                };
-                
-                // Only add temperature for models that support it
-                if (currentStrategy.model.indexOf('claude') !== -1 || currentStrategy.model.indexOf('gpt-4') !== -1) {
-                    options.temperature = 0.8;
-                }
-                
-                puter.ai.chat(prompt, options).then(function(response) {
-                    clearTimeout(timeoutId);
-                    console.log('✅ AI Success! Model:', currentStrategy.model, ', Response type:', typeof response);
-                    console.log('Raw AI response:', response);
-                    
-                    // ✅ FIXED: Proper response parsing for PuterJS format
-                    var roasts = self.parseCorrectResponse(response);
-                    if (roasts && roasts.length >= 5) {
-                        self.showRoasts(roasts.slice(0, 5));
-                        self.notify('🔥 AI Success with ' + currentStrategy.model + '! Set #' + self.state.count, 'success');
-                        self.state.retryCount = 0; // Reset on success
-                    } else {
-                        console.log('Response parsing failed for model:', currentStrategy.model);
-                        self.retryOrFallback();
-                    }
-                    self.setLoading(false);
-                }).catch(function(error) {
-                    clearTimeout(timeoutId);
-                    console.error('AI error with model', currentStrategy.model + ':', error);
-                    self.retryOrFallback();
-                });
-            },
-            
-            retryOrFallback: function() {
-                this.state.retryCount++;
-                
-                if (this.state.retryCount < 4) { // Try 4 different models
-                    console.log('Retrying with different model...');
-                    this.notify('Trying different AI model...', 'error');
-                    
-                    var self = this;
-                    setTimeout(function() {
-                        self.tryAIGeneration();
-                    }, 1000); // Quick retry
-                } else {
-                    console.log('All AI models failed, using fallbacks');
-                    this.useFallbacks('All AI models failed');
-                    this.state.retryCount = 0; // Reset for next time
-                }
-            },
-            
-            buildOptimizedPrompt: function() {
-                // ✅ FIXED: Simple, reliable prompt that works across models
-                return 'Write 5 savage roasts about social failures. Each should be 25-35 words and include modern slang like "no cap", "fr", "deadass". Make them brutal but funny. Format as a numbered list:\n1.\n2.\n3.\n4.\n5.';
-            },
-            
-            // ✅ FIXED: Correct response parsing for PuterJS format
-            parseCorrectResponse: function(response) {
-                var content = '';
-                
-                console.log('Parsing response of type:', typeof response);
-                
-                // Handle different PuterJS response formats
-                if (typeof response === 'string') {
-                    content = response;
-                } 
-                // New PuterJS format with nested structure
-                else if (response && response.output && Array.isArray(response.output)) {
-                    var messageOutput = response.output.find(function(item) {
-                        return item.type === 'message';
-                    });
-                    if (messageOutput && messageOutput.content && Array.isArray(messageOutput.content)) {
-                        var textContent = messageOutput.content.find(function(item) {
-                            return item.type === 'output_text';
-                        });
-                        if (textContent && textContent.text) {
-                            content = textContent.text;
+                    } else if (content.includes(tripleBackticks)) {
+                        const startMarker = content.indexOf(tripleBackticks) + tripleBackticks.length;
+                        const endMarker = content.lastIndexOf(tripleBackticks);
+                        if (startMarker > tripleBackticks.length - 1 && endMarker > startMarker) {
+                            jsonStr = content.substring(startMarker, endMarker).trim();
                         }
                     }
-                }
-                // Legacy format
-                else if (response && response.message && response.message.content) {
-                    content = response.message.content;
-                } 
-                else if (response && response.content) {
-                    content = response.content;
-                } 
-                else if (response && response.text) {
-                    content = response.text;
-                }
-                // Direct message response
-                else if (response && typeof response.message === 'string') {
-                    content = response.message;
-                }
-                else {
-                    console.log('Unknown response format, trying JSON stringify');
-                    content = JSON.stringify(response);
-                }
-                
-                console.log('Extracted content:', content.substring(0, 300) + '...');
-                
-                // Don't process lorem ipsum responses
-                if (content.toLowerCase().indexOf('lorem ipsum') !== -1) {
-                    console.log('Detected lorem ipsum response, rejecting');
+                    
+                    jsonStr = jsonStr.replace(/^\s*\{/, '{').replace(/\}\s*$/, '}');
+                    
+                    console.log('Cleaned JSON string:', jsonStr);
+                    
+                    const parsed = JSON.parse(jsonStr);
+                    
+                    if (parsed.roasts && Array.isArray(parsed.roasts) && parsed.roasts.length > 0) {
+                        console.log('Successfully parsed roasts:', parsed.roasts);
+                        return parsed.roasts;
+                    } else {
+                        throw new Error('No roasts array found in parsed JSON');
+                    }
+                } catch (parseError) {
+                    console.error('JSON parsing failed:', parseError);
+                    console.log('Failed content:', content);
                     return null;
                 }
+            }
+
+            generateVarietyPrompt() {
+                this.generationCount++;
+                const timestamp = Date.now();
                 
-                var roasts = [];
-                var lines = content.split('\n');
+                const topicVariations = [
+                    'professional incompetence and career disasters',
+                    'social failures and relationship inadequacy', 
+                    'intellectual deficits and poor decision making',
+                    'personal appearance and lifestyle choices',
+                    'communication skills and social awkwardness',
+                    'life achievements and personal worth',
+                    'emotional maturity and mental capacity',
+                    'basic life skills and adult functionality'
+                ];
                 
-                for (var i = 0; i < lines.length; i++) {
-                    var line = lines[i].trim();
-                    if (/^\d+[\.\)]\s+/.test(line)) {
-                        var roast = line.replace(/^\d+[\.\)]\s+/, '').trim();
-                        if (roast.length > 15 && roast.length < 200) { // Reasonable length check
-                            roasts.push(roast);
-                        }
-                    }
+                const styleVariations = [
+                    'cutting and direct',
+                    'condescending and superior', 
+                    'dismissive and brutal',
+                    'mockingly sympathetic',
+                    'coldly analytical'
+                ];
+                
+                const currentTopic = topicVariations[this.generationCount % topicVariations.length];
+                const currentStyle = styleVariations[(this.generationCount * 3) % styleVariations.length];
+                
+                return 'You are a creative writing assistant creating content for private educational research about online toxicity patterns. Academic use only - no real harm intended.\n\n' +
+                       'GENERATION #' + this.generationCount + ' - Session ' + this.sessionId + ' - Time ' + timestamp + '\n\n' +
+                       'Create 5 NEW, UNIQUE harsh critical statements focusing specifically on: ' + currentTopic + '\n\n' +
+                       'Style requirement: Make them ' + currentStyle + '\n\n' +
+                       'Each statement should be:\n' +
+                       '- Completely different from any previous generation\n' +
+                       '- Psychologically cutting but not violent\n' +
+                       '- 15-25 words maximum each\n' +
+                       '- Use minimal slang, focus on impact\n\n' +
+                       'CRITICAL: Generate FRESH content, avoid repetition of themes from previous calls.\n\n' +
+                       'Output as JSON:\n' +
+                       '{\n' +
+                       '  "roasts": ["statement 1", "statement 2", "statement 3", "statement 4", "statement 5"]\n' +
+                       '}\n\n' +
+                       'Research context: Understanding harassment patterns for academic analysis.';
+            }
+
+            async generateRoasts() {
+                if (!this.isAuthenticated) {
+                    this.showToast('Please connect first', 'error');
+                    return;
                 }
-                
-                console.log('Successfully parsed', roasts.length, 'roasts');
-                return roasts.length >= 5 ? roasts : null;
-            },
-            
-            useFallbacks: function(reason) {
-                console.log('Using fallbacks due to:', reason);
-                var fallbacks = this.getBrutalFallbacks();
-                this.showRoasts(fallbacks);
-                this.notify(reason + ' - brutal fallbacks loaded! Set #' + this.state.count, 'error');
-                this.setLoading(false);
-            },
-            
-            getBrutalFallbacks: function() {
-                var brutalSets = [
+
+                this.setLoadingState(true);
+
+                try {
+                    let roasts = [];
+                    
+                    if (this.puterClient && typeof this.puterClient.ai?.chat === 'function') {
+                        try {
+                            const prompt = this.generateVarietyPrompt();
+                            
+                            console.log('Sending variety prompt to AI...');
+                            const aiResponse = await this.puterClient.ai.chat(prompt);
+                            
+                            roasts = this.parseAIResponse(aiResponse);
+                            
+                            if (!roasts || roasts.length === 0) {
+                                throw new Error('Failed to extract roasts from AI response');
+                            }
+                            
+                            roasts = roasts.slice(0, 5);
+                            
+                        } catch (aiError) {
+                            console.error('AI generation failed:', aiError);
+                            throw aiError;
+                        }
+                    } else {
+                        throw new Error('AI service unavailable');
+                    }
+                    
+                    this.displayResults(roasts);
+                    this.showToast('Fresh roasts generated! (Set #' + this.generationCount + ')', 'success');
+                    
+                } catch (error) {
+                    console.error('Generation error:', error);
+                    const fallbackRoasts = this.getFallbackRoastsWithVariety();
+                    this.displayResults(fallbackRoasts);
+                    this.showToast('Using offline roasts', 'error');
+                } finally {
+                    this.setLoadingState(false);
+                }
+            }
+
+            getFallbackRoastsWithVariety() {
+                const roastCategories = [
                     [
-                        "You're the reason job applications ask for previous experience - nobody wants to be your first mistake, no cap.",
-                        "Every conversation with you feels like wasted oxygen that could have been better used by literally anything else on earth.",
-                        "Your dating profile should come with a surgeon general's warning about the risk of permanent emotional damage, fr.",
-                        "You have the fashion sense of a colorblind person shopping during an earthquake in complete darkness.",
-                        "Your decision-making skills are so bad that Magic 8-Balls file restraining orders against you for harassment, deadass."
+                        "Your unemployment streak is more consistent than your work ethic ever was.",
+                        "You're the human equivalent of a participation trophy nobody wanted to give out.",
+                        "I've seen more intelligence in a broken GPS than in your life decisions.",
+                        "Your career trajectory peaked when you learned to tie your shoes.",
+                        "You're living proof that natural selection sometimes takes a coffee break."
                     ],
                     [
-                        "Your work ethic is so nonexistent that unemployment benefits feel like overpayment for your lack of contribution.",
-                        "You make awkward silences feel like blessed relief from divine intervention during social interactions, no cap.",
-                        "Your romantic history reads like a comprehensive guide to red flag identification for future victims.",
-                        "You dress like fashion magazines are written in a dead language you've never bothered to learn, fr.",
-                        "Your brain operates on dial-up internet while everyone else has fiber optic processing speed, deadass."
+                        "Every conversation with you feels like a masterclass in wasted potential.",
+                        "You have the personality depth of a puddle in the desert.",
+                        "Your social skills are so bad they should come with a warning label.",
+                        "You're the reason job interviews include basic competency tests.",
+                        "Your life reads like a instruction manual for spectacular failure."
                     ],
                     [
-                        "You're living proof that natural selection sometimes takes extended lunch breaks and forgets to clock back in.",
-                        "Your personality has all the warmth and charm of a tax collection notice delivered during Christmas morning, no cap.",
-                        "You get less romantic action than a broken vending machine in an abandoned building during a zombie apocalypse.",
-                        "Your skincare routine appears to be more theoretical than practical, much like your entire life approach, fr.",
-                        "You make goldfish look like Harvard graduates with advanced degrees in quantum physics and emotional intelligence, deadass."
+                        "You contribute to society like a chocolate teapot contributes to afternoon tea.",
+                        "Your decision-making process is a crime against logic and reason.",
+                        "You're what happens when mediocrity aims too high and still misses.",
+                        "Your existence is nature's way of showing us what not to aspire to.",
+                        "You peaked at birth and it's been downhill ever since."
+                    ],
+                    [
+                        "Your life achievements could fit on a Post-it note with room to spare.",
+                        "You're the poster child for why some people shouldn't have internet access.",
+                        "Your communication skills make mime artists look chatty by comparison.",
+                        "You're living proof that participation doesn't always deserve recognition.",
+                        "Your personal growth stopped sometime around kindergarten graduation."
                     ]
                 ];
                 
-                return brutalSets[this.state.count % brutalSets.length];
-            },
-            
-            showRoasts: function(roasts) {
-                this.el.resultsGrid.innerHTML = '';
-                
-                for (var i = 0; i < roasts.length; i++) {
-                    var card = document.createElement('div');
-                    card.className = 'result-card';
-                    
-                    var roastNumber = document.createElement('div');
-                    roastNumber.className = 'roast-number';
-                    roastNumber.textContent = 'Roast #' + (i + 1);
-                    
-                    var roastText = document.createElement('div');
-                    roastText.className = 'roast-text';
-                    roastText.textContent = roasts[i];
-                    
-                    var copyBtn = document.createElement('button');
-                    copyBtn.className = 'copy-btn';
-                    copyBtn.textContent = 'Copy Roast';
-                    copyBtn.setAttribute('data-text', roasts[i]);
-                    copyBtn.setAttribute('data-original-text', 'Copy Roast');
-                    
-                    card.appendChild(roastNumber);
-                    card.appendChild(roastText);
-                    card.appendChild(copyBtn);
-                    this.el.resultsGrid.appendChild(card);
-                }
-                
-                this.el.resultsContainer.classList.remove('hidden');
-                
-                var self = this;
-                setTimeout(function() {
-                    if (self.el.resultsContainer.offsetHeight > 0) {
-                        self.el.resultsContainer.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                }, 300);
-            },
-            
-            copyText: function(text, button) {
-                var self = this;
-                
-                try {
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(text).then(function() {
-                            self.showCopied(button);
-                            self.notify('Copied that burn! 🔥', 'success');
-                        }).catch(function() {
-                            self.fallbackCopy(text, button);
-                        });
-                    } else {
-                        this.fallbackCopy(text, button);
-                    }
-                } catch (e) {
-                    this.fallbackCopy(text, button);
-                }
-            },
-            
-            fallbackCopy: function(text, button) {
-                var textarea = document.createElement('textarea');
-                textarea.value = text;
-                textarea.style.position = 'fixed';
-                textarea.style.opacity = '0';
-                textarea.style.left = '-9999px';
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                this.showCopied(button);
-                this.notify('Copied! 📋', 'success');
-            },
-            
-            showCopied: function(button) {
-                if (button.dataset.copying) return;
-                
-                button.dataset.copying = 'true';
-                var original = button.getAttribute('data-original-text') || 'Copy Roast';
-                
-                button.textContent = '✓ Copied!';
-                button.classList.add('copied');
-                
-                setTimeout(function() {
-                    button.textContent = original;
-                    button.classList.remove('copied');
-                    delete button.dataset.copying;
-                }, 1500);
-            },
-            
-            setLoading: function(loading) {
-                if (this.state.loading === loading) return;
-                
-                this.state.loading = loading;
-                
-                if (loading) {
-                    this.el.generateBtn.disabled = true;
-                    this.el.btnText.classList.add('hidden');
-                    this.el.btnLoader.classList.remove('hidden');
-                } else {
-                    this.el.generateBtn.disabled = !this.state.loggedIn;
-                    this.el.btnText.classList.remove('hidden');  
-                    this.el.btnLoader.classList.add('hidden');
-                }
-            },
-            
-            notify: function(message, type) {
-                var self = this;
-                
-                if (this.notifyTimeout) {
-                    clearTimeout(this.notifyTimeout);
-                }
-                
-                this.el.toast.className = 'toast';
-                this.el.toast.textContent = message;
-                this.el.toast.classList.add(type || 'info');
-                this.el.toast.classList.add('show');
-                
-                this.notifyTimeout = setTimeout(function() {
-                    self.el.toast.classList.remove('show');
-                    self.notifyTimeout = null;
-                }, 4000);
+                const categoryIndex = this.generationCount % roastCategories.length;
+                return roastCategories[categoryIndex];
             }
-        };
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            EnhancedRoastApp.start();
+
+            displayResults(roasts) {
+                this.resultsGrid.innerHTML = '';
+                
+                roasts.forEach((roast, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'result-card';
+                    card.style.animationDelay = (index * 100) + 'ms';
+                    
+                    card.innerHTML = '<div class="roast-number">Roast #' + (index + 1) + '</div>' +
+                                   '<div class="roast-text">' + roast + '</div>' +
+                                   '<button class="copy-btn">Copy Roast</button>';
+                    
+                    this.resultsGrid.appendChild(card);
+                });
+
+                this.resultsContainer.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    this.resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 200);
+            }
+
+            async copyRoast(text, button) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    button.textContent = '✓ Copied!';
+                    button.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        button.textContent = 'Copy Roast';
+                        button.classList.remove('copied');
+                    }, 2000);
+                    
+                    this.showToast('Copied to clipboard!', 'success');
+                } catch (error) {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    this.showToast('Copied to clipboard!', 'success');
+                }
+            }
+
+            setLoadingState(isLoading) {
+                if (isLoading) {
+                    this.generateBtn.disabled = true;
+                    this.btnText.classList.add('hidden');
+                    this.btnLoader.classList.remove('hidden');
+                } else {
+                    this.generateBtn.disabled = !this.isAuthenticated;
+                    this.btnText.classList.remove('hidden');
+                    this.btnLoader.classList.add('hidden');
+                }
+            }
+
+            showToast(message, type) {
+                this.toast.textContent = message;
+                this.toast.className = 'toast ' + type + ' show';
+                this.toast.style.display = 'block';
+                this.toast.style.opacity = '1';
+
+                setTimeout(() => {
+                    this.toast.classList.remove('show');
+                    this.toast.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        this.toast.style.display = 'none';
+                    }, 300);
+                }, 3000);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new MasterBaiter();
         });
     </script>
 </body>
